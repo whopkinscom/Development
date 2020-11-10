@@ -6,9 +6,28 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
-
+	<PropertyGroup>
+		<TransformOnBuild>true</TransformOnBuild>
+		<TransformOutOfDateOnly>false</TransformOutOfDateOnly>
+	</PropertyGroup>
+	<Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v16.0\TextTemplating\Microsoft.TextTemplating.targets" />
   <ItemGroup>
     <Compile Remove="Initialise.cs" />
+  </ItemGroup>
+	<ItemGroup>
+		<None Update="MakeNuget.cmd">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>MakeNuget.tt</DependentUpon>
+		</None>
+		<None Update="MakeNuget.tt">
+			<LastGenOutput>MakeNuget.cmd</LastGenOutput>
+			<Generator>TextTemplatingFileGenerator</Generator>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+    <Compile Include="..\Source\Shared\Moonrise.Version\Properties\AutoVersion.cs" Link="Properties\AutoVersion.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,21 +37,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="MakeNuget.cmd">
-      <DependentUpon>MakeNuget.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </None>
-    <None Update="MakeNuget.tt">
-      <LastGenOutput>MakeNuget.cmd</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
     <None Update="Moonrise.Sample.appSettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Properties\AutoVersion.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>AutoVersion.cs</LastGenOutput>
     </None>
   </ItemGroup>
 
@@ -40,16 +46,7 @@
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Properties\AutoVersion.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>AutoVersion.tt</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
+	<Target Name="PostcompileScript" AfterTargets="Build">
+		<Exec Command="makeNuget.cmd $(Configuration) &quot;$(MSBuildProjectDirectory)&quot; $(AssemblyName)" />
+	</Target>
 </Project>

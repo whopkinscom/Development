@@ -16,6 +16,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\Shared\Moonrise.Version\Properties\AutoVersion.cs" Link="Properties\AutoVersion.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Moonrise.LoggingUtils.NetStd\Moonrise.LoggingUtils.NetStd.csproj" />
     <ProjectReference Include="..\Moonrise.StandardUtils.NetStd\Moonrise.StandardUtils.NetStd.csproj" />
   </ItemGroup>
@@ -41,10 +45,6 @@
     <None Update="Moonrise.TestUtils.nuspec">
       <CustomToolNamespace>See https://docs.nuget.org/create/creating-and-publishing-a-package</CustomToolNamespace>
     </None>
-    <None Update="Properties\AutoVersion.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>AutoVersion.cs</LastGenOutput>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -52,11 +52,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Properties\AutoVersion.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>AutoVersion.tt</DependentUpon>
-    </Compile>
+    <Folder Include="Properties\" />
   </ItemGroup>
 
   <PropertyGroup>

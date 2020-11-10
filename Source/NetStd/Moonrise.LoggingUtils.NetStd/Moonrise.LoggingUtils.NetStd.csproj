@@ -17,10 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ApplicationDefinition Include="Properties\AutoVersion.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>AutoVersion.cs</LastGenOutput>
-    </ApplicationDefinition>
+    <Compile Include="..\..\Shared\Moonrise.Version\Properties\AutoVersion.cs" Link="Properties\AutoVersion.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,14 +38,6 @@
       <LastGenOutput>MakeNuget.cmd</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
-    <None Update="Properties\AutoVersion.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>AutoVersion.cs</LastGenOutput>
-    </None>
-    <None Update="Properties\CreateVersion.t4">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>CreateVersion.cs</LastGenOutput>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -56,16 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Properties\AutoVersion.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>AutoVersion.tt</DependentUpon>
-    </Compile>
-    <Compile Update="Properties\CreateVersion.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>CreateVersion.t4</DependentUpon>
-    </Compile>
+    <Folder Include="Properties\" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
