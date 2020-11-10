@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>30e80acd-6f06-4a9f-b3df-114859f799d7</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>TestUtils</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.TestUtils.NetStd\Extensions\MoqExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.TestUtils.NetStd\Logging\TestLogAuditProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.TestUtils.NetStd\ObjectCreation\Creator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.TestUtils.NetStd\ObjectCreation\ObjectCreationAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.TestUtils.NetStd\ObjectCreation\ObjectCreationException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.TestUtils.NetStd\PrivateWrapper.cs" />
+  </ItemGroup>
+</Project>

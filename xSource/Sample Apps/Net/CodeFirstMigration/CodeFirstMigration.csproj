@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A3C834BB-9317-4268-8EA2-4A67F5EBB7C6}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CodeFirstMigration</RootNamespace>
+    <AssemblyName>CodeFirstMigration</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="NDesk.Options, Version=0.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\packages\NDesk.Options.0.2.1\lib\NDesk.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Migrations\201807231601429_Test.cs" />
+    <Compile Include="Migrations\201807231601429_Test.Designer.cs">
+      <DependentUpon>201807231601429_Test.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201807241129240_WrapperAdded.cs" />
+    <Compile Include="Migrations\201807241129240_WrapperAdded.Designer.cs">
+      <DependentUpon>201807241129240_WrapperAdded.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201807261547511_uncertain.cs" />
+    <Compile Include="Migrations\201807261547511_uncertain.Designer.cs">
+      <DependentUpon>201807261547511_uncertain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201807311056183_Wrappers.cs" />
+    <Compile Include="Migrations\201807311056183_Wrappers.Designer.cs">
+      <DependentUpon>201807311056183_Wrappers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SweetContextMigration.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Moonrise.DatabaseUtils\Moonrise.DatabaseUtils.csproj">
+      <Project>{e91b0dbb-e3c3-4494-b4b2-3db4565c9284}</Project>
+      <Name>Moonrise.DatabaseUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Moonrise.LoggingUtils\Moonrise.LoggingUtils.csproj">
+      <Project>{83797704-5bf5-403b-b14d-a7dd6885aed7}</Project>
+      <Name>Moonrise.LoggingUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Moonrise.StandardUtils\Moonrise.StandardUtils.csproj">
+      <Project>{70017d40-a780-4e2f-8f51-c456d38ce000}</Project>
+      <Name>Moonrise.StandardUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CodeFirst\SampleContext\SampleContext.csproj">
+      <Project>{85573b61-e0e4-40b1-951f-d78aaa173ed9}</Project>
+      <Name>SampleContext</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CodeFirst\SampleDomainModel\SampleDomainModel.csproj">
+      <Project>{7fee1226-ce40-42f1-9ebc-8e3ebdb06471}</Project>
+      <Name>SampleDomainModel</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201807231601429_Test.resx">
+      <DependentUpon>201807231601429_Test.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807241129240_WrapperAdded.resx">
+      <DependentUpon>201807241129240_WrapperAdded.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807261547511_uncertain.resx">
+      <DependentUpon>201807261547511_uncertain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807311056183_Wrappers.resx">
+      <DependentUpon>201807311056183_Wrappers.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

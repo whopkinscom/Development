@@ -1,0 +1,10 @@
+{
+  "ApplicationConfiguration": {
+    "SampleClassConfig": {
+      "Imaginary": "Not There",
+      "When": "2017-07-04T12:36:37.5280423+01:00",
+      "HowOften": 58,
+      "Repeatable": true
+    }
+  }
+}

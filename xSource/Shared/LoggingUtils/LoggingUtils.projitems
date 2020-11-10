@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>209efac3-18a3-461f-8e33-3a7b5d7ff224</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>LoggingUtils</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.LoggingUtils.NetStd\LoggingProviders\BasicFileLogProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.LoggingUtils.NetStd\LoggingProviders\EmptyLogger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.LoggingUtils.NetStd\IAuditProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.LoggingUtils.NetStd\ICloneable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.LoggingUtils.NetStd\ILoggingProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.LoggingUtils.NetStd\Logger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.LoggingUtils.NetStd\LogTag.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.LoggingUtils.NetStd\ScopeContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.LoggingUtils.NetStd\Trace.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.LoggingUtils.NetStd\Util\ScopedNestableThreadGlobalSingleton_T.cs" />
+  </ItemGroup>
+</Project>

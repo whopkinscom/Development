@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>8e4fbd9e-f685-4417-9d47-30aaf7ef7ae8</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>StandardUtils</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Config\JsonConfigSettingsProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Config\ISettingsEncryptor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Config\ISettingsProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Config\DpApiSettingsEncryptor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Config\Settings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Config\SettingsException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\CSV\CsvColumnAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\CSV\CsvParseException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\CSV\CsvParser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\CSV\ICsvConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\DatesTimes\DateTimeOffsetProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\DatesTimes\DateTimeProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Debugger\DebuggerUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\DependencyInjection\InjectableAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Exceptions\ReasonedExceptionT.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Extensions\ClassExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Extensions\DateTimeExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Extensions\DateTimeOffsetExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Extensions\EnumExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Extensions\StringExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Files\FileUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Hash\HashUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Misc\Restoreable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Networking\NetworkUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Threading\ScopedNestableThreadGlobalSingleton_T.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Validation\DynamicRangeAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Validation\FileValidationAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Validation\GuidValidationAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Validation\InterfaceValidator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Validation\IpAddressValidationAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Validation\IValidatableAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Validation\ListContentValidationAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Validation\NonDefaultAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Validation\ValidateChildAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\Validation\ValidatedByParentAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\ICloneable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\IOffer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\NetStd\Moonrise.StandardUtils.NetStd\IRequire.cs" />
+  </ItemGroup>
+</Project>

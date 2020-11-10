@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <copyright>$copyright$</copyright>
+    <authors>Original author: Will Hopkins - Moonrise Media Ltd.</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+	  TransactedConnection - allows thread-safe nested transactions. MigrationApp and MigrationState allow for migrations to be seperated out into a stand-alone app.
+    </description>
+    <summary>Some useful database/EF classes. Principally nested transactions and seperated migrations.</summary>
+    <releaseNotes>First packaged release of this logging library.</releaseNotes>
+    <language>en-GB</language>
+    <dependencies>
+      <dependency id="Moonrise.Utils.Logging" version ="3.2018.601"/>
+      <dependency id="Moonrise.Utils.Standard" version ="3.2018.601"/>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src=".\bin\Release\Moonrise.Utils.Database.dll" target="lib\Moonrise.Utils.Database.dll" />
+    <file src=".\bin\Release\Moonrise.Utils.Database.XML" target="lib\Moonrise.Utils.Database.XML" />
+  </files>
+</package>

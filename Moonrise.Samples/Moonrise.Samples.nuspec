@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <copyright>$copyright$</copyright>
+    <authors>Original author: Will Hopkins - Moonrise Media Ltd.</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+	  Samples for how to use the Moonrise libraries. Note I've put all of the code into one file just to make it easier to deal with as it'll get added to your project I didn't want to have too many files!
+    </description>
+    <summary>Samples of how to use the Moonrise packages</summary>
+    <language>en-GB</language>
+  </metadata>
+  <files>
+    <file src=".\Moonrise.Samples.Program.cs" target="content\Moonrise\Moonrise.Samples.Program.cs" />
+    <file src=".\Moonrise.Samples.appSettings.json" target="content\Moonrise\Moonrise.Samples.appSettings.json" />
+    <file src=".\Moonrise.chm" target="content\Moonrise\Moonrise.chm" />
+  </files>
+</package>

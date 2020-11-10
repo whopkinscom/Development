@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <copyright>$copyright$</copyright>
+    <authors>Original author: Will Hopkins - Moonrise Media Ltd.</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+      General utilities I've found useful as I go about my day-to-day work. Particular highlights include;
+      Extensions.EnumExtensions : "Modifiable" description attributes with parsing from descriptions to associated enum value.
+      Extensions.DateTimeExtensions : Neat little &lt;DateTime var&gt;.Within to find if the DT was within the last X seconds/days/etc
+      Extensions.StringExtensions: To &amp; from Comma Separated Lists and extract text from within specified "marker strings".
+      Config.Settings: Typed reading from and writing default values to the .config or .json file.
+      Exceptions.ReasonedExceptionT: Base class for my exception pattern that accompanies an exception with an enum reason where the description attribute provides both the (formattable) message and intellisense. This leads to a centralised list of all possible exception reasons and messages.
+      Database.TransactedConnection : Handles nested transactions/connections.
+      Validation : A number of additional validation attributes including ListContent, Child/Parent, NonDefault
+    </description>
+    <summary>General utilities I've found useful as I go about my day-to-day work.</summary>
+    <releaseNotes>Logging has been removed and put into a new package (Moonrise.LoggingUtils) and namespace (Moonrise.Logging).
+    ConfigFile has been renamed Settings and now has indexers, can target User settings as well as Application settins and has configurable settings providers, via ISettingsProvider.</releaseNotes>
+    <language>en-GB</language>
+  </metadata>
+  <files>
+    <file src=".\bin\Release\Moonrise.Utils.Standard.dll" target="lib\Moonrise.Utils.Standard.dll" />
+    <file src=".\bin\Release\Moonrise.Utils.Standard.XML" target="lib\Moonrise.Utils.Standard.XML" />
+  </files>
+</package>

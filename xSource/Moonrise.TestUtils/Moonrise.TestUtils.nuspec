@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>$id$</id>
+        <version>$version$</version>
+        <copyright>$copyright$</copyright>
+        <authors>Original author: Will Hopkins - Moonrise Media Ltd.</authors>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Particular favourites are;
+PrivateWrapper - to allow access to the private methods of a "wrapped" object - via dynamic.
+Creator - To create repeatable but random data for "filled" classes to test - various properties available to control the range of filling.</description>
+        <summary>Utility classes I find useful with writing tests.</summary>
+        <releaseNotes>Initial NuGet package up.</releaseNotes>
+        <language>en-GB</language>
+        <dependencies>
+            <dependency id="Moq" version="4.0.10827" />
+            <dependency id="Moonrise.Utils.Standard" version ="3.2017.601"/>
+        </dependencies>
+        <frameworkAssemblies>
+            <frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="" />
+            <frameworkAssembly assemblyName="System.Data.DataSetExtensions" targetFramework="" />
+            <frameworkAssembly assemblyName="System.Xml" targetFramework="" />
+            <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="" />
+        </frameworkAssemblies>
+    </metadata>
+    <files>
+        <file src=".\bin\Release\Moonrise.Utils.Test.dll" target="lib\Moonrise.Utils.Test.dll" />
+        <file src=".\bin\Release\Moonrise.Utils.Test.XML" target="lib\Moonrise.Utils.Test.XML" />
+    </files>
+</package>

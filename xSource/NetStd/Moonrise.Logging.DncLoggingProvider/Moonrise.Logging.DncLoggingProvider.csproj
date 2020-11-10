@@ -1,0 +1,71 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.5</TargetFramework>
+    <Authors />
+    <Company />
+    <Product />
+    <Description />
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netstandard1.6\Moonrise.Logging.DncLoggingProvider.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\Release\netstandard1.5\Moonrise.Logging.DncLoggingProvider.xml</DocumentationFile>
+    <OutputPath>bin\Release\netstandard1.5\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Moonrise.LoggingUtils.NetStd\Moonrise.LoggingUtils.NetStd.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="makeNuget.cmd">
+      <DependentUpon>MakeNuget.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </None>
+    <None Update="MakeNuget.tt">
+      <LastGenOutput>MakeNuget.cmd</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="Moonrise.Logging.DncLoggingProvider.nuspec">
+      <CustomToolNamespace>See https://docs.nuget.org/create/creating-and-publishing-a-package</CustomToolNamespace>
+    </None>
+    <None Update="Properties\AutoVersion.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AutoVersion.cs</LastGenOutput>
+    </None>
+    <None Update="Properties\CreateVersion.t4">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>CreateVersion.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\AutoVersion.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AutoVersion.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\CreateVersion.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CreateVersion.t4</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <Target Name="PostcompileScript" AfterTargets="Build">
+    <Exec Command="makeNuget.cmd $(Configuration) &quot;$(MSBuildProjectDirectory)&quot; $(AssemblyName)" />
+  </Target>
+</Project>

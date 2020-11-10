@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <copyright>$copyright$</copyright>
+    <authors>Original author: Will Hopkins - Moonrise Media Ltd.</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+	  Yes, another logger! Efficient and pluggable. Can log to separate logging and auditing providers. Supplied console, event, file, and log4net providers. Thread-global Singleton based, so all the advantages of Singletons without the threading problems.
+    </description>
+    <summary>A logger with darned useful functions</summary>
+    <releaseNotes>First packaged release of this logging library.</releaseNotes>
+    <language>en-GB</language>
+  </metadata>
+  <files>
+    <file src=".\bin\Release\netstandard1.6\Moonrise.LoggingUtils.NetStd.dll" target="lib\Moonrise.LoggingUtils.NetStd.dll" />
+    <file src=".\bin\Release\netstandard1.6\Moonrise.LoggingUtils.NetStd.xml" target="lib\Moonrise.LoggingUtils.NetStd.xml" />
+  </files>
+</package>

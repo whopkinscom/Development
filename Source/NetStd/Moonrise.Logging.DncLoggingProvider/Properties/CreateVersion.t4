@@ -1,0 +1,8 @@
+﻿<#+
+	// Set the Major version here - it'll get used for both the assembly & nuget versions, the rest being date generated
+	int One = 4;
+
+	int Two = DateTime.Now.Year;
+	int Three = DateTime.Now.Month * 100 + DateTime.Now.Day;
+	int Four = (DateTime.Now.Hour * 10000 + DateTime.Now.Minute * 100 + DateTime.Now.TimeOfDay.Seconds)/10;
+#>

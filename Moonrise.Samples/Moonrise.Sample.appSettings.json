@@ -1,0 +1,22 @@
+﻿{
+  "Logging": {
+    "Level": "Debug",
+    "LogFile": {
+      "DateTimeFormatterPrefix": "{0:HH:mm:ss} ",
+      "LogCycling": "Weekly",
+      "LogFilePerThread": false,
+      "LoggingFile": "../../../Logging.log"
+    },
+    // Generally you want to put all of the LogTags that you use in here.
+    // Then to turn them Off or On, simply put or remove an x from in front of them. The LogTags are simply matched 
+    // against a string so if the active ones have an x in front, they won't match, remove the preceeding x and 
+    // they will match!
+    "LogTags": [
+      "NoTags",
+      "AreCurrently",
+      "Defined",
+      "xSampleLogging"
+    ],
+    "UseLoggingContext": true
+  }
+}
