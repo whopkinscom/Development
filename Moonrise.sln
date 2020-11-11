@@ -29,13 +29,20 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonrise.WpfUtils", "Source\Moonrise.WpfUtils\Moonrise.WpfUtils.csproj", "{53C777E4-0FC2-484E-A59B-AB319B6718DC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonrise.LoggingUtils.NetStd", "Source\NetStd\Moonrise.LoggingUtils.NetStd\Moonrise.LoggingUtils.NetStd.csproj", "{077BCAB3-4696-4D5B-A486-4C415249F258}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A7964333-09A9-4F40-B6BB-E01CE398875A} = {A7964333-09A9-4F40-B6BB-E01CE398875A}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonrise.StandardUtils.NetStd", "Source\NetStd\Moonrise.StandardUtils.NetStd\Moonrise.StandardUtils.NetStd.csproj", "{A209D751-E0A7-4BDA-B770-A527A717F455}"
 	ProjectSection(ProjectDependencies) = postProject
+		{A7964333-09A9-4F40-B6BB-E01CE398875A} = {A7964333-09A9-4F40-B6BB-E01CE398875A}
 		{077BCAB3-4696-4D5B-A486-4C415249F258} = {077BCAB3-4696-4D5B-A486-4C415249F258}
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonrise.TestUtils.NetStd", "Source\NetStd\Moonrise.TestUtils.NetStd\Moonrise.TestUtils.NetStd.csproj", "{6079A4FA-64B2-4C28-BC51-96554CCF6B9E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A7964333-09A9-4F40-B6BB-E01CE398875A} = {A7964333-09A9-4F40-B6BB-E01CE398875A}
+	EndProjectSection
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "LoggingUtils", "Source\Shared\LoggingUtils\LoggingUtils.shproj", "{209EFAC3-18A3-461F-8E33-3A7B5D7FF224}"
 EndProject
@@ -44,6 +51,9 @@ EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "TestUtils", "Source\Shared\TestUtils\TestUtils.shproj", "{30E80ACD-6F06-4A9F-B3DF-114859F799D7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonrise.Logging.DncLoggingProvider", "Source\NetStd\Moonrise.Logging.DncLoggingProvider\Moonrise.Logging.DncLoggingProvider.csproj", "{60EB8402-FCD1-4CA3-88E7-6DF8FE83F9E5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A7964333-09A9-4F40-B6BB-E01CE398875A} = {A7964333-09A9-4F40-B6BB-E01CE398875A}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Net", ".Net", "{F21A0105-8281-496C-85DD-E659F2AF7DC1}"
 EndProject
@@ -70,8 +80,13 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplication1", "Source\Sample Apps\NetStd\WebApplication1\WebApplication1.csproj", "{0B1E826F-914F-4F84-8141-029B3718F689}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonrise.Samples", "Moonrise.Samples\Moonrise.Samples.csproj", "{00AD50C4-45EB-4739-9977-D6A82D6E0E67}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A7964333-09A9-4F40-B6BB-E01CE398875A} = {A7964333-09A9-4F40-B6BB-E01CE398875A}
+		{A209D751-E0A7-4BDA-B770-A527A717F455} = {A209D751-E0A7-4BDA-B770-A527A717F455}
+		{077BCAB3-4696-4D5B-A486-4C415249F258} = {077BCAB3-4696-4D5B-A486-4C415249F258}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moonrise.Version", "Source\Shared\Moonrise.Version\Moonrise.Version.csproj", "{A7964333-09A9-4F40-B6BB-E01CE398875A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonrise.Version", "Source\Shared\Moonrise.Version\Moonrise.Version.csproj", "{A7964333-09A9-4F40-B6BB-E01CE398875A}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

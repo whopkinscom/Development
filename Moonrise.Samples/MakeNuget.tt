@@ -17,4 +17,4 @@ IF NOT "%conf%" == "Release" GOTO FINISH
 	dotnet pack --no-build --configuration %conf% -o "%projdir%\..\GeneratedPackages\%projname%" /p:PackageVersion=<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>
 :FINISH
 
-<#@include file=".\Properties\CreateVersion.t4" #>
+<#@include file="..\Source\Shared\Moonrise.Version\Properties\VersionNumber.t4" #>

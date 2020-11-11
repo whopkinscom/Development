@@ -13,7 +13,7 @@ set projname=%projname:"=%
 IF NOT "%conf%" == "Release" GOTO FINISH
 	Echo Nugetting %projname%........
 	del "%projdir%\..\packages\%projname%\*.nupkg"
-	dotnet pack --no-build --configuration %conf% -o "%projdir%\..\packages\%projname%" /p:PackageVersion=2.2020.1106.15100
+	dotnet pack --no-build --configuration %conf% -o "%projdir%\..\..\..\GeneratedPackages\%projname%" /p:PackageVersion=4.2020.1110.19400
 REM	del "\\ws-urus\allpayNuGetPackages\Moonrise\%projname%*.nupkg"
 REM	echo d | xcopy /f /y "%projdir%\..\packages\%projname%\*.nupkg" "\\ws-urus\allpayNuGetPackages\Moonrise\"
 :FINISH

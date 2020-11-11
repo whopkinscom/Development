@@ -201,7 +201,10 @@ namespace Moonrise.Samples
         /// </summary>
         public static void ConfigurationSettings()
         {
-            Settings.Application.SettingsProvider = new JsonConfigSettingsProvider();
+            Settings.Application.SettingsProvider = new JsonConfigSettingsProvider(new JsonConfigSettingsProvider.Config
+            {
+                ApplicationSettingsFilename = "Moonrise.Samples.appSettings.json"
+            });
         }
 
         /// <summary>

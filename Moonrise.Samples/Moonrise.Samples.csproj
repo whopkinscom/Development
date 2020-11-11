@@ -10,7 +10,7 @@
 		<TransformOnBuild>true</TransformOnBuild>
 		<TransformOutOfDateOnly>false</TransformOutOfDateOnly>
 	</PropertyGroup>
-	<Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v16.0\TextTemplating\Microsoft.TextTemplating.targets" />
+	<!--<Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v16.0\TextTemplating\Microsoft.TextTemplating.targets" />-->
   <ItemGroup>
     <Compile Remove="Initialise.cs" />
   </ItemGroup>
@@ -32,12 +32,12 @@
 
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
-    <PackageReference Include="Moonrise.LoggingUtils.NetStd" Version="3.2020.1106.15070" />
-    <PackageReference Include="Moonrise.StandardUtils.NetStd" Version="3.2020.1106.15011" />
+    <PackageReference Include="Moonrise.LoggingUtils.NetStd" Version="4.2020.1110.19400" />
+    <PackageReference Include="Moonrise.StandardUtils.NetStd" Version="4.2020.1110.19400" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Moonrise.Sample.appSettings.json">
+    <None Update="Moonrise.Samples.appSettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
