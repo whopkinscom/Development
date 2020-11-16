@@ -11,6 +11,16 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+	  <Description>
+		  General utilities I've found useful as I go about my day-to-day work. Particular highlights include;
+		  Extensions.EnumExtensions : "Modifiable" description attributes with parsing from descriptions to associated enum value.
+		  Extensions.DateTimeExtensions : Neat little &lt;DateTime var&gt;.Within to find if the DT was within the last X seconds/days/etc
+		  Extensions.StringExtensions: To &amp; from Comma Separated Lists and extract text from within specified "marker strings", i.e. ad-hoc parsing.
+		  Config.Settings: Typed reading from and writing default values to a .json settings file.
+		  Exceptions.ReasonedExceptionT: Base class for my exception pattern that accompanies an exception with an enum reason where the description attribute provides both the (formattable) message and intellisense. This leads to a centralised list of all possible exception reasons and messages.
+	  </Description>
+	  <Authors>Will Hopkins</Authors>
+	  <Copyright>Moonrise Media Ltd.</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
@@ -43,7 +53,10 @@
       <Generator>nuget</Generator>
     </None>
   </ItemGroup>
-
+	<PropertyGroup>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	</PropertyGroup>
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>

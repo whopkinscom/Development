@@ -424,6 +424,10 @@ namespace Moonrise.Logging.LoggingProviders
                        "***** FATAL Error: " + msg +
                        "\r\n*********************";
             }
+            else if (level == LoggingLevel.Critical)
+            {
+                retVal = "CRITICAL: " + msg;
+            }
             else if (level == LoggingLevel.Error)
             {
                 retVal = "Error: " + msg;
@@ -547,7 +551,7 @@ namespace Moonrise.Logging.LoggingProviders
                     catch (Exception excep)
                     {
                         // We won't log this exception, but at least stick it in the trace output
-                        Trace.Write(excep.Message);
+                        Console.WriteLine(excep.Message);
 
                         // Then turn off file logging
                         fileLoggingEnabled = false;
@@ -586,7 +590,7 @@ namespace Moonrise.Logging.LoggingProviders
             catch (Exception excep)
             {
                 // We can't log this exception, obviously, so at least stick it in the trace output
-                Trace.Write(excep.Message);
+                Console.WriteLine(excep.Message);
 
                 if (++failCount > 5)
                 {

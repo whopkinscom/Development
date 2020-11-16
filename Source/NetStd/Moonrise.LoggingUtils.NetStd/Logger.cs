@@ -55,9 +55,15 @@ namespace Moonrise.Logging
         public enum ReportingLevel
         {
             /// <summary>
-            ///     All messages will be output (effectively the same as Debug)
+            ///     All messages will be output (effectively the same as Trace)
             /// </summary>
-            All = LoggingLevel.Debug - 1,
+            All = LoggingLevel.Trace - 1,
+
+            /// <summary>
+            ///     All messages of Trace and higher (<see cref="Debug" />, <see cref="Information" />, <see cref="Warning" />, <see cref="Error" />,
+            ///     <see cref="Fatal" />) will be output
+            /// </summary>
+            Trace = LoggingLevel.Trace,
 
             /// <summary>
             ///     All messages of Debug and higher (<see cref="Information" />, <see cref="Warning" />, <see cref="Error" />,
@@ -83,13 +89,19 @@ namespace Moonrise.Logging
             Error = LoggingLevel.Error,
 
             /// <summary>
-            ///     Only messages of Fatal will be output
+            ///     Only messages of Critical will be output
+            /// </summary>
+            Critical = LoggingLevel.Critical,
+
+            /// <summary>
+            ///     Only messages of Fatal will be output.
             /// </summary>
             Fatal = LoggingLevel.Fatal,
 
             /// <summary>
             ///     No messages will be output, except Audit messages
             /// </summary>
+            [Description("None")]
             Off = LoggingLevel.Audit
         }
 
@@ -255,9 +267,6 @@ namespace Moonrise.Logging
                     _OriginalLogger = new Logger();
                     _Logger.Value = _OriginalLogger;
 
-                    // Check if we should enable Trace Output
-                    UseTraceOutput = DoWeUseTraceOutput();
-
                     // Warning is the initial default setting
                     OutputLevel = ReportingLevel.Warning;
                 }
@@ -300,9 +309,6 @@ namespace Moonrise.Logging
                     _Logger = new ThreadLocal<ILoggingProvider>();
                     _OriginalLogger = value;
                     _Logger.Value = value;
-
-                    // Check if we should enable Trace Output
-                    UseTraceOutput = DoWeUseTraceOutput();
 
                     // Warning is the initial default setting
                     OutputLevel = ReportingLevel.Warning;
@@ -372,13 +378,6 @@ namespace Moonrise.Logging
         public static bool UseThreadId { get; set; }
 
         /// <summary>
-        ///     Determines if we should use Trace output. Needs to be set AFTER the LogProvider has been determined.
-        ///     Currently this will always be False until DoWeUseTraceOutput is made more sophisticated.
-        ///     Use this to override behaviour in each module as required.
-        /// </summary>
-        public static bool UseTraceOutput { get; set; }
-
-        /// <summary>
         ///     The next auditor to pass the audit message on to. Allows additional auditors to be used. Don't create circular
         ///     links though eh!
         /// </summary>
@@ -393,8 +392,6 @@ namespace Moonrise.Logging
         public void AuditThis(string msg, string context, LogTag logTag)
         {
             if (UseConsoleOutput) Console.Out.WriteLine("AUDIT: " + msg);
-
-            if (UseTraceOutput) Trace.WriteLine("AUDIT: " + msg);
         }
 
         /// <summary>
@@ -438,7 +435,7 @@ namespace Moonrise.Logging
         /// <summary>
         /// Logs an error message to the console.
         /// <para>
-        /// This is the default console logging if no other logger is provided.
+        /// As a default ILoggingProvider, this is the default console logging if no other logger is provided.
         /// </para>
         /// </summary>
         /// <param name="level">The level for this message</param>
@@ -652,31 +649,6 @@ namespace Moonrise.Logging
             return new LogTag.Scoped(logTagScope);
         }
 
-        ///// <summary>
-        /////     Logs the specified format-able message as a <see cref="LoggingLevel.Debug" />.
-        ///// </summary>
-        ///// <param name="msg">The format string.</param>
-        ///// <param name="args">The args to the formatting</param>
-        //[SuppressMessage(
-        //    "StyleCop.CSharp.LayoutRules",
-        //    "SA1503:CurlyBracketsMustNotBeOmitted",
-        //    Justification = "I excuse exceptions and returns!")]
-        //[Obsolete(
-        //    "Please use interpolated strings version, this overload will soon be stripped out for ease of maintenance")]
-        //public static void Debug(string msg, params object[] args)
-        //{
-        //    if (Disabled) return;
-
-        //    try
-        //    {
-        //        LogMsgCommon(LoggingLevel.Debug, msg, args);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        LogMsgCommon(LoggingLevel.Information, "Error logging the following message [{0}]", msg);
-        //    }
-        //}
-
         /// <summary>
         ///     Logs the specified message as a <see cref="LoggingLevel.Debug" />.
         /// </summary>
@@ -692,6 +664,24 @@ namespace Moonrise.Logging
             if (Disabled) return;
 
             LogMsgCommon(LoggingLevel.Debug, msg, logTag, caller);
+        }
+
+        /// <summary>
+        ///     Logs the specified message as a <see cref="LoggingLevel.Trace" />.<para>
+        /// Try not to use this too often for DETAIL, use Debug in preference UNLESS YOU NEED LOTS OF DETAIL </para>
+        /// </summary>
+        /// <param name="msg">The string to log.</param>
+        /// <param name="logTag">An optional log tag.</param>
+        /// <param name="caller">The method name of the caller. Will be displayed if <seealso cref="LogMethodName" /> is true.</param>
+        [SuppressMessage(
+            "StyleCop.CSharp.LayoutRules",
+            "SA1503:CurlyBracketsMustNotBeOmitted",
+            Justification = "I excuse exceptions and returns!")]
+        public static void Trace(string msg, LogTag logTag = null, [CallerMemberName] string caller = null)
+        {
+            if (Disabled) return;
+
+            LogMsgCommon(LoggingLevel.Trace, msg, logTag, caller);
         }
 
         /// <summary>
@@ -715,54 +705,24 @@ namespace Moonrise.Logging
         }
 
         /// <summary>
-        ///     Logs the specified format-able warning message as a <see cref="LoggingLevel.Error" />.
+        ///     Logs any object using JSON as a <see cref="LoggingLevel.Trace" />. This will log the field name and value of the
+        ///     object.<para>
+        /// Try not to use this too often for DETAIL, use Debug in preference UNLESS YOU NEED LOTS OF DETAIL </para><para>
+        /// IF YOU CALL THIS MAKE SURE YOU HAVE A REFERENCE TO NewtonSoft.Json</para>
         /// </summary>
-        /// <param name="msg">The format string.</param>
-        /// <param name="args">The args to the formatting</param>
+        /// Note, this override of Log will be used unless a more specific override is used. i.e. It will not JSON an Exception or a String!
+        /// <param name="anything">The object to be logged using JSON</param>
+        /// <param name="logTag">An optional log tag.</param>
+        /// <param name="caller">The method name of the caller. Will be displayed if <seealso cref="LogMethodName" /> is true.</param>
         [SuppressMessage(
             "StyleCop.CSharp.LayoutRules",
             "SA1503:CurlyBracketsMustNotBeOmitted",
             Justification = "I excuse exceptions and returns!")]
-        [Obsolete(
-            "Please use interpolated strings version, this overload will soon be stripped out for ease of maintenance")]
-        public static void Error(string msg, params object[] args)
+        public static void Trace(object anything, LogTag logTag = null, [CallerMemberName] string caller = null)
         {
             if (Disabled) return;
 
-            try
-            {
-                LogErrCommon(string.Format(msg, args));
-            }
-            catch (Exception)
-            {
-                LogErrCommon(string.Format("Error logging the following error [{0}]", msg));
-            }
-        }
-
-        /// <summary>
-        ///     Logs the specified format-able warning message as a <see cref="LoggingLevel.Error" />.
-        /// </summary>
-        /// <param name="excep">An exception to log.</param>
-        /// <param name="msg">The format string.</param>
-        /// <param name="args">The args to the formatting</param>
-        [SuppressMessage(
-            "StyleCop.CSharp.LayoutRules",
-            "SA1503:CurlyBracketsMustNotBeOmitted",
-            Justification = "I excuse exceptions and returns!")]
-        [Obsolete(
-            "Please use interpolated strings version, this overload will soon be stripped out for ease of maintenance")]
-        public static void Error(Exception excep, string msg, params object[] args)
-        {
-            if (Disabled) return;
-
-            try
-            {
-                Error(excep, string.Format(msg, args));
-            }
-            catch (Exception)
-            {
-                LogErrCommon(string.Format("Error logging the following error [{0}]", msg));
-            }
+            LogMsgCommon(LoggingLevel.Trace, JsonIt(anything), logTag, caller);
         }
 
         /// <summary>
@@ -774,7 +734,7 @@ namespace Moonrise.Logging
         {
             if (Disabled) return;
 
-            LogErrCommon(msg, false, caller);
+            LogMsgCommon(LoggingLevel.Error, msg, null, caller);
         }
 
         /// <summary>
@@ -786,7 +746,7 @@ namespace Moonrise.Logging
         {
             if (Disabled) return;
 
-            LogErrCommon(JsonIt(thing), false, caller);
+            LogMsgCommon(LoggingLevel.Error, JsonIt(thing), null, caller);
         }
 
         /// <summary>
@@ -805,44 +765,19 @@ namespace Moonrise.Logging
 
             if (string.IsNullOrEmpty(excep.HelpLink))
             {
-                LogErrCommon(
+                LogMsgCommon(LoggingLevel.Error,
                     msg + "\r\n\t" + GetFullExceptionMessage(excep) + "\r\nStack Trace:\r\n\t" + excep.StackTrace,
-                    false, caller);
+                    null, caller);
 
                 excep.HelpLink = "Handled";
             }
             else if (excep.HelpLink == "Handled")
             {
-                LogErrCommon(msg + "\r\n" + "Exception propogated;\r\n\t" + excep.Message, false, caller);
+                LogMsgCommon(LoggingLevel.Error, msg + "\r\n" + "Exception propogated;\r\n\t" + excep.Message, null, caller);
             }
             else
             {
-                LogErrCommon(msg + "\r\n\t" + excep.Message + "\r\n\t" + excep.StackTrace, false, caller);
-            }
-        }
-
-        /// <summary>
-        ///     Logs the specified format-able warning message as a <see cref="LoggingLevel.Fatal" />.
-        /// </summary>
-        /// <param name="msg">The format string.</param>
-        /// <param name="args">The args to the formatting</param>
-        [SuppressMessage(
-            "StyleCop.CSharp.LayoutRules",
-            "SA1503:CurlyBracketsMustNotBeOmitted",
-            Justification = "I excuse exceptions and returns!")]
-        [Obsolete(
-            "Please use interpolated strings version, this overload will soon be stripped out for ease of maintenance")]
-        public static void Fatal(string msg, params object[] args)
-        {
-            if (Disabled) return;
-
-            try
-            {
-                LogErrCommon(string.Format(msg, args), true);
-            }
-            catch (Exception)
-            {
-                LogErrCommon(string.Format("Error logging the following error [{0}]", msg), true);
+                LogMsgCommon(LoggingLevel.Error, msg + "\r\n\t" + excep.Message + "\r\n\t" + excep.StackTrace, null, caller);
             }
         }
 
@@ -855,7 +790,19 @@ namespace Moonrise.Logging
         {
             if (Disabled) return;
 
-            LogErrCommon(msg, true, caller);
+            LogMsgCommon(LoggingLevel.Fatal, msg, null, caller);
+        }
+
+        /// <summary>
+        ///     Logs the specified message as a <see cref="LoggingLevel.Critical" />.
+        /// </summary>
+        /// <param name="msg">The string to log.</param>
+        /// <param name="caller">The method name of the caller. Will be displayed if <seealso cref="LogMethodName" /> is true.</param>
+        public static void Critical(string msg, [CallerMemberName] string caller = null)
+        {
+            if (Disabled) return;
+
+            LogMsgCommon(LoggingLevel.Critical, msg, null, caller);
         }
 
         /// <summary>
@@ -903,31 +850,6 @@ namespace Moonrise.Logging
 
             return retVal;
         }
-
-        ///// <summary>
-        /////     Logs the specified format-able message as a <see cref="LoggingLevel.Information" />.
-        ///// </summary>
-        ///// <param name="msg">The format string.</param>
-        ///// <param name="args">The args to the formatting</param>
-        //[SuppressMessage(
-        //    "StyleCop.CSharp.LayoutRules",
-        //    "SA1503:CurlyBracketsMustNotBeOmitted",
-        //    Justification = "I excuse exceptions and returns!")]
-        //[Obsolete(
-        //    "Please use interpolated strings version, this overload will soon be stripped out for ease of maintenance")]
-        //public static void Info(string msg, params object[] args)
-        //{
-        //    if (Disabled) return;
-
-        //    try
-        //    {
-        //        LogMsgCommon(LoggingLevel.Information, msg, args);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        LogMsgCommon(LoggingLevel.Information, "Error logging the following message [{0}]", msg);
-        //    }
-        //}
 
         /// <summary>
         ///     Logs the specified message as a <see cref="LoggingLevel.Information" />.
@@ -1136,6 +1058,7 @@ namespace Moonrise.Logging
             LogMsgCommon((LoggingLevel) OutputLevel, title);
         }
 
+#if !DotNetCore
         /// <summary>
         ///     Spits a stack trace out to the log.
         /// </summary>
@@ -1145,7 +1068,6 @@ namespace Moonrise.Logging
             Justification = "I excuse exceptions and returns!")]
         public static void TraceStack()
         {
-#if !DotNetCore
             if (Disabled)
             {
                 return;
@@ -1167,33 +1089,8 @@ namespace Moonrise.Logging
                 // Stack traces will only ever go out at Debug level
                 LogMsgCommon(LoggingLevel.Debug, stackList);
             }
+    }
 #endif
-        }
-
-        ///// <summary>
-        /////     Logs the specified format-able warning message as a <see cref="LoggingLevel.Warning" />.
-        ///// </summary>
-        ///// <param name="msg">The format string.</param>
-        ///// <param name="args">The args to the formatting</param>
-        //[SuppressMessage(
-        //    "StyleCop.CSharp.LayoutRules",
-        //    "SA1503:CurlyBracketsMustNotBeOmitted",
-        //    Justification = "I excuse exceptions and returns!")]
-        //[Obsolete(
-        //    "Please use interpolated strings version, this overload will soon be stripped out for ease of maintenance")]
-        //public static void Warning(string msg, params object[] args)
-        //{
-        //    if (Disabled) return;
-
-        //    try
-        //    {
-        //        LogMsgCommon(LoggingLevel.Warning, msg, args);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        LogMsgCommon(LoggingLevel.Error, "Error logging the following warning [{0}]", msg);
-        //    }
-        //}
 
         /// <summary>
         ///     Logs the specified message as a <see cref="LoggingLevel.Warning" />.
@@ -1229,46 +1126,6 @@ namespace Moonrise.Logging
 
             LogMsgCommon(LoggingLevel.Warning, JsonIt(anything), null, caller);
         }
-
-        /// <summary>
-        ///     Determines if we are using Trace output. Currently simply returns false but gives a single point to control this
-        ///     should a more sophisticated mechanism be required.
-        /// </summary>
-        /// i.e. This sets the normal default. If you want to use trace output to the default debugger then specifically set it in your app.
-        /// <returns>Currently always returns false</returns>
-        private static bool DoWeUseTraceOutput()
-        {
-            return false;
-        }
-
-        /// <summary>
-        ///     Single point to call the log provider
-        /// </summary>
-        /// <param name="msg">Error message to log.</param>
-        /// <param name="fatal">if set to <c>true</c> the error is logged as a fatal error.</param>
-        /// <param name="caller">The method name of the caller. Will be displayed if <seealso cref="LogMethodName" /> is true.</param>
-        private static void LogErrCommon(string msg, bool fatal = false, string caller = null)
-        {
-            LogMsgCommon(fatal ? LoggingLevel.Fatal : LoggingLevel.Error, msg, null, caller);
-        }
-
-        ///// <summary>
-        /////     Single point to call the log provider
-        ///// </summary>
-        ///// <param name="level">The level for this message</param>
-        ///// <param name="msg">Message to log.</param>
-        ///// <param name="args">Args to pass to <see cref="string.Format(string, object[])" /></param>
-        //private static void LogMsgCommon(LoggingLevel level, string msg, params object[] args)
-        //{
-        //    LogTag logTag = null;
-
-        //    if (level <= LoggingLevel.Information)
-        //        // We ignore log tags on anything above Information!
-        //        logTag = LogTag.Scoped.CurrentValue;
-
-        //    if (OutputLevel <= (ReportingLevel) level && (logTag == null || logTag.IsActive()))
-        //        LogMsgCommonCommon(level, string.Format(msg, args), logTag);
-        //}
 
         /// <summary>
         ///     Another single point to call the log provider
@@ -1314,8 +1171,6 @@ namespace Moonrise.Logging
                 }
 
                 if (UseConsoleOutput) Console.Out.WriteLine(msg);
-
-                if (UseTraceOutput) Trace.WriteLine(msg);
             }
         }
 

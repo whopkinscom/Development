@@ -13,8 +13,8 @@ set projname=%projname:"=%
 
 IF NOT "%conf%" == "Release" GOTO FINISH
 	Echo Nugetting %projname%........
-	del "%projdir%\..\GeneratedPackages\%projname%\*.nupkg"
-	dotnet pack --no-build --configuration %conf% -o "%projdir%\..\GeneratedPackages\%projname%" /p:PackageVersion=<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>
+	del /Q "%projdir%\..\GeneratedPackages\%projname%\*.*"
+	dotnet pack --no-build --configuration %conf% -o "%projdir%\..\GeneratedPackages\%projname%" /p:NuspecFile="%projname%.nuspec" /p:PackageVersion=<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>
 :FINISH
 
 <#@include file="..\Source\Shared\Moonrise.Version\Properties\VersionNumber.t4" #>

@@ -2,10 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.5</TargetFramework>
-    <Authors />
-    <Company />
-    <Product />
-    <Description />
+	  <Description>
+		  A logging provider that uses the DNC Microsoft Extensions Logging
+	  </Description>
+	  <Authors>Will Hopkins</Authors>
+	  <Copyright>Moonrise Media Ltd.</Copyright>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -46,7 +47,10 @@
       <CustomToolNamespace>See https://docs.nuget.org/create/creating-and-publishing-a-package</CustomToolNamespace>
     </None>
   </ItemGroup>
-  <ItemGroup>
+	<PropertyGroup>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	</PropertyGroup>  <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
   <ItemGroup>

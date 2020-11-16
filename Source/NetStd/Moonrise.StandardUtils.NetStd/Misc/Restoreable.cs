@@ -52,7 +52,7 @@ namespace Moonrise.Utils.Standard.Misc
             /// <summary>
             ///     Initializes a new instance of the <see cref="RestoreableValue{T}" /> class.
             ///     <para>
-            ///         Note: If you use this class YOU NEED TO NUGET "DeepCloner by force"!
+            ///         Note: If you use this class YOU NEED TO NUGET "DeepCloner by Force"!
             ///     </para>
             /// </summary>
             /// <param name="_instance">The _instance whose property is being passed.</param>

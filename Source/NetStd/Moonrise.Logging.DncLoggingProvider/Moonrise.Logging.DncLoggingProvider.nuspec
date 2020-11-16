@@ -3,8 +3,9 @@
   <metadata>
     <id>$id$</id>
     <version>$version$</version>
-    <copyright>$copyright$</copyright>
-    <authors>Original author: Will Hopkins - Moonrise Media Ltd.</authors>
+  <copyright>Moonrise Media Ltd.</copyright>
+  <authors>Will Hopkins</authors>
+	  <license type="file">License.txt</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
       A logging provider that uses the DNC Microsoft Extensions Logging 
@@ -16,9 +17,17 @@
       <dependency id="Moonrise.LoggingUtils.NetStd" />
       <dependency id="Microsoft.Extensions.Logging.Abstractions" />
     </dependencies>
+	  <contentFiles>
+		  <file src=".\bin\Release\netstandard1.5\Moonrise.Logging.DncLoggingProvider.dll" target="lib\Moonrise.Logging.DncLoggingProvider.dll" />
+		  <file src=".\bin\Release\netstandard1.5\Moonrise.Logging.DncLoggingProvider.xml" target="lib\Moonrise.Logging.DncLoggingProvider.xml" />
+		  <file src="License.txt"/>
+	  </contentFiles>
   </metadata>
-  <files>
-    <file src=".\bin\Release\netstandard1.6\Moonrise.Logging.DncLoggingProvider.dll" target="lib\Moonrise.Logging.DncLoggingProvider.dll" />
-    <file src=".\bin\Release\netstandard1.6\Moonrise.Logging.DncLoggingProvider.xml" target="lib\Moonrise.Logging.DncLoggingProvider.xml" />
-  </files>
+  <!--<files>
+	  <file src=".\bin\Release\netstandard1.5\Moonrise.Logging.DncLoggingProvider.dll" target="lib\Moonrise.Logging.DncLoggingProvider.dll" />
+    <file src=".\bin\Release\netstandard1.5\Moonrise.Logging.DncLoggingProvider.xml" target="lib\Moonrise.Logging.DncLoggingProvider.xml" />
+  </files>-->
+	<files>
+		<file src="License.txt"/>
+	</files>
 </package>

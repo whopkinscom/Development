@@ -17,6 +17,7 @@
 #endregion
 using System;
 using System.Diagnostics.CodeAnalysis;
+using Moonrise.Utils.Standard.DatesTimes;
 
 namespace Moonrise.Utils.Standard.Extensions
 {
@@ -42,7 +43,7 @@ namespace Moonrise.Utils.Standard.Extensions
     public static class DateTimeExtensions
     {
         /// <summary>
-        ///     Converts value of DateTime to local time and optionally appends time zone info
+        ///     Converts value of DateTime to local British time and optionally appends time zone info
         /// </summary>
         /// <param name="dateTime">The date time.</param>
         /// <param name="includeTimezone">True to append time zone info</param>
@@ -72,7 +73,7 @@ namespace Moonrise.Utils.Standard.Extensions
         {
             bool retVal = false;
 
-            DateTime current = DateTime.Now;
+            DateTime current = DateTimeProvider.Now;
             DateTime noLessThan;
             double subtractor = -1.0 * number;
 

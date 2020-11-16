@@ -1,0 +1,68 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
+	<PropertyGroup>
+		<TransformOnBuild>true</TransformOnBuild>
+		<TransformOutOfDateOnly>false</TransformOutOfDateOnly>
+		<Authors>Will Hopkins</Authors>
+		<PackageLicenseExpression></PackageLicenseExpression>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+	</PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Initialise.cs" />
+  </ItemGroup>
+	<ItemGroup>
+		<None Update="Moonrise.Samples.nuspec">
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		  <DependentUpon>Moonrise.Samples.tt</DependentUpon>
+		</None>
+		<None Update="Moonrise.Samples.tt">
+		  <Generator>TextTemplatingFileGenerator</Generator>
+		  <LastGenOutput>Moonrise.Samples.nuspec</LastGenOutput>
+		</None>
+		<None Update="MakeNuget.cmd">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>MakeNuget.tt</DependentUpon>
+		</None>
+		<None Update="MakeNuget.tt">
+			<LastGenOutput>MakeNuget.cmd</LastGenOutput>
+			<Generator>TextTemplatingFileGenerator</Generator>
+		</None>
+		<None Update="Moonrise.Samples.appSettings.json">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+    <Compile Include="..\Moonrise.Samples\ContentFiles\Moonrise.Samples.Program.cs" Link="Moonrise.Samples\Moonrise.Samples.Program.cs" />
+    <Compile Include="..\Source\Shared\Moonrise.Version\Properties\AutoVersion.cs" Link="Properties\AutoVersion.cs" />
+  </ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="..\Moonrise.Samples\ContentFiles\Moonrise.Samples.appSettings.json" Link="Moonrise.Samples.appSettings.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Moonrise.Samples\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Source\NetStd\Moonrise.LoggingUtils.NetStd\Moonrise.LoggingUtils.NetStd.csproj" />
+    <ProjectReference Include="..\Source\NetStd\Moonrise.StandardUtils.NetStd\Moonrise.StandardUtils.NetStd.csproj" />
+    <ProjectReference Include="..\Source\NetStd\Moonrise.TestUtils.NetStd\Moonrise.TestUtils.NetStd.csproj" />
+  </ItemGroup>
+
+</Project>

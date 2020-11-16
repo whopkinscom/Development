@@ -12,7 +12,7 @@ set projname=%projname:"=%
 
 IF NOT "%conf%" == "Release" GOTO FINISH
 	Echo Nugetting %projname%........
-	del "%projdir%\..\GeneratedPackages\%projname%\*.nupkg"
-	dotnet pack --no-build --configuration %conf% -o "%projdir%\..\GeneratedPackages\%projname%" /p:PackageVersion=4.2020.1110.19400
+	del /Q "%projdir%\..\GeneratedPackages\%projname%\*.*"
+	dotnet pack --no-build --configuration %conf% -o "%projdir%\..\GeneratedPackages\%projname%" /p:NuspecFile="%projname%.nuspec" /p:PackageVersion=4.2020.1116.12292
 :FINISH
 

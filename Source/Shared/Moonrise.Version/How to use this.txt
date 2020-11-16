@@ -1,0 +1,2 @@
+﻿Run the custom tool first on VersionNumber.tt, then AutoVersion.tt, unload the Version project, Build->Transform All T4 Templates and Build solution.
+This will ensure all of the build numbers are consistent!

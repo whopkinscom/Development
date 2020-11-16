@@ -1,0 +1,42 @@
+﻿<#@ output extension = ".txt" encoding ="Windows-1252" #>
+//
+//
+//
+//  RRRRR   EEEEE      A       DDDD          TTTTT  H    H  IIIII   SSSS    !
+//  R   R   E         A A      D   D           T    H    H    I    S        !
+//  R RR    EEEEE    AAAAA     D   D           T    HHHHHH    I     SSS     !
+//  R  R    E       A     A    D   D           T    H    H    I        S
+//  R   R   EEEEE  A       A   DDDD            T    H    H  IIIII  sSSS     !
+//
+//
+//
+//
+// (Yes I did do that by hand and what a pain in the arse it was!)
+//
+// NOTE: Moonrise.Samples is code to show examples of using the Moonrise nuget packages. You used to be able to bundle content files into nuget packages
+// and have them added to the consuming project. Those days are over for so-called "SDK Projects", i.e. .Net Core as opposed to .Net Framework.
+// HOWEVER, you CAN still include a readme.txt that the nuget package manager will show you when you first install a package.
+//
+// There are two files contained within this readme.txt
+// 1. The sample code. The various classes are all in one "file" for ease of distribution like this.
+// 2. A sample application settings file in JSON format. The sample assumes it's called "Moonrise.Samples.appSettings.json"
+//    and "informs" the Moonrise Settings class of the name. The default is to assume it's called "appSettings.json"
+// 
+// PLEASE read the comments in the sample "program" and if you look in your local nuget cache - usually found under [User folder]\.nuget\packages -
+// you will find in the Moonrise.Samples folder that there is a Moonrise.chm help file which is a good reference.
+//
+// FINALLY, if there is an update to this Moonrise.Samples package, then please upgrade by uninstalling before re-installing the new version
+// as this way you guarantee that this readme.txt will be redisplayed with, of course, the updated sample code!
+// 
+// P.S. I'm using .tt/T4 templates to include the code and settings from the actual code & settings file. It's great, saves me having to copy & paste
+// manually into a readme!
+//
+// Okay, off we go. Cut the content between the +++ & --- comments into Moonrise.Samples.cs and call Moonrise.Samples.Run(); from your console app main
+//+++ ----------------------------------------------------------------------------------------------------------------
+<#@include file="ContentFiles\Moonrise.Samples.Program.cs" #>
+//--- ----------------------------------------------------------------------------------------------------------------
+
+// Cut the remainder of the following content into Moonrise.Samples.appSettings.json and set the "Copy to Output Directory" to "Always"
+//+++ ----------------------------------------------------------------------------------------------------------------
+<#@include file="ContentFiles\Moonrise.Samples.appSettings.json" #>
+//--- ----------------------------------------------------------------------------------------------------------------

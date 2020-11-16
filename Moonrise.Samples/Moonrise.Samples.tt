@@ -1,8 +1,9 @@
+﻿<#@ output extension = ".nuspec" encoding ="Windows-1252" #>
 <?xml version="1.0" encoding="utf-8"?>
 
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <version>4.2020.1116.12292</version>
+    <version><#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #></version>
 	<id>Moonrise.Samples</id>
     <copyright>Moonrise Media Ltd.</copyright>
     <authors>Will Hopkins</authors>
@@ -14,9 +15,9 @@
     <summary>Samples of how to use the Moonrise packages</summary>
     <language>en-GB</language>
 	  <dependencies>
-		  <dependency id="Moonrise.LoggingUtils.NetStd" version="4.2020.1116.12292"/>
-		  <dependency id="Moonrise.StandardUtils.NetStd" version="4.2020.1116.12292"/>
-		  <dependency id="Moonrise.TestUtils.NetStd" version="4.2020.1116.12292"/>
+		  <dependency id="Moonrise.LoggingUtils.NetStd" version="<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>"/>
+		  <dependency id="Moonrise.StandardUtils.NetStd" version="<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>"/>
+		  <dependency id="Moonrise.TestUtils.NetStd" version="<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>"/>
 	  </dependencies>
 	  <contentFiles>
 		  <file src="*\**" target ="\" exclude="**\*.*"/>
@@ -42,3 +43,4 @@
 		<file scr="*\**" target="\" exclude="bin\**\*.*"/>
 	</files>
 </package>
+<#@include file="..\Source\Shared\Moonrise.Version\Properties\VersionNumber.t4" #>

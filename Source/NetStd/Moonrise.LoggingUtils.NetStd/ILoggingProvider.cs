@@ -23,9 +23,17 @@ namespace Moonrise.Logging
     public enum LoggingLevel
     {
         /// <summary>
-        ///     Use debug messages for intricate detail that you only really need when digging deep into a problem.
+        ///     Use trace messages for intricate detail that you only really need when digging REALLY deep into a problem.<para>
+        ///     But try NOT to use this too much.</para>
+        /// <remarks>
+        /// </remarks>
         /// </summary>
-        Debug = 0,
+        Trace = 0,
+
+        /// <summary>
+        ///     Use debug messages for detailed.
+        /// </summary>
+        Debug,
 
         /// <summary>
         ///     Use information messages for mundane but USEFUL information.
@@ -43,7 +51,12 @@ namespace Moonrise.Logging
         Error,
 
         /// <summary>
-        ///     Reserve fatal errors for when you're dumping out of an application!
+        ///     Critical is REALLY BAD.
+        /// </summary>
+        Critical,
+
+        /// <summary>
+        ///     Reserve fatal errors for you've decided that you're dumping out of an application!
         /// </summary>
         Fatal,
 

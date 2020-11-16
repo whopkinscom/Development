@@ -13,7 +13,18 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+	  <Description>
+		  Particular favourites are;
+		  PrivateWrapper - to allow access to the private methods of a "wrapped" object - via dynamic.
+		  Creator - To create repeatable but random data for "filled" classes to test - various properties available to control the range of filling. This one is THE NUTS!
+	  </Description>
+	  <Authors>Will Hopkins</Authors>
+	  <Copyright>Moonrise Media Ltd.</Copyright>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Extensions\MoqExtensions.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Include="..\..\Shared\Moonrise.Version\Properties\AutoVersion.cs" Link="Properties\AutoVersion.cs" />
@@ -28,7 +39,6 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
     <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
-    <PackageReference Include="Moq" Version="4.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
   </ItemGroup>
 
@@ -46,12 +56,17 @@
       <CustomToolNamespace>See https://docs.nuget.org/create/creating-and-publishing-a-package</CustomToolNamespace>
     </None>
   </ItemGroup>
+	<PropertyGroup>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	</PropertyGroup>
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Extensions\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 

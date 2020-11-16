@@ -39,7 +39,7 @@ namespace Moonrise.Utils.Test.ObjectCreation
     public class Creator
     {
         /// <summary>
-        ///     Namespace for the available string sources
+        ///     "Namespace" (actually a class) for the available string sources
         /// </summary>
         [SuppressMessage("StyleCop.CSharp.DocumentationRules",
             "SA1650:ElementDocumentationMustBeSpelledCorrectly",

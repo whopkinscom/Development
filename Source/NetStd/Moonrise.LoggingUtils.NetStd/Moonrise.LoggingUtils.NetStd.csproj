@@ -38,8 +38,15 @@
       <LastGenOutput>MakeNuget.cmd</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+	  <None Update="Moonrise.LoggingUtils.NetCore.nuspec">
+		  <CustomToolNamespace>See https://docs.nuget.org/create/creating-and-publishing-a-package</CustomToolNamespace>
+		  <Generator>nuget</Generator>
+	  </None>
   </ItemGroup>
-
+	<PropertyGroup>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	</PropertyGroup>
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>

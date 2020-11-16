@@ -1,0 +1,37 @@
+﻿// This is a standard .Net JSON settings file. You COULD process it using the standard .Net core way of 
+// reading it - can't remember what that is as it's ages since I used that. I do remember that it relies
+// on injecting a settings handler. The problem I have with that is that you have to keep injecting the appropriate
+// reference and accepting it etc. Same thing with logging, in fact for logging it's much worse. Why?
+// Well settings you generally only read during some startup phase, whereas logging you want to be able to use EVERYWHERE
+// and I for one do NOT want to keep injecting logger references to every single class that I might want to log from!
+// I explain more in the Samples code. The other advantage of the Moonrise Settings is "hydrating" complete object
+// trees. Again see the example for more details!
+{
+  // If you want to use BOTH Moonrise logging and .Net Core logging - which you can quite easily there are Moonrise providers
+  // to allow Moonrise logging to ultimately go through to the .Net Core logging and to provide a .Net Core logging provider
+  // that will feed into what Moonrise logging providers you're using - then you might want to rename this part of the
+  // settings from Logging to perhaps MoonriseLogging or whatever. You'd just change the corresponding Settings.Read(...)
+  "Logging": {
+    // Everything inside this bit of settings tree now matches the structure of the Moonrise.Samples.Initialise.LoggingConfig class
+    "Level": "Debug",
+    "LogFile": {
+      // Note that this settings subtree now matches the structure of the Moonrise.Logging.BasicFileLogProvider.Config class,
+      // i.e. showing a sample of reading complete object trees.
+      "DateTimeFormatterPrefix": "{0:HH:mm:ss} ",
+      "LogCycling": "Weekly",
+      "LogFilePerThread": false,
+      "LoggingFile": "../../../Logging.log"
+    },
+    // Generally you want to put all of the LogTags that you use in here.
+    // Then to turn them Off or On, simply put or remove an x from in front of them. The LogTags are simply matched 
+    // against a string so if the active ones have an x in front, they won't match, remove the preceeding x and 
+    // they will match!
+    "LogTags": [
+      "NoTags",
+      "AreCurrently",
+      "Defined",
+      "xSampleLogging"
+    ],
+    "UseLoggingContext": true
+  }
+}

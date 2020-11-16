@@ -1,52 +1,87 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <TargetFramework>netstandard2.1</TargetFramework>
+	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-	<PropertyGroup>
-		<TransformOnBuild>true</TransformOnBuild>
-		<TransformOutOfDateOnly>false</TransformOutOfDateOnly>
-	</PropertyGroup>
-	<!--<Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v16.0\TextTemplating\Microsoft.TextTemplating.targets" />-->
+
   <ItemGroup>
-    <Compile Remove="Initialise.cs" />
+    <Compile Remove="ContentFiles\Moonrise.Samples.Program.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ContentFiles\Moonrise.chm" />
+    <None Remove="ContentFiles\Moonrise.Samples.appSettings.json" />
   </ItemGroup>
 	<ItemGroup>
-		<None Update="MakeNuget.cmd">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>MakeNuget.tt</DependentUpon>
-		</None>
-		<None Update="MakeNuget.tt">
-			<LastGenOutput>MakeNuget.cmd</LastGenOutput>
+		<Content Include="readme.tt">
+			<!--<Pack>true</Pack>-->
+			<PackagePath>\</PackagePath>
 			<Generator>TextTemplatingFileGenerator</Generator>
-		</None>
+			<LastGenOutput>readme.txt</LastGenOutput>
+		</Content>
 	</ItemGroup>
-
 	<ItemGroup>
     <Compile Include="..\Source\Shared\Moonrise.Version\Properties\AutoVersion.cs" Link="Properties\AutoVersion.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
-    <PackageReference Include="Moonrise.LoggingUtils.NetStd" Version="4.2020.1110.19400" />
-    <PackageReference Include="Moonrise.StandardUtils.NetStd" Version="4.2020.1110.19400" />
+    <Content Include="ContentFiles\Moonrise.chm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ContentFiles\Moonrise.Samples.appSettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ContentFiles\Moonrise.Samples.Program.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Moonrise.Samples.appSettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Source\NetStd\Moonrise.LoggingUtils.NetStd\Moonrise.LoggingUtils.NetStd.csproj" />
+    <ProjectReference Include="..\Source\NetStd\Moonrise.StandardUtils.NetStd\Moonrise.StandardUtils.NetStd.csproj" />
+    <ProjectReference Include="..\Source\NetStd\Moonrise.TestUtils.NetStd\Moonrise.TestUtils.NetStd.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="MakeNuget.cmd">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MakeNuget.tt</DependentUpon>
+    </None>
+    <None Update="MakeNuget.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MakeNuget.cmd</LastGenOutput>
+    </None>
+    <None Update="Moonrise.Samples.nuspec">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Moonrise.Samples.tt</DependentUpon>
+    </None>
+    <None Update="Moonrise.Samples.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Moonrise.Samples.nuspec</LastGenOutput>
+    </None>
+    <None Update="readme.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>readme.txt</LastGenOutput>
+    </None>
+    <None Update="readme.txt">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>readme.tt</DependentUpon>
     </None>
   </ItemGroup>
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
-
 	<Target Name="PostcompileScript" AfterTargets="Build">
 		<Exec Command="makeNuget.cmd $(Configuration) &quot;$(MSBuildProjectDirectory)&quot; $(AssemblyName)" />
 	</Target>
+
 </Project>
