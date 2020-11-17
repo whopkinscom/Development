@@ -1,0 +1,1646 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Moonrise.TestUtils.NetStd</name>
+    </assembly>
+    <members>
+        <member name="T:Moonrise.Utils.Test.Logging.TestLogAuditProvider">
+            <summary>
+                A logging provider that can be utilised when you need to test that certain code DID log or audit something
+            </summary>
+            <seealso cref="T:Moonrise.Logging.ILoggingProvider" />
+        </member>
+        <member name="T:Moonrise.Utils.Test.Logging.TestLogAuditProvider.LogEntry">
+            <summary>
+                A log entry captures what was logged
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.Logging.TestLogAuditProvider.LogEntry.Level">
+            <summary>
+                The logging level used.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.Logging.TestLogAuditProvider.LogEntry.Message">
+            <summary>
+                The logging message used
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.Logging.TestLogAuditProvider.LogEntry.LogTag">
+            <summary>
+                The log tag used
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.Logging.TestLogAuditProvider.LogEntry.Context">
+            <summary>
+                The context in play
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Test.Logging.TestLogAuditProvider.#ctor(System.Int32)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Test.Logging.TestLogAuditProvider" /> class using a specified initial size
+                <see cref="P:Moonrise.Utils.Test.Logging.TestLogAuditProvider.LogBuffer" />.
+            </summary>
+            <param name="bufferSize">Size of the buffer.</param>
+        </member>
+        <member name="M:Moonrise.Utils.Test.Logging.TestLogAuditProvider.#ctor">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Test.Logging.TestLogAuditProvider" /> class and uses a default sizing
+                <see cref="P:Moonrise.Utils.Test.Logging.TestLogAuditProvider.LogBuffer" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.Logging.TestLogAuditProvider.LogBuffer">
+            <summary>
+                A log buffer that you can query later if you need to check things were logged.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.Logging.TestLogAuditProvider.NextAuditor">
+            <summary>
+                The next auditor to pass the audit message on to. Allows additional auditors to be used. Don't create circular
+                links though eh!
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.Logging.TestLogAuditProvider.NextLogger">
+            <summary>
+                The next logger to pass the log message on to. Allows additional loggers to be used. Don't create circular links
+                though eh!
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Test.Logging.TestLogAuditProvider.AuditThis(System.String,System.String,Moonrise.Logging.LogTag)">
+            <summary>
+            Audits the message.
+            </summary>
+            <param name="msg">The message.</param>
+            <param name="context">The context.</param>
+            <param name="logTag">The log tag.</param>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Moonrise.Utils.Test.Logging.TestLogAuditProvider.AuditThisObject(System.String,System.Object,Moonrise.Logging.LoggingLevel,System.String,Moonrise.Logging.LogTag)">
+            <summary>
+            Audits an object. Can be used IF a specific object is to be audited by an implementation rather than simply a
+            string.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="auditObject">The audit object.</param>
+            <param name="auditLevel">The audit level.</param>
+            <param name="context">The context.</param>
+            <param name="logTag">The log tag.</param>
+        </member>
+        <member name="M:Moonrise.Utils.Test.Logging.TestLogAuditProvider.Clone">
+            <summary>
+                Creates a new object that is a copy of the current instance.
+            </summary>
+            <returns>A new object that is a copy of this instance.</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.Logging.TestLogAuditProvider.LogThis(Moonrise.Logging.LoggingLevel,System.String,Moonrise.Logging.LogTag,System.String)">
+            <summary>
+                Logs the appropriate level of message.
+            </summary>
+            <param name="level">The level.</param>
+            <param name="msg">The message.</param>
+        </member>
+        <member name="T:Moonrise.Utils.Test.ObjectCreation.Creator">
+            <summary>
+                Creates objects filled with data and can also create random data of different types.
+            </summary>
+            NOTE: All the properties that are ...OneShot are properties that are set by an element having an
+            <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />
+            . The pattern is that the
+            <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />
+            property
+            applied results in the associated [property]OneShot being set to the value of the attribute. This then controls
+            whether and how that value is created.
+        </member>
+        <member name="T:Moonrise.Utils.Test.ObjectCreation.Creator.StringSources">
+            <summary>
+                "Namespace" (actually a class) for the available string sources
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator.StringSources.AlphaNumericCharacters">
+            <summary>
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator.StringSources.AlphaNumericCharactersWithSpaces">
+            <summary>
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator.StringSources.Empty">
+            <summary>
+                ""
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator.StringSources.EverydayCharacters">
+            <summary>
+                "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ.0123456789:;!\"£$%^&amp;*()-_+={}[]'@#~/?\\€&lt;&gt;"
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator.StringSources.LowercaseAlphaCharacters">
+            <summary>
+                "abcdefghijklmnopqrstuvwxyz"
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator.StringSources.LowercaseAlphaCharactersWithSpaces">
+            <summary>
+                "abcdefghijklmnopqrstuvwxyz "
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator.StringSources.LowercaseAlphaNumericCharacters">
+            <summary>
+                "abcdefghijklmnopqrstuvwxyz0123456789"
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator.StringSources.LowercaseAlphaNumericCharactersWithSpaces">
+            <summary>
+                "abcdefghijklmnopqrstuvwxyz0123456789 "
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator.StringSources.Numeric">
+            <summary>
+                "0123456789"
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator.StringSources.NumericWithDecimal">
+            <summary>
+                "0123456789."
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator.StringSources.NumericWithSymbols">
+            <summary>
+                "0123456789.+-*/^&lt;&gt;=%"
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "F:Moonrise.Utils.Test.ObjectCreation.Creator.StringSources.OnlySymbols" -->
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator.StringSources.UppercaseAlphaCharacters">
+            <summary>
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator.StringSources.UppercaseAlphaCharactersWithSpaces">
+            <summary>
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZ "
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator.StringSources.UppercaseAlphaNumericCharacters">
+            <summary>
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator.StringSources.UppercaseAlphaNumericCharactersWithSpaces">
+            <summary>
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator.DEFAULT_DATETIME">
+            <summary>
+                Constant representing the default datetime
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator.DEFAULT_DATETIMEOFFSET">
+            <summary>
+                Constant representing the default datetime offset
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator._creatorMap">
+            <summary>
+                A map of types and the creators that can create them.
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator._interfaceAttributesMap">
+            <summary>
+                Maps implementation types to interfaces that carry <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />s
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator._interfaceMap">
+            <summary>
+                Maps interfaces to implementations to be used when creating elements that are interfaces
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator.encounteredObjects">
+            <summary>
+            A list of object types that have been encountered in a particular context. Used to avoid nesting certain objects. 
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator._maxObjects">
+            <summary>
+                Backing field for MaxObjects
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator._oneShot">
+            <summary>
+                Backing field for <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.OneShot" />
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.Creator._random">
+            <summary>
+                The random that will be used by the instance to generate random stuff
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.#ctor">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Test.ObjectCreation.Creator" /> class. Elements created via this constructor will be
+                non-reliably-repeatable
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.#ctor(System.Int32)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Test.ObjectCreation.Creator" /> class. Elements created via this constructor will be
+                reliably-repeatable
+            </summary>
+            <param name="seed">
+                The seed to pass to the random generator. Using the same seed and calling in the same creation order
+                will produce repeatable results!
+            </param>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.AllowNullElementsInEnumerable">
+            <summary>
+                Determines if nulls are allowed to be inserted into enumerable types - Defaults to false
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.AllowNulls">
+            <summary>
+                Determines if nulls are allowed for objects and strings - Defaults to false
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.CreationTracer">
+            <summary>
+                The action to pass the name of the property or field being created - VERY useful for diagnosing recursive creation failures!
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.IgnoredIssueTracer">
+            <summary>
+                The action to pass the string of a problem that has been set to ignore - VERY useful for diagnosing expected creations with null elements!
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.IgnoreNonDefaultConstructors">
+            <summary>
+                Any class requiring a non-default constructor will be ignored and returned as null - defaults to true.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.IgnoreRecursion">
+            <summary>
+                Detects and ignores recursion - defaults to true.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.IgnoreSetterExceptions">
+            <summary>
+                Ignores exceptions that occur when a value is assigned to a property or field, leaving it as null - defaults to true.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.IgnoreUnimplementedInterfaces">
+            <summary>
+                If an interface does not have a defined implemented indicated via <see cref="M:Moonrise.Utils.Test.ObjectCreation.Creator.MapInterface(System.Type,System.Type)" /> or
+                <see cref="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.Implementation" /> then setting this to true will allow that element to be null,
+                despite the setting of <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.AllowNulls" />  - defaults to true.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxByte">
+            <summary>
+                The maximum byte value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxChar">
+            <summary>
+                The maximum char value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxDateTime">
+            <summary>
+                The maximum date time to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxDateTimeOffset">
+            <summary>
+                The maximum date time offset to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxDecimal">
+            <summary>
+                The maximum decimal value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxDouble">
+            <summary>
+                The maximum double value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxFloat">
+            <summary>
+                The maximum float value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxInt">
+            <summary>
+                The maximum integer value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxItems">
+            <summary>
+                Maximum number of items to add to an IEnumerable member. Defaults to 4.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxLong">
+            <summary>
+                The maximum long value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxObjects">
+            <summary>
+                The maximum number of objects that will be created in one hit. Defaults to 100,000. This WILL overrule all other
+                properties so you MAY get null objects despite properties specified elsewhere! You cannot set this value higher
+                than
+                <see cref="M:Moonrise.Utils.Test.ObjectCreation.Creator.AbsoluteMaximumObjects" />.
+            </summary>
+            <exception cref="T:System.ArgumentException">If you try to set MaxObjects too high, I won't let you!</exception>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxSByte">
+            <summary>
+                The maximum sbyte value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxShort">
+            <summary>
+                The maximum short value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxStrLen">
+            <summary>
+                The maximum string length to use in following creation/random calls. Defauts to 32.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxUInt">
+            <summary>
+                The maximum uint value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxULong">
+            <summary>
+                The maximum ulong value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxUShort">
+            <summary>
+                The maximum ushort value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinByte">
+            <summary>
+                The minimum byte value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinChar">
+            <summary>
+                The minimum char value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinDateTime">
+            <summary>
+                The minimum date time to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinDateTimeOffset">
+            <summary>
+                The minimum date time offset to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinDecimal">
+            <summary>
+                The minimum decimal value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinDouble">
+            <summary>
+                The minimum double value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinFloat">
+            <summary>
+                The minimum float value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinInt">
+            <summary>
+                The minimum integer value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinItems">
+            <summary>
+                Minimum number of items to add to an IEnumerable member. Defaults to 0.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinLong">
+            <summary>
+                The minimum long value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinSByte">
+            <summary>
+                The minimum sbyte value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinShort">
+            <summary>
+                The minimum short value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinStrLen">
+            <summary>
+                The minimum string length to use in following creation/random calls. Defaults to 0.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinUInt">
+            <summary>
+                The minimum uint value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinULong">
+            <summary>
+                The minimum ulong value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinUShort">
+            <summary>
+                The minimum ushort value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.NullThreshold">
+            <summary>
+                The threshold for creating nulls. 0..1. Larger value = more nulls! 0 = None, 1 = All. Defaults to 0.1.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.ObjectCount">
+            <summary>
+                The number of objects that were created by the last <see cref="M:Moonrise.Utils.Test.ObjectCreation.Creator.CreateFilled``1(System.Int32,System.Boolean)" /> call.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.RespectValidation">
+            <summary>
+                Determines if the filling should respect any validation attributes on the elements being filled and only fill with
+                data that meets the validation constraints. At the moment, only the following are respected;
+                <para>
+                    <see cref="T:System.ComponentModel.DataAnnotations.RequiredAttribute" />
+                </para>
+                <para>
+                    <see cref="T:System.ComponentModel.DataAnnotations.StringLengthAttribute" />
+                </para>
+                <para>
+                    <see cref="T:System.ComponentModel.DataAnnotations.RangeAttribute" />
+                </para>
+                <para>
+                    <see cref="T:System.ComponentModel.DataAnnotations.MinLengthAttribute" />
+                </para>
+                <para>
+                    <see cref="T:System.ComponentModel.DataAnnotations.MaxLengthAttribute" />
+                </para>
+                <para>
+                    <see cref="T:Moonrise.Utils.Standard.Validation.ListContentValidationAttribute" />
+                </para>
+                <para>
+                    <see cref="T:Moonrise.Utils.Standard.Validation.GuidValidationAttribute" />
+                </para>
+                <para>
+                    <see cref="T:Moonrise.Utils.Standard.Validation.FileValidationAttribute" />
+                </para>
+                NOTE: Validation requirements will overule any <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />s that cover the same
+                territory!
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.StringSource">
+            <summary>
+                The source to use for characters with which to create random strings. See also
+                <seealso cref="T:Moonrise.Utils.Test.ObjectCreation.Creator.StringSources" /> Defaults to <see cref="F:Moonrise.Utils.Test.ObjectCreation.Creator.StringSources.EverydayCharacters" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.OneShot">
+            <summary>
+                Determines if we need to use the xxxOneShot properties or not - Will always get reset after each property or field
+                setting.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.SkipOneShots">
+            <summary>
+                Indicates if OneShot is to be skipped.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.AllowNullElementsInEnumerableOneShot">
+            <summary>
+                Determines if nulls are allowed to be inserted into enumerable types - Defaults to false
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.AllowNullsOneShot">
+            <summary>
+                Determines if nulls are allowed for objects and strings - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.CurrentFieldInfo">
+            <summary>
+                The current field information
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.CurrentPropertyInfo">
+            <summary>
+                The current property information
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.IgnoreOneShot">
+            <summary>
+                Determines if an element will be filled by the creator or ignored - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.ImplementationOneShot">
+            <summary>
+                The implementation to use on an interface element - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.ItemsSourceOneShot">
+            <summary>
+                The source to use for items to populate the property. The source HAS to be a static AND it needs to "implement",
+                i.e. respect, <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.SIItemSource`1" />
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.ItemsSourceOneShotName">
+            <summary>
+                The name of the property/field being set for the ItemsSource - passed to the
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.SIItemSource`1" /> "static
+                interface"
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxByteOneShot">
+            <summary>
+                The maximum byte value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxCharOneShot">
+            <summary>
+                The maximum char value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxDateTimeOffsetOneShot">
+            <summary>
+                The maximum date time offset to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxDateTimeOneShot">
+            <summary>
+                The maximum date time to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxDecimalOneShot">
+            <summary>
+                The maximum decimal value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxDoubleOneShot">
+            <summary>
+                The maximum double value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxFloatOneShot">
+            <summary>
+                The maximum float value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxIntOneShot">
+            <summary>
+                The maximum integer value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxItemsOneShot">
+            <summary>
+                Maximum number of items to add to an IEnumerable member - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxLongOneShot">
+            <summary>
+                The maximum long value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxSByteOneShot">
+            <summary>
+                The maximum sbyte value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxShortOneShot">
+            <summary>
+                The maximum short value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxStrLenOneShot">
+            <summary>
+                The maximum string length to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxUIntOneShot">
+            <summary>
+                The maximum uint value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxULongOneShot">
+            <summary>
+                The maximum ulong value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxUShortOneShot">
+            <summary>
+                The maximum ushort value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinByteOneShot">
+            <summary>
+                The minimum byte value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinCharOneShot">
+            <summary>
+                The minimum char value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinDateTimeOffsetOneShot">
+            <summary>
+                The minimum date time offset to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinDateTimeOneShot">
+            <summary>
+                The minimum date time to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinDecimalOneShot">
+            <summary>
+                The minimum decimal value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinDoubleOneShot">
+            <summary>
+                The minimum double value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinFloatOneShot">
+            <summary>
+                The minimum float value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinIntOneShot">
+            <summary>
+                The minimum integer value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinItemsOneShot">
+            <summary>
+                Minimum number of items to add to an IEnumerable member - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinLongOneShot">
+            <summary>
+                The minimum long value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinSByteOneShot">
+            <summary>
+                The minimum sbyte value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinShortOneShot">
+            <summary>
+                The minimum short value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinStrLenOneShot">
+            <summary>
+                The minimum string length to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinUIntOneShot">
+            <summary>
+                The minimum uint value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinULongOneShot">
+            <summary>
+                The minimum ulong value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinUShortOneShot">
+            <summary>
+                The minimum ushort value to use in following creation/random calls - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.NullThresholdOneShot">
+            <summary>
+                The threshold for creating nulls. 0..1. Larger value = more nulls! - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.RespectValidationOneShot">
+            <summary>
+                Determines if the filling should respect any validation attributes on the elements being filled and only fill with
+                data that meets the validation constraints  - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.StringSourceOneShot">
+            <summary>
+                The source to use for characters with which to create random strings - One shot usage as determined by
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.TypeCreationOneShot">
+            <summary>
+                The random creator to use to create an instance not supported by Creator. The creator HAS to be a static AND it
+                needs to "implement",
+                i.e. respect, <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.SITypeCreation`1" />
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.ValidationAttributes">
+            <summary>
+                The validation attributes to respect - only ever filled if we need to respect the validation attributes
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.Creator.ElementContext">
+            <summary>
+            Gives the context of the property/field being currently created. i.e. The "breadcrumb" of the parental elements.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.CreateFilled``1(System.Int32,System.Boolean)">
+            <summary>
+                Creates an object of type T whose public fields and properties are filled with random(ish) values.
+            </summary>
+            <typeparam name="T">The type to fill.</typeparam>
+            <param name="seed">
+                The seed to apply for this creation. If left at default of <see cref="F:System.Int32.MinValue" /> then the
+                random generator will not be re-seeded
+            </param>
+            <param name="recursive">Determines if nested classes will be filled as well. Usually want this.</param>
+            <returns>
+                An object populated with guff
+            </returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.CreateFilled``2(System.Int32,System.Boolean)">
+            <summary>
+                Creates an object of type T whose public fields and properties are filled with random(ish) values but can use
+                interface I to control the creation.
+            </summary>
+            <typeparam name="T">The type to fill.</typeparam>
+            <typeparam name="I">
+                An interface that can be used to control object creation via <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />
+                . The interface effectively implements the class, i.e. same property/field names are found in order to get the
+                attributes applied, if any.
+            </typeparam>
+            <param name="seed">
+                The seed to apply for this creation. If left at default of <see cref="F:System.Int32.MinValue" /> then the
+                random generator will not be re-seeded
+            </param>
+            <param name="recursive">Determines if nested classes will be filled as well. Usually want this.</param>
+            <returns>
+                An object populated with guff
+            </returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.CreateFilled(System.Type,System.Type,System.Int32)">
+            <summary>
+                Creates an object of type T whose public fields and properties are filled with random(ish) values but can use
+                interface I to control the creation.
+            </summary>
+            <param name="instanceType">The type to fill.</param>
+            <param name="interfaceType">
+                An interface that can be used to control object creation via <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />
+                . The interface effectively implements the class, i.e. same property/field names are found in order to get the
+                attributes applied, if any.
+            </param>
+            <param name="seed">
+                The seed to apply for this creation. If left at default of <see cref="F:System.Int32.MinValue" /> then the
+                random generator will not be re-seeded
+            </param>
+            <returns>
+                An object populated with guff
+            </returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRandomBool(System.Double)">
+            <summary>
+                Gets a random boolean.
+            </summary>
+            <param name="threshold">The threshold above which to return true - set lower for more trues.</param>
+            <returns>
+                true or false - guess which one!
+            </returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRandomByte(System.Int32,System.Int32)">
+            <summary>
+                Gets a random int in a specified range.
+            </summary>
+            <param name="min">The minimum. (If default, defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinByte" />)</param>
+            <param name="max">The maximum. (If default, defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxByte" />)</param>
+            <returns>A random byte value</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRandomChar(System.UInt16,System.UInt16)">
+            <summary>
+                Gets a random char in a specified range.
+            </summary>
+            <param name="min">The minimum. (If default, defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinChar" />)</param>
+            <param name="max">The maximum. (If default, defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxChar" />)</param>
+            <returns>A random char value</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRandomDateTime(System.DateTime,System.DateTime)">
+            <summary>
+                Gets a random date time.
+            </summary>
+            <param name="min">The minimum date time to use - overrides <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinDateTime" /> if used.</param>
+            <param name="max">The maximum date time to use - overrides <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxDateTime" /> if used.</param>
+            <returns>A Date Time with random date AND time within the specified range</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRandomDateTimeOffset(System.DateTimeOffset,System.DateTimeOffset)">
+            <summary>
+                Gets a random date time.
+            </summary>
+            <param name="min">The minimum date time to use - overrides <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinDateTime" /> if used.</param>
+            <param name="max">The maximum date time to use - overrides <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxDateTime" /> if used.</param>
+            <returns>A Date Time with random date AND time within the specified range</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRandomDecimal(System.Decimal,System.Decimal)">
+            <summary>
+                Gets a random decimal in a specified range.
+            </summary>
+            <param name="min">The minimum. (If default, defaults to <see cref="F:System.Double.MinValue" />)</param>
+            <param name="max">The maximum. (If default, defaults to <see cref="F:System.Double.MaxValue" />)</param>
+            <returns>A random decimal value</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRandomDouble(System.Double,System.Double)">
+            <summary>
+                Gets a random double in a specified range.
+            </summary>
+            <param name="min">The minimum. (If default, defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinDouble" />)</param>
+            <param name="max">The maximum. (If default, defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxDouble" />)</param>
+            <returns>A random double value</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRandomEnum``1">
+            <summary>
+                Gets a random enum value.
+            </summary>
+            <typeparam name="T">The enum</typeparam>
+            <returns>A random value!</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRandomFilePath(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+                Gets a random file path. The file will not exist, this is JUST a string that looks like a folder path!
+            </summary>
+            <param name="numFolders">The maximum number of folders.</param>
+            <param name="folderNameLength">Maximum length of the folder name.</param>
+            <param name="fileNameLength">Maximum length of the file name.</param>
+            <param name="extensionLength">Maximum length of the extension.</param>
+            <returns>A passable, but wierd, filepath</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRandomFloat(System.Single,System.Single)">
+            <summary>
+                Gets a random float in a specified range.
+            </summary>
+            <param name="min">The minimum. (If default, defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinFloat" />)</param>
+            <param name="max">The maximum. (If default, defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxFloat" />)</param>
+            <returns>A random float value</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRandomGuid(System.Int32)">
+            <summary>
+                Gets a random, but repeatable unique identifier.
+            </summary>
+            <param name="seed">The optional seed. If passed you will get the same random Guid back for the same seed.</param>
+            <returns>
+                A Guid
+            </returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRandomInt(System.Int32,System.Int32)">
+            <summary>
+                Gets a random int in a specified range.
+            </summary>
+            <param name="min">The minimum. (If default, defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinInt" />)</param>
+            <param name="max">The maximum. (If default, defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxInt" />)</param>
+            <returns>A random int value</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRandomLong(System.Int64,System.Int64)">
+            <summary>
+                Gets a random long in a specified range.
+            </summary>
+            <param name="min">The minimum. (If default, defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinLong" />)</param>
+            <param name="max">The maximum. (If default, defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxLong" />)</param>
+            <returns>A random int value</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRandomSByte(System.SByte,System.SByte)">
+            <summary>
+                Gets a random sbyte in a specified range.
+            </summary>
+            <param name="min">The minimum. (If default, defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinSByte" />)</param>
+            <param name="max">The maximum. (If default, defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxSByte" />)</param>
+            <returns>A random sbyte value</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRandomShort(System.Int16,System.Int16)">
+            <summary>
+                Gets a random short in a specified range.
+            </summary>
+            <param name="min">The minimum. (If default, defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinShort" />)</param>
+            <param name="max">The maximum. (If default, defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxShort" />)</param>
+            <returns>A random short value</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRandomString(System.String,System.Int32,System.Int32)">
+            <summary>
+                Gets a random string of whatever length using the current <paramref name="stringSource" /> as the source for
+                characters.
+                <seealso cref="T:Moonrise.Utils.Test.ObjectCreation.Creator.StringSources" />
+            </summary>
+            <param name="stringSource">The string source to fetch chars from. Defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.StringSource" /></param>
+            <param name="minStrLen">Minimum length of the string. Defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinStrLen" /></param>
+            <param name="maxStrLen">Maximum length of the string. Defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxStrLen" /></param>
+            <returns>
+                The random string
+            </returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRandomUInt(System.UInt32,System.UInt32)">
+            <summary>
+                Gets a random uint in a specified range.
+            </summary>
+            <param name="min">The minimum. (If default, defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinUInt" />)</param>
+            <param name="max">The maximum. (If default, defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxUInt" />)</param>
+            <returns>A random uint value</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRandomULong(System.UInt64,System.UInt64)">
+            <summary>
+                Gets a random ulong in a specified range.
+            </summary>
+            <param name="min">The minimum. (If default, defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinULong" />)</param>
+            <param name="max">The maximum. (If default, defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxULong" />)</param>
+            <returns>A random ulong value</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRandomUShort(System.UInt16,System.UInt16)">
+            <summary>
+                Gets a random ushort in a specified range.
+            </summary>
+            <param name="min">The minimum. (If default, defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MinUShort" />)</param>
+            <param name="max">The maximum. (If default, defaults to <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.MaxUShort" />)</param>
+            <returns>A random ushort value</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRnd``1(System.Boolean)">
+            <summary>
+                Gets a random value of the appropriate type. Currently supports;
+                int, double, string, DateTime,
+            </summary>
+            <typeparam name="T">A basic type</typeparam>
+            <param name="recursive">Determines if nested classes will also be created</param>
+            <returns>A random(ish) value (i.e. non default - but COULD be!)</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRnd(System.Type,System.Boolean)">
+            <summary>
+                Gets a random value of the appropriate type. Currently supports;
+                int, double, string, DateTime,
+            </summary>
+            <param name="fieldType">Type of the field.</param>
+            <param name="recursive">Determines if nested classes will also be created</param>
+            <returns>
+                An object of the required type filled with a random(ish) value
+            </returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.MapCreator``2">
+            <summary>
+                Maps a type to its creator. If you need a non-normal type, essentially one that needs a non-default constructor,
+                then map a creator that must implement <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.SITypeCreation`1" /> as a static!
+            </summary>
+            <typeparam name="T">The type to create</typeparam>
+            <typeparam name="TCreator">The type of the creator.</typeparam>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.MapInterface``2">
+            <summary>
+                Maps an interface to an implementation to use when creating members that are interfaces
+            </summary>
+            <typeparam name="I">Interface type to map</typeparam>
+            <typeparam name="T">Type to map the interface to</typeparam>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.DoNotCreate``1">
+            <summary>
+            Instructs the creator that any type of {T} should not be created and replaced with null
+            </summary>
+            <typeparam name="T">The type not to create</typeparam>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.MapInterface(System.Type,System.Type)">
+            <summary>
+                Maps an interface to an implementation to use when creating members that are interfaces
+            </summary>
+            <param name="I">Interface type to map</param>
+            <param name="T">Type to map the interface to</param>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.MapInterfaceAttributes``2">
+            <summary>
+                Maps a type that might be created to an interface that carries same named elements that have creation attributes -
+                NOT all members are required in the interface, ONLY those you wish to have specific
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />s.
+            </summary>
+            <typeparam name="T">Type to map the interface to</typeparam>
+            <typeparam name="I">Interface type to map</typeparam>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.MapInterfaceAttributes(System.Type,System.Type)">
+            <summary>
+                Maps a type that might be created to an interface that carries same named elements that have creation attributes -
+                NOT all members are required in the interface, ONLY those you wish to have specific
+                <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" />s.
+            </summary>
+            <param name="T">Type to map the interface to</param>
+            <param name="I">Interface type to map</param>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.AbsoluteMaximumObjects">
+            <summary>
+                Absolute maximum number of created objects. Override this if you REALLY want the capability to create more than
+                this!
+            </summary>
+            <returns>10,000,000</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.CreateFilled(System.Type,System.Boolean)">
+            <summary>
+                Creates an object whose public fields and properties are filled with random(ish) values.
+            </summary>
+            <param name="instanceType">The type of the instance being created.</param>
+            <param name="recursive">Determines if nested classes will be filled as well. Usually want this.</param>
+            <returns>
+                An object populated with guff
+            </returns>
+            <exception cref="T:System.ArgumentException">
+                If the class is an enumerable and is not at least IList
+            </exception>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.AddMemberAttributesFromInterface(System.String,System.Type,System.Collections.Generic.List{System.Reflection.CustomAttributeData},System.Boolean)">
+            <summary>
+                Adds the field attributes from the associated interface.
+            </summary>
+            <param name="memberName">Name of the member.</param>
+            <param name="attributeInterface">The attribute interface.</param>
+            <param name="memberAttributes">The member attributes.</param>
+            <param name="isProperty">Determines if we're looking for a property or a field.</param>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.CreateMappedInterface(System.Type,System.Boolean)">
+            <summary>
+                Creates an interface member using the mapped implementation type
+            </summary>
+            <param name="fieldType">Type of the interface field.</param>
+            <param name="recursive">Determines if nested classes will also be created</param>
+            <returns>
+                A filled implementation
+            </returns>
+            <exception cref="T:System.ArgumentException">
+                If there is a problem with the interface
+            </exception>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetOneShotItemsSource``1(``0@)">
+            <summary>
+                Gets the one shot items source. If there is one.
+            </summary>
+            <typeparam name="T">The type of the element to fetch</typeparam>
+            <param name="value">The value retrieved from the ItemsSource.</param>
+            <returns>True if there was an ItemsSource for the element.</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRandomEnum(System.Type)">
+            <summary>
+                Gets a random enum.
+            </summary>
+            <param name="fieldType">Type of the enum.</param>
+            <returns>A random value for the specified enum type</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.GetRandomString(System.String,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+                Gets a random string of whatever length using the current <paramref name="stringSource" /> as the source for
+                characters.
+                <seealso cref="T:Moonrise.Utils.Test.ObjectCreation.Creator.StringSources" />
+            </summary>
+            <param name="stringSource">The string source to fetch chars from.</param>
+            <param name="minStrLen">Minimum length of the string.</param>
+            <param name="maxStrLen">Maximum length of the string.</param>
+            <param name="internalOnly">Only true when called, possibly recursively, from within some other GetRandomXXX method.</param>
+            <returns>
+                The random string
+            </returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.Initialise">
+            <summary>
+                Initialises the properties of this instance.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.InitialiseCreation">
+            <summary>
+                Initialises the creation state.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.InitialiseOneShotValues">
+            <summary>
+                Initialises the one shot values.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.PopulateField(System.Object,System.Reflection.FieldInfo,System.Boolean)">
+            <summary>
+                Populates the field, taking into account any custom attribute properties or validation requirements.
+            </summary>
+            <param name="instance">The instance to set the field on.</param>
+            <param name="field">The field.</param>
+            <param name="recursive">if set to <c>true</c> [recursive].</param>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.PopulateProperty(System.Object,System.Reflection.PropertyInfo,System.Boolean)">
+            <summary>
+                Populates the property, taking into account any custom attribute properties or validation requirements.
+            </summary>
+            <param name="instance">The instance to set the property on.</param>
+            <param name="prop">The property.</param>
+            <param name="recursive">if set to <c>true</c> [recursive].</param>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.PrepareMemberAttributes``1(System.Object,``0,System.Boolean)">
+            <summary>
+                Prepares any custom attribute properties or validation requirements for the member (Property or Field).
+            </summary>
+            <param name="instance">The instance to set the member on.</param>
+            <param name="member">The member.</param>
+            <param name="recursive">if set to <c>true</c> [recursive].</param>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.SetOneShotProperties(System.String,System.Reflection.CustomAttributeData)">
+            <summary>
+                Sets the one shot properties, on this Creator instance, identified in the custom attribute.
+            </summary>
+            <param name="elementName">
+                Name of the field/property that the attribute is for - used for the
+                <see cref="P:Moonrise.Utils.Test.ObjectCreation.Creator.ItemsSourceOneShot" />.
+            </param>
+            <param name="customAttributeData">The custom attribute data.</param>
+            <exception cref="T:System.ArgumentException">If this class and <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute" /> get out of synch</exception>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.Creator.TryFallingBackOnASuppliedCreator(System.Type)">
+            <summary>
+                Tries falling back on a supplied creator to create an instance of the particular type.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Moonrise.Utils.Test.ObjectCreation.CustomAttributeDataExtension">
+            <summary>
+                An extension class that extends <see cref="T:System.Reflection.CustomAttributeData" />. Modified from
+                http://haacked.com/archive/2010/08/05/copying-attributes.aspx/ for DotNetCore
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.CustomAttributeDataExtension.CreateAttribute(System.Reflection.CustomAttributeData)">
+            <summary>
+                Creates an instance of an attribute from the <see cref="T:System.Reflection.CustomAttributeData" />.
+            </summary>
+            <param name="data">The data.</param>
+            <returns>An attribute that has the same value.</returns>
+        </member>
+        <member name="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute">
+            <summary>
+                Creation attributes to apply to the attributed property that override the <see cref="T:Moonrise.Utils.Test.ObjectCreation.Creator" /> properties.
+            </summary>
+            <seealso cref="T:System.Attribute" />
+        </member>
+        <member name="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.SIItemSource`1">
+            <summary>
+                This "static" interface (which you can't have) is to illustrate the expected static method your ItemSource static
+                class should expose in order to act as in ItemSource OR it must expose the element name as a property !
+            </summary>
+            <typeparam name="T">
+                Just to illustrate that each of the <see cref="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.SIItemSource`1.ElementName" /> properties need to return the
+                appropriate type for that element.
+            </typeparam>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.SIItemSource`1.ElementName">
+            <summary>
+                Gets the list of objects to be used as the item source for <see cref="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.SIItemSource`1.ElementName" />. IF the ItemsSource attribute
+                DOES supply a static <see cref="M:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.SIItemSource`1.ItemSource(System.String,System.Reflection.PropertyInfo,System.Reflection.FieldInfo,Moonrise.Utils.Test.ObjectCreation.Creator)" /> method then
+                it will be called in preference to the property, unless your <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.SIItemSource`1" /> implements the static
+                property <see cref="M:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.SIItemSource`1.PreferPropertyToItemSourceCall(System.String)" />, in which case
+                it will use that to decide whether to use the property OR the static <see cref="M:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.SIItemSource`1.ItemSource(System.String,System.Reflection.PropertyInfo,System.Reflection.FieldInfo,Moonrise.Utils.Test.ObjectCreation.Creator)" /> method to supply
+                the source list.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.SIItemSource`1.ItemSource(System.String,System.Reflection.PropertyInfo,System.Reflection.FieldInfo,Moonrise.Utils.Test.ObjectCreation.Creator)">
+            <summary>
+                Returns the list of objects to be used as the item source for elementName
+            </summary>
+            <param name="elementName">Name of the element.</param>
+            <param name="propInfo">The property information - Only if it's a property, null otherwise.</param>
+            <param name="fieldInfo">The field information - Only if it's a field, null otherwise.</param>
+            <param name="creator">The instance to use to help you create a random instance, if you need to.</param>
+            <returns>
+                List of objects, to be used to randomly choose from to fill the property or field that the attribute has been
+                applied
+                to
+            </returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.SIItemSource`1.PreferPropertyToItemSourceCall(System.String)">
+            <summary>
+                Determines if the <see cref="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.SIItemSource`1.ElementName" /> or the <see cref="M:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.SIItemSource`1.ItemSource(System.String,System.Reflection.PropertyInfo,System.Reflection.FieldInfo,Moonrise.Utils.Test.ObjectCreation.Creator)" /> is to be used as the source for
+                elements for the elementName />.
+            </summary>
+            <param name="elementName">Name of the element.</param>
+            <returns>
+                True means use the static <see cref="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.SIItemSource`1.ElementName" /> property where it exists, False means use the static
+                <see cref="M:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.SIItemSource`1.ItemSource(System.String,System.Reflection.PropertyInfo,System.Reflection.FieldInfo,Moonrise.Utils.Test.ObjectCreation.Creator)" /> method.
+            </returns>
+        </member>
+        <member name="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.SITypeCreation`1">
+            <summary>
+                This "static" interface (which you can't have) is to illustrate the expected static method your TypeCreation static
+                class should expose in order to act as a TypeCreation OR it must expose the element name as a property !
+            </summary>
+            <typeparam name="T">
+                The type of the random instance this class will create.
+            </typeparam>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.SITypeCreation`1.CreateInstance(Moonrise.Utils.Test.ObjectCreation.Creator)">
+            <summary>
+                Creates an instance of the generic type using the supplied <see cref="T:System.Random" />.
+            </summary>
+            <param name="creator">The instance to use to help you create a random instance.</param>
+            <returns>A "random" instance</returns>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.AllowNullElementsInEnumerable">
+            <summary>
+                Determines if nulls are allowed to be inserted into enumerable types
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.AllowNulls">
+            <summary>
+                Determines if nulls are allowed for objects and strings
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.Ignore">
+            <summary>
+                Determines if an element will be filled by the creator or ignored
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.Implementation">
+            <summary>
+                The implementation to use for an interface
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.ItemsSource">
+            <summary>
+                The source to use for items to populate the property. The source HAS to be a static AND it needs to "implement",
+                i.e. respect, <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.SIItemSource`1" />
+                Use of this attribute will ALWAYS override any <see cref="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.RespectValidation" />
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MaxByte">
+            <summary>
+                The maximum byte value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MaxChar">
+            <summary>
+                The maximum char value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MaxDateTime">
+            <summary>
+                The maximum date time to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MaxDateTimeOffset">
+            <summary>
+                The maximum date time offset to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MaxDecimal">
+            <summary>
+                The maximum "decimal" value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MaxDouble">
+            <summary>
+                The maximum double value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MaxFloat">
+            <summary>
+                The maximum float value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MaxInt">
+            <summary>
+                The maximum integer value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MaxItems">
+            <summary>
+                Maximum number of items to add to an IEnumerable member
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MaxSByte">
+            <summary>
+                The maximum sbyte value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MaxShort">
+            <summary>
+                The maximum short value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MaxStrLen">
+            <summary>
+                The maximum string length to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MaxUInt">
+            <summary>
+                The maximum uint value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MaxULong">
+            <summary>
+                The maximum ulong value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MaxUShort">
+            <summary>
+                The maximum ushort value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MinByte">
+            <summary>
+                The minimum byte value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MinChar">
+            <summary>
+                The minimum char value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MinDateTime">
+            <summary>
+                The minimum date time to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MinDateTimeOffset">
+            <summary>
+                The minimum date time offset to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MinDecimal">
+            <summary>
+                The minimum "decimal" value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MinDouble">
+            <summary>
+                The minimum double value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MinFloat">
+            <summary>
+                The minimum float value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MinInt">
+            <summary>
+                The minimum integer value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MinItems">
+            <summary>
+                Minimum number of items to add to an IEnumerable member
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MinSByte">
+            <summary>
+                The minimum sbyte value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MinShort">
+            <summary>
+                The minimum short value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MinStrLen">
+            <summary>
+                The minimum string length to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MinUInt">
+            <summary>
+                The minimum uint value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MinULong">
+            <summary>
+                The minimum ulong value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.MinUShort">
+            <summary>
+                The minimum ushort value to use in following creation/random calls
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.NullThreshold">
+            <summary>
+                The threshold for creating nulls. 0..1. Larger value = more nulls!
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.RespectValidation">
+            <summary>
+                Determines if the filling should respect any validation attributes on the elements being filled and only fill with
+                data that meets the validation constraints.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.StringSource">
+            <summary>
+                The source to use for characters with which to create random strings
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.TypeCreation">
+            <summary>
+                The random creator to use to create an instance not supported by Creator. The creator HAS to be a static AND it
+                needs to "implement",
+                i.e. respect, <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationAttribute.SITypeCreation`1" />
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationExceptionReason">
+            <summary>
+            Reasons why an <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationException"/> has been thrown
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.ObjectCreationExceptionReason.IssueWithItemsSourceProperty">
+            <summary>
+            There was an error whilst accessing the ItemsSource property {0}.{1}.
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.ObjectCreationExceptionReason.IssueWithItemsSourceMethod">
+            <summary>
+            There was an error whilst accessing the ItemsSource method {0}.ItemsSource() for the {1} property.
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.ObjectCreationExceptionReason.UnknownException">
+            <summary>
+                An unknown exception occurred within one of the ObjectCreation modules inside the method: {0} \nException
+                message; \n{1}
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.ObjectCreation.ObjectCreationExceptionReason.CouldNotCallSetter">
+            <summary>
+            Could not call the setter for {0}.{1}
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationException">
+            <summary>
+                Represents exceptional problems that arise whilst processing ObjectCreation functions
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.ObjectCreationException.#ctor(Moonrise.Utils.Test.ObjectCreation.ObjectCreationExceptionReason,System.Object[])">
+            <summary>
+                Initialises a new instance of the ObjectCreationException class.
+            </summary>
+            <param name="reason">The reason for the exception.</param>
+            <param name="args">
+                Each reason has an associated description string. Most of these take one or more arguments which
+                should be passed here.
+            </param>
+        </member>
+        <member name="M:Moonrise.Utils.Test.ObjectCreation.ObjectCreationException.#ctor(System.Exception,Moonrise.Utils.Test.ObjectCreation.ObjectCreationExceptionReason,System.Object[])">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Test.ObjectCreation.ObjectCreationException" /> class.
+            </summary>
+            <param name="innerException">The inner exception.</param>
+            <param name="reason">The reason for the exception.</param>
+            <param name="args">
+                Each reason has an associated description string. Most of these take one or more arguments which
+                should be passed here.
+            </param>
+        </member>
+        <member name="T:Moonrise.Utils.Test.PrivateWrapper">
+            <summary>
+                Allows access to private methods of a "wrapped object"
+            </summary>
+            Usage:
+            dynamic wrapper = PrivateWrapper.Create{ClassWithPrivateMethods}(constructor args)
+            wrapper.PrivateMethod();
+            <para>
+                based on but tweaked from http://www.amazedsaint.com/2010/05/accessprivatewrapper-c-40-dynamic.html
+            </para>
+            You will also need to add a reference to System.ServiceModel!
+        </member>
+        <member name="F:Moonrise.Utils.Test.PrivateWrapper.Flags">
+            <summary>
+                Specify the flags for accessing members
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Test.PrivateWrapper._wrapped">
+            <summary>
+                The object we are going to wrap
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Test.PrivateWrapper.#ctor(System.Object)">
+            <summary>
+                Create a simple private wrapper
+            </summary>
+            <param name="o">The object to be wrapped</param>
+        </member>
+        <member name="M:Moonrise.Utils.Test.PrivateWrapper.Create``1(System.Object[])">
+            <summary>
+                Creates a wrapped object whose private methods and properties can be accessed.
+            </summary>
+            <typeparam name="T">Type to wrap</typeparam>
+            <param name="args">Any parameters to pass to the constructor</param>
+            <returns>The wrapped object</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.PrivateWrapper.FromType(System.Reflection.Assembly,System.String,System.Object[])">
+            <summary>
+                Creates a dynamic object from the named type in an identified assembly
+            </summary>
+            <param name="asm">The assembly containing the type</param>
+            <param name="type">The name of the type</param>
+            <param name="args">Any parameters to pass to its constructor</param>
+            <returns>The created dynamic object</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.PrivateWrapper.TryGetMember(System.Dynamic.GetMemberBinder,System.Object@)">
+            <summary>
+                Tries to get a property or field with the given name
+            </summary>
+            <param name="binder">
+                Provides information about the object that called the dynamic operation. The binder.Name property
+                provides the name of the member on which the dynamic operation is performed. For example, for the
+                Console.WriteLine(sampleObject.SampleProperty) statement, where sampleObject is an instance of the class derived
+                from the <see cref="T:System.Dynamic.DynamicObject" /> class, binder.Name returns "SampleProperty". The
+                binder.IgnoreCase property specifies whether the member name is case-sensitive.
+            </param>
+            <param name="result">
+                The result of the get operation. For example, if the method is called for a property, you can
+                assign the property value to <paramref name="result" />.
+            </param>
+            <returns>
+                true if the operation is successful; otherwise, false. If this method returns false, the run-time binder of the
+                language determines the behaviour. (In most cases, a run-time exception is thrown.)
+            </returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.PrivateWrapper.TryInvokeMember(System.Dynamic.InvokeMemberBinder,System.Object[],System.Object@)">
+            <summary>
+                Try invoking a method
+            </summary>
+            <param name="binder">
+                Provides information about the dynamic operation. The binder.Name property provides the name of
+                the member on which the dynamic operation is performed. For example, for the statement
+                sampleObject.SampleMethod(100), where sampleObject is an instance of the class derived from the
+                <see cref="T:System.Dynamic.DynamicObject" /> class, binder.Name returns "SampleMethod". The binder.IgnoreCase
+                property specifies whether the member name is case-sensitive.
+            </param>
+            <param name="args">
+                The arguments that are passed to the object member during the invoke operation. For example, for the
+                statement sampleObject.SampleMethod(100), where sampleObject is derived from the
+                <see cref="T:System.Dynamic.DynamicObject" /> class, args[0] is equal to 100.
+            </param>
+            <param name="result">The result of the member invocation.</param>
+            <returns>
+                true if the operation is successful; otherwise, false. If this method returns false, the run-time binder of the
+                language determines the behaviour. (In most cases, a language-specific run-time exception is thrown.)
+            </returns>
+        </member>
+        <member name="M:Moonrise.Utils.Test.PrivateWrapper.TrySetMember(System.Dynamic.SetMemberBinder,System.Object)">
+            <summary>
+                Tries to set a property or field with the given name
+            </summary>
+            <param name="binder">
+                Provides information about the object that called the dynamic operation. The binder.Name property
+                provides the name of the member to which the value is being assigned. For example, for the statement
+                sampleObject.SampleProperty = "Test", where sampleObject is an instance of the class derived from the
+                <see cref="T:System.Dynamic.DynamicObject" /> class, binder.Name returns "SampleProperty". The binder.IgnoreCase
+                property specifies whether the member name is case-sensitive.
+            </param>
+            <param name="value">
+                The value to set to the member. For example, for sampleObject.SampleProperty = "Test", where
+                sampleObject is an instance of the class derived from the <see cref="T:System.Dynamic.DynamicObject" /> class, the
+                <paramref name="value" /> is "Test".
+            </param>
+            <returns>
+                true if the operation is successful; otherwise, false. If this method returns false, the run-time binder of the
+                language determines the behaviour. (In most cases, a language-specific run-time exception is thrown.)
+            </returns>
+        </member>
+    </members>
+</doc>

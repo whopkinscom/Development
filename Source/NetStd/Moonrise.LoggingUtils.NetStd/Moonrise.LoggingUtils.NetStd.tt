@@ -1,9 +1,10 @@
+﻿<#@ output extension = ".nuspec" encoding ="Windows-1252" #>
 <?xml version="1.0" encoding="utf-8"?>
 
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
 	  <id>Moonrise.LoggingUtils.NetStd</id>
-	  <version>4.2020.1116.22082</version>
+	  <version><#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #></version>
 	  <copyright>Moonrise Media Ltd.</copyright>
 	  <authors>Will Hopkins</authors>
 	  <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -22,3 +23,4 @@
     <file src="Properties\Mm Button.png" target="images\Logo.png"/>
   </files>
 </package>
+<#@include file="..\..\Shared\Moonrise.Version\Properties\VersionNumber.t4" #>

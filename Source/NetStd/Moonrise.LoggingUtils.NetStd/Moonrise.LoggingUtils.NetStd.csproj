@@ -1,19 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.5</TargetFramework>
-    <AssemblyName>Moonrise.LoggingUtils.NetStd</AssemblyName>
-    <PackageId>Moonrise.LoggingUtils.NetStd</PackageId>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
-    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <Description>Yes, another logger! Efficient and pluggable. Can log to separate logging and auditing providers. Supplied console, event, file, and log4net providers. Thread-global Singleton based, so all the advantages of Singletons without the threading problems.</Description>
-    <Authors>Will Hopkins</Authors>
-    <Copyright>Moonrise Media Ltd.</Copyright>
+    <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,15 +26,16 @@
       <LastGenOutput>MakeNuget.cmd</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
-	  <None Update="Moonrise.LoggingUtils.NetCore.nuspec">
-		  <CustomToolNamespace>See https://docs.nuget.org/create/creating-and-publishing-a-package</CustomToolNamespace>
-		  <Generator>nuget</Generator>
+	  <None Update="Moonrise.LoggingUtils.NetStd.nuspec">
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		  <DependentUpon>Moonrise.LoggingUtils.NetStd.tt</DependentUpon>
+	  </None>
+	  <None Update="Moonrise.LoggingUtils.NetStd.tt">
+		  <LastGenOutput>Moonrise.LoggingUtils.NetStd.nuspec</LastGenOutput>
+		  <Generator>TextTemplatingFileGenerator</Generator>
 	  </None>
   </ItemGroup>
-	<PropertyGroup>
-		<IncludeSymbols>true</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-	</PropertyGroup>
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
@@ -55,7 +44,9 @@
     <Folder Include="Properties\" />
   </ItemGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
+
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
     <DefineConstants>$(DefineConstants);DotNetCore</DefineConstants>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
@@ -66,12 +57,12 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>TRACE;RELEASE;NETSTANDARD1_5;DotNetCore</DefineConstants>
-    <DocumentationFile>bin\Release\netstandard1.5\Moonrise.LoggingUtils.NetStd.xml</DocumentationFile>
+    <DefineConstants>TRACE;RELEASE;NETSTANDARD2_1;DotNetCore</DefineConstants>
+    <DocumentationFile>Moonrise.LoggingUtils.NetStd.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;NETSTANDARD1_5;DotNetCore</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETSTANDARD2_1;DotNetCore</DefineConstants>
   </PropertyGroup>
   
   <Target Name="PostcompileScript" AfterTargets="Build">

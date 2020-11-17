@@ -15,6 +15,8 @@ IF NOT "%conf%" == "Release" GOTO FINISH
 	Echo Nugetting %projname%........
 	del /Q "%projdir%\..\GeneratedPackages\%projname%\*.*"
 	dotnet pack --no-build --configuration %conf% -o "%projdir%\..\GeneratedPackages\%projname%" /p:NuspecFile="%projname%.nuspec" /p:PackageVersion=<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>
+    nuget sign "%projdir%\..\GeneratedPackages\%projname%\%projname%.<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>.nupkg" -Timestamper http://sha256timestamp.ws.symantec.com/sha256/timestamp -CertificatePath "C:\Users\Will\Documents\MMCS.pfx" -CertificatePassword <#= this.Password #>
 :FINISH
 
 <#@include file="..\Source\Shared\Moonrise.Version\Properties\VersionNumber.t4" #>
+<#@include file="C:\Users\Will\Documents\Password.t4" #>

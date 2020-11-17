@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
-  <metadata>
-    <version>4.2020.1116.12292</version>
-	<id>Moonrise.Samples</id>
-    <copyright>Moonrise Media Ltd.</copyright>
-    <authors>Will Hopkins</authors>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-	<license type="file">License.txt</license>
-    <description>
-	  Samples for how to use the Moonrise libraries. YOU MUST READ THE README!
-    </description>
-    <summary>Samples of how to use the Moonrise packages</summary>
-    <language>en-GB</language>
-	  <dependencies>
-		  <dependency id="Moonrise.LoggingUtils.NetStd" version="4.2020.1116.12292"/>
-		  <dependency id="Moonrise.StandardUtils.NetStd" version="4.2020.1116.12292"/>
-		  <dependency id="Moonrise.TestUtils.NetStd" version="4.2020.1116.12292"/>
-	  </dependencies>
-	  <contentFiles>
-		  <file src="*\**" target ="\" exclude="**\*.*"/>
-		  <file src="ContentFiles\Moonrise.Samples.Program.cs"/>
-		  <file src="ContentFiles\Moonrise.Samples.appSettings.json"/>
-		  <file src="ContentFiles\Moonrise.chm"/>
-		  <file src="readme.txt"/>
-		  <file src="License.txt"/>
-		  <!--<file src="ContentFiles\Moonrise.Samples.Program.cs" target="Moonrise\Moonrise.Samples.Program.cs"  buildAction="Content" copyToOutput="true"/>
-		  <file src="ContentFiles\Moonrise.Samples.appSettings.json" target="Moonrise\Moonrise.Samples.appSettings.json"  buildAction="Content" copyToOutput="true"/>
-		  <file src="ContentFiles\Moonrise.chm" target="Moonrise\Moonrise.chm" buildAction="Content" copyToOutput="true"/>-->
-		  <file src="*\**" target ="\" exclude="obj\**\*.*"/>
-		  <file src="*\**" target ="\" exclude="bin\**\*.*"/>
-	  </contentFiles>
-  </metadata>
+	<metadata>
+		<id>Moonrise.Samples</id>
+		<version>4.2020.1116.22082</version>
+		<copyright>Moonrise Media Ltd.</copyright>
+		<authors>Will Hopkins</authors>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<license type="file">License.txt</license>
+		<description>
+			Samples for how to use the Moonrise libraries. YOU MUST READ THE README!
+		</description>
+		<summary>Samples of how to use the Moonrise packages</summary>
+		<language>en-GB</language>
+		<dependencies>
+			<dependency id="Moonrise.LoggingUtils.NetStd" version="4.2020.1116.22082"/>
+			<dependency id="Moonrise.StandardUtils.NetStd" version="4.2020.1116.22082"/>
+			<dependency id="Moonrise.TestUtils.NetStd" version="4.2020.1116.22082"/>
+		</dependencies>
+		<contentFiles>
+			<file src="*\**" target ="\" exclude="**\*.*"/>
+			<file src="ContentFiles\Moonrise.Samples.Program.cs"/>
+			<file src="ContentFiles\Moonrise.Samples.appSettings.json"/>
+			<file src="ContentFiles\Moonrise.chm"/>
+			<file src="readme.txt"/>
+			<file src="License.txt"/>
+			<!--<file src="ContentFiles\Moonrise.Samples.Program.cs" target="Moonrise\Moonrise.Samples.Program.cs"  buildAction="Content" copyToOutput="true"/>
+	  <file src="ContentFiles\Moonrise.Samples.appSettings.json" target="Moonrise\Moonrise.Samples.appSettings.json"  buildAction="Content" copyToOutput="true"/>
+	  <file src="ContentFiles\Moonrise.chm" target="Moonrise\Moonrise.chm" buildAction="Content" copyToOutput="true"/>-->
+			<file src="*\**" target ="\" exclude="obj\**\*.*"/>
+			<file src="*\**" target ="\" exclude="bin\**\*.*"/>
+		</contentFiles>
+		<icon>images\Logo.png</icon>
+	</metadata>
 	<files>
 		<file src="ContentFiles\Moonrise.Samples.Program.cs"/>
 		<file src="ContentFiles\Moonrise.Samples.appSettings.json"/>
@@ -40,5 +41,6 @@
 		<file src="License.txt"/>
 		<file scr="*\**" target="\" exclude="obj\**\*.*"/>
 		<file scr="*\**" target="\" exclude="bin\**\*.*"/>
+		<file src="Properties\Mm Button.png" target="images\Logo.png"/>
 	</files>
 </package>

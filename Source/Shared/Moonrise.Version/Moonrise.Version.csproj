@@ -15,6 +15,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="C:\Users\Will\Documents\Password.t4" Link="Password.t4">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>VersionNumber.tt</DependentUpon>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Properties\AutoVersion.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>AutoVersion.cs</LastGenOutput>
@@ -22,11 +30,6 @@
     <None Update="Properties\VersionNumber.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>VersionNumber.t4</LastGenOutput>
-    </None>
-    <None Update="Properties\VersionNumber.t4">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>VersionNumber.tt</DependentUpon>
     </None>
   </ItemGroup>
 

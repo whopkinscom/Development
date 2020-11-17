@@ -1,0 +1,2495 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Moonrise.StandardUtils.NetStd</name>
+    </assembly>
+    <members>
+        <member name="T:Moonrise.Utils.Standard.Config.DpApiSettingsEncryptor">
+            <summary>
+                A settings encryptor that uses the Windows Data Protection API to encrypt settings.
+            </summary>
+            <seealso cref="T:Moonrise.Utils.Standard.Config.ISettingsEncryptor" />
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.DpApiSettingsEncryptor.#ctor(Moonrise.Utils.Standard.Config.DpApiSettingsEncryptor.ProtectionScope)">
+            <summary>
+                Creates an instance of the <see cref="T:Moonrise.Utils.Standard.Config.DpApiSettingsEncryptor" /> with either machine or user level scope.
+            </summary>
+            <param name="_scope">The level of scope for protection</param>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Config.DpApiSettingsEncryptor.ProtectionScope">
+            <summary>
+            Indicates what data protection scope to use
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Config.DpApiSettingsEncryptor.ProtectionScope.User">
+            <summary>
+            Encrypts using the current user data protection scope. The current user can decrypt on any machine
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Config.DpApiSettingsEncryptor.ProtectionScope.Machine">
+            <summary>
+            Encrypts using the current machine data protection scope. Any user on the machine can decrypt but can only do so on the same machine that encrypted
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.DpApiSettingsEncryptor.Decrypt(System.Byte[])">
+            <summary>
+                Decrypts the specified string.
+            </summary>
+            <param name="encryptedSettings">The encrypted setting.</param>
+            <returns>
+                The decrypted setting
+            </returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.DpApiSettingsEncryptor.Encrypt(System.String)">
+            <summary>
+                Encrypts the specified string.
+            </summary>
+            <param name="unencryptedSetting">The unencrypted setting.</param>
+            <returns>
+                The encrypted setting as
+            </returns>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Config.ISettingsEncryptor">
+            <summary>
+                Defines encryption/decryption that will be applied to settings before writing and after reading.
+                THIS WILL CHANGE AS IT MATURES!
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.ISettingsEncryptor.Decrypt(System.Byte[])">
+            <summary>
+                Decrypts the specified string.
+            </summary>
+            <param name="encryptedSettings">The encrypted setting.</param>
+            <returns>The decrypted setting</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.ISettingsEncryptor.Encrypt(System.String)">
+            <summary>
+                Encrypts the specified string.
+            </summary>
+            <param name="unencryptedSetting">The unencrypted setting.</param>
+            <returns>The encrypted setting as </returns>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Config.SettingType">
+            <summary>
+                Indicates the type of setting to read or write
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Config.SettingType.Application">
+            <summary>
+                The application setting is shared amongst users
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Config.SettingType.User">
+            <summary>
+                The user setting is specific to a user
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Config.ISettingsProvider">
+            <summary>
+                Provides read/write access to user and application settings
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.ISettingsProvider.CacheRead">
+            <summary>
+                Only used by the <see cref="T:Moonrise.Utils.Standard.Config.Settings" /> class, but indicates if this provider has read its cache yet.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.ISettingsProvider.Flush(Moonrise.Utils.Standard.Config.SettingType)">
+            <summary>
+            Flushes the setting file, writing it out
+            </summary>
+            <param name="type">The type of the setting file to flush</param>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.ISettingsProvider.ReadSetting(System.String,Moonrise.Utils.Standard.Config.SettingType)">
+            <summary>
+                Reads an application or user setting.
+            </summary>
+            <param name="key">The key.</param>
+            <param name="type">The type of setting.</param>
+            <returns>
+                The value, or null if not present
+            </returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.ISettingsProvider.RefreshAnyCaches(Moonrise.Utils.Standard.Config.SettingType)">
+            <summary>
+                Refreshes any caches that might be in use. i.e. Re-read.
+            </summary>
+            <param name="type">The type of setting.</param>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.ISettingsProvider.WriteSetting(System.String,System.String,System.Object,Moonrise.Utils.Standard.Config.SettingType)">
+            <summary>
+                Writes the application setting.
+            </summary>
+            <param name="key">The key.</param>
+            <param name="value">The value as a string - Use the most appropriate.</param>
+            <param name="objval">The value as an object - Use the most appropriate.</param>
+            <param name="type">The type of setting.</param>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider">
+            <summary>
+                Provides access to settings stored in a JSON file. This is NOT restricted to just using within using Dot Net Core.
+                However, the Read and Writes will only read or write settings at the topmost level once inside the application
+                settings section.
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Config">
+            <summary>
+                The configuration required
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Config.ApplicationSettingsFilename">
+            <summary>
+                The name of the settings filename, defaults to the DotNotCore default settings filename
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Config.ApplicationSettingsFolder">
+            <summary>
+                The folder the settings file is in, use null (the default) for the same folder as the application
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Config.ApplicationSettingsSection">
+            <summary>
+                Specifies a section in the config file where the application settings will be taken from, defaults to that as used
+                by DotNetCore but you don't have to have one if you're not sharing the settings with DotNetCore infrastructure
+                settings
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Config.ConfigurationOverrideEnvVar">
+            <summary>
+                The environment variable, if used, that contains the name of the settings override post-fix, defaults to that used
+                by DotNetCore
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Config.UserSettingsFilename">
+            <summary>
+                The name of the user settings file - this will be stored in the roaming or normal user profile location.
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.ISettingsEncryptor">
+            <summary>
+                Defines encryption/decryption that will be applied to sections before writing and after reading.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.ISettingsEncryptor.Decrypt(System.String)">
+            <summary>
+                Decrypts the specified jsoned data.
+            </summary>
+            <param name="jsonedData">The jsoned data.</param>
+            <returns>The decrypted data</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.ISettingsEncryptor.Encrypt(System.String)">
+            <summary>
+                Encrypts the specified string.
+            </summary>
+            <param name="jsonedData">The jsoned dictionary.</param>
+            <returns>The encrypted string</returns>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.ConfigurationOverride">
+            <summary>
+                The configuration override setting
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.ConfigurationOverrideEnvVar">
+            <summary>
+                The configuration override environment variable - Kept purely for the Clone.
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider._applicationSettings">
+            <summary>
+                Cached application settings
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider._userSettings">
+            <summary>
+                Cached user settings
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.#ctor(System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider" /> class.
+            </summary>
+            <param name="applicationSettingsFilename">The application settings filename.</param>
+            <param name="applicationSettingsFolder">
+                The application settings folder. If null (default) then the
+                <see cref="M:Moonrise.Utils.Standard.Files.FileUtils.ApplicationPath" /> is used.
+            </param>
+            <param name="applicationSettingsSection">The application settings section name.</param>
+            <param name="userSettingsFilename">The user settings filename.</param>
+            <param name="configurationOverrideEnvVar">
+                The configuration override environment variable - Indicates the name of the
+                env var that holds the deployed environment allowing for configuration overrides.
+            </param>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.#ctor(Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Config)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider" /> class.
+            </summary>
+            <param name="configuration">The configuration to use</param>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.ApplicationSettingsFilename">
+            <summary>
+                The application settings filename.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.ApplicationSettingsSection">
+            <summary>
+                The application settings section name.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.CacheRead">
+            <summary>
+                Only used by the <see cref="T:Moonrise.Utils.Standard.Config.Settings" /> class, but indicates if this provider has
+                read its cache yet.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Configuration">
+            <summary>
+                The configuration for this provider
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.SettingsEncryptor">
+            <summary>
+                Set this if you need to encrypt/decrypt settings.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.UserSettingsFilename">
+            <summary>
+                The user settings filename.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Clone">
+            <summary>
+                Clones this instance.
+            </summary>
+            <returns>A new <see cref="T:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider" /> for use by another thread</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Flush(Moonrise.Utils.Standard.Config.SettingType)">
+            <summary>
+                Write out the current settings
+            </summary>
+            <param name="type">The type of setting.</param>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.ReadSetting(System.String,Moonrise.Utils.Standard.Config.SettingType)">
+            <summary>
+                Reads an application or user setting.
+            </summary>
+            <param name="key">The key.</param>
+            <param name="type">The type of setting.</param>
+            <returns>
+                The value.
+            </returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.RefreshAnyCaches(Moonrise.Utils.Standard.Config.SettingType)">
+            <summary>
+                Refreshes any caches.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.WriteSetting(System.String,System.String,System.Object,Moonrise.Utils.Standard.Config.SettingType)">
+            <summary>
+                Writes the application setting.
+            </summary>
+            <param name="key">The key.</param>
+            <param name="value">The value as a string - Use the most appropriate.</param>
+            <param name="objval">The value as an object - Use the most appropriate.</param>
+            <param name="type">The type of setting.</param>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.ReadApplicationSetting(System.String)">
+            <summary>
+                Reads the application setting.
+            </summary>
+            <param name="key">The key.</param>
+            <returns>The value</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.ReadApplicationSettingsFile">
+            <summary>
+                Reads the application setting file from the application folder
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.ReadUserSetting(System.String)">
+            <summary>
+                Reads the user setting.
+            </summary>
+            <param name="key">The key.</param>
+            <returns>The value</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.ReadUserSettingsFile">
+            <summary>
+                Reads the user setting file from the roaming user path
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.WriteApplicationSetting(System.String,System.Object)">
+            <summary>
+                Writes the application setting into the application config file.
+            </summary>
+            <param name="key">The key.</param>
+            <param name="value">The value as an object</param>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.WriteApplicationSettingFile">
+            <summary>
+                Writes the application setting file from the dictionary cache. Any override in place WILL BE IGNORED. This is not
+                meant for use at runtime!
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.WriteUserSetting(System.String,System.Object)">
+            <summary>
+                Writes the user setting into the local dictionary and then updates the entire dictionary in the settings file in
+                the roaming user path
+            </summary>
+            <param name="key">The key.</param>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.WriteUserSettingFile">
+            <summary>
+                Writes the user setting file into the roaming user path
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Config.SampleEncryptor">
+            <summary>
+                Initial reference implementation
+            </summary>
+            <seealso cref="T:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.ISettingsEncryptor" />
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.SampleEncryptor.Decrypt(System.String)">
+            <summary>
+                Decrypts the specified jsoned data.
+            </summary>
+            <param name="jsonedData">The jsoned data.</param>
+            <returns>The decrypted data</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.SampleEncryptor.Encrypt(System.String)">
+            <summary>
+                Encrypts the specified string.
+            </summary>
+            <param name="jsonedData">The jsoned dictionary.</param>
+            <returns>The encrypted string</returns>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Config.Settings">
+            <summary>
+                Makes working with .config files a little easier!
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Config.Settings.WhatAttributeOfEnum">
+            <summary>
+                Indicates what 'attribute' of an enum to write, if the value is not in the config file
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Config.Settings.WhatAttributeOfEnum.NumericValue">
+            <summary>
+                The numeric value, e.g. 0, 1, 2, ...
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Config.Settings.WhatAttributeOfEnum.EnumValue">
+            <summary>
+                The enum value, e.g. Red, Blue, Green
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Config.Settings.WhatAttributeOfEnum.Description">
+            <summary>
+                The description, e.g. "Red House", "Blue House", "Green House"
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Config.Settings.WhatAttributeOfEnum.ModifiedDescription">
+            <summary>
+                The modified description, i.e. the Description that has been modified at run-time, say for translations.
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Config.Settings._type">
+            <summary>
+                The settings instance type
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Config.Settings._originalProvider">
+            <summary>
+                The original provider - This is the one used to clone providers for other threads
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Config.Settings._settingsProvider">
+            <summary>
+                The settings provider is stored as a per-thread singleton
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.#ctor(Moonrise.Utils.Standard.Config.SettingType)">
+            <summary>
+                Prevents a default instance of the <see cref="T:Moonrise.Utils.Standard.Config.Settings" /> class from being created. You must instead use either
+                <see cref="P:Moonrise.Utils.Standard.Config.Settings.Application" /> or <see cref="P:Moonrise.Utils.Standard.Config.Settings.User" />
+            </summary>
+            <param name="type">The type.</param>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.#ctor(Moonrise.Utils.Standard.Config.ISettingsProvider)">
+            <summary>
+                Initialises a <see cref="T:Moonrise.Utils.Standard.Config.Settings" /> with a given provider.
+            </summary>
+            <param name="provider">The <see cref="T:Moonrise.Utils.Standard.Config.ISettingsProvider" /> implementation to use.</param>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.Settings.Application">
+            <summary>
+                Accesses application settings
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.Settings.EncryptionClosingIdentifier">
+            <summary>
+                Marks the end of an encrypted setting. Defaults to "[{ENC]{". NOTE: The brackets are
+                DELIBERATELY mis-matched, making the chance of a clash with real data ALMOST impossible!
+                <para>DO NOT USE ANY CLOSING CURLY BRACES IN THIS!</para>
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.Settings.EncryptionOpeningIdentifier">
+            <summary>
+                Marks a string as being an encrypted setting if it starts with this. Defaults to "[{ENC]{". NOTE: The brackets are
+                DELIBERATELY mis-matched, making the chance of a clash with real data ALMOST impossible!
+                <para>DO NOT USE ANY CLOSING CURLY BRACES IN THIS!</para>
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.Settings.User">
+            <summary>
+                Accesses user settings
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.Settings.Item(System.String)">
+            <summary>
+                Gets or sets the <see cref="T:System.String" /> value with the specified key from the instance's
+                <seealso cref="P:Moonrise.Utils.Standard.Config.Settings.Application" /> or
+                <seealso cref="P:Moonrise.Utils.Standard.Config.Settings.User" /> settings
+                repository as appropriate. This is a convenient string
+                accessor, if you want to set or retrieve other types, you will need to use <see cref="M:Moonrise.Utils.Standard.Config.Settings.Read``2(System.String,``0,System.Linq.Expressions.Expression{System.Func{``1}},System.Boolean)" /> or
+                <see cref="M:Moonrise.Utils.Standard.Config.Settings.ReadEnum``1(System.String,``0@,System.Boolean,Moonrise.Utils.Standard.Config.Settings.WhatAttributeOfEnum)" />.
+            </summary>
+            <value>
+                The <see cref="T:System.String" />.
+            </value>
+            <param name="key">The key.</param>
+            <returns>
+                A string key.
+            </returns>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.Settings.Provider">
+            <summary>
+                The <see cref="T:Moonrise.Utils.Standard.Config.ISettingsProvider" /> being used by the <see cref="T:Moonrise.Utils.Standard.Config.Settings" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.Settings.SettingsEncryptor">
+            <summary>
+                Set this if you need to encrypt/decrypt settings. By default is set to <see cref="T:Moonrise.Utils.Standard.Config.DpApiSettingsEncryptor" />
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.Settings.SettingsProvider">
+            <summary>
+                The root ISettingsProvider. Only the first provider to be assigned will be accepted. If you need to replace the
+                original provider you will first need to set
+                <see cref="P:Moonrise.Utils.Standard.Config.Settings.SettingsProvider" /> to null, then set to the new value.
+            </summary>
+            <remarks>
+                If you set to null, then currently the provider on ALL threads will be nulled out. Basically this shouldn't
+                happen, but MIGHT in a testing environment where you're using mocked providers!
+                <seealso cref="M:Moonrise.Utils.Standard.Config.Settings.ReplaceSettingsProvider(Moonrise.Utils.Standard.Config.ISettingsProvider)" />
+            </remarks>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.Decrypt(System.String,Moonrise.Utils.Standard.Config.ISettingsEncryptor)">
+            <summary>
+                Decodes and then decrypts the supplied string
+            </summary>
+            <param name="readVal">The encoded, encrypted string</param>
+            <param name="settingsEncryptor">The encryptor (well actually decryptor) to use</param>
+            <returns>The decoded, decrypted string</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.Flush">
+            <summary>
+                Flushes this instance.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.GetConnectionString(System.String,System.String)">
+            <summary>
+                Gets the connection string.
+            </summary>
+            <param name="connectionStringKey">The connection string key.</param>
+            <param name="connectionStringContainer">
+                The connection string container name in the settings file if you need to use a
+                different setting.
+            </param>
+            <returns>
+                The connection string, or null if it doesn't exist
+            </returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.Read``2(System.String,``0,System.Linq.Expressions.Expression{System.Func{``1}},System.Boolean)">
+            <summary>
+                Reads the specified key into a supplied property.
+                <para>
+                    Usage: Settings.Application.Read("LoggingFile", SettingsConfig, ()=>SettingsConfig.LogFilename)
+                </para>
+            </summary>
+            <remarks>
+                You can make good use of the <see cref="!:addIfNotExists" /> flag being true to create the structure of a
+                configuration object for you in the settings file. You'll do this towards the beginning of your project or anytime
+                you add a significant amount of new settings. Just note however that the settings file that the setting will be
+                written into, where it doesn't exist, will be the one in your - generally - bin\Debug folder. So you'll edit that,
+                grab the default settings and paste it into your ACTUAL settings file in source - remember it gets copied over at
+                build time!
+                <para>
+                    Another thing to note is that if the setting that's being read exists it won't write any new sub-settings, so
+                    if you add a significant new amount you want to be created for you, you'll want to comment out the main
+                    setting, allow the settings to be created and then copy over and edit them in to your real settings.
+                </para>
+                <para>
+                    It'll make sense to you as you use it!
+                </para>
+                <para>
+                    And finally the writing out of the missing settings DOES NOT WRITE ENUMS, only as numbers so you'll want to
+                    correct those values in your settings file where you have got enums to be the readable enum values!
+                </para>
+            </remarks>
+            <typeparam name="T">The type of the instance that has the property</typeparam>
+            <typeparam name="U">The type of the property</typeparam>
+            <param name="key">The key.</param>
+            <param name="instance">The instance.</param>
+            <param name="property">The property.</param>
+            <param name="addIfNotExists">Determines if the setting should be added if it doesn't exist.</param>
+            <returns>True if the value to be read was found</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.Read``1(System.String,``0@)">
+            <summary>
+                Reads an application config element as the generic type - and can add it if it doesn't exist!
+            </summary>
+            <typeparam name="T">The type of the value</typeparam>
+            <param name="key">The key.</param>
+            <param name="value">
+                in - the default value to use if key doesn't exist, and also the value to use if consequently to be
+                written, out - the value in config
+            </param>
+            <returns>True if the value to be read was found</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">Cannot use this function with a + typeof(T).Name</exception>
+            <exception cref="T:System.IO.InvalidDataException">
+                Invalid [int] value for + key
+                or
+                Invalid [double] value for + key
+                or
+                Invalid [DateTime] value for + key
+                or
+                Invalid [Guid] value for + key
+            </exception>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.Read``1(System.String,``0@,System.Boolean)">
+            <summary>
+                Reads an application config element as the generic type - and can add it if it doesn't exist!
+            </summary>
+            <remarks>
+                You can make good use of the <see cref="!:addIfNotExists" /> flag being true to create the structure of a
+                configuration object for you in the settings file. You'll do this towards the beginning of your project or anytime
+                you add a significant amount of new settings. Just note however that the settings file that the setting will be
+                written into, where it doesn't exist, will be the one in your - generally - bin\Debug folder. So you'll edit that,
+                grab the default settings and paste it into your ACTUAL settings file in source - remember it gets copied over at
+                build time!
+                <para>
+                    Another thing to note is that if the setting that's being read exists it won't write any new sub-settings, so
+                    if you add a significant new amount you want to be created for you, you'll want to comment out the main
+                    setting, allow the settings to be created and then copy over and edit them in to your real settings.
+                </para>
+                <para>
+                    It'll make sense to you as you use it!
+                </para>
+                <para>
+                    And finally the writing out of the missing settings DOES NOT WRITE ENUMS, only as numbers so you'll want to
+                    correct those values in your settings file where you have got enums to be the readable enum values!
+                </para>
+            </remarks>
+            <typeparam name="T">The type of the value</typeparam>
+            <param name="key">The key.</param>
+            <param name="value">
+                in - the default value to use if key doesn't exist, and also the value to use if consequently to be
+                written, out - the value in config
+            </param>
+            <param name="addIfNotExists">If true adds the key to the config if it doesn't already exist</param>
+            <returns>True if the value to be read was found</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">Cannot use this function with a + typeof(T).Name</exception>
+            <exception cref="T:System.IO.InvalidDataException">
+                Invalid [int] value for + key
+                or
+                Invalid [double] value for + key
+                or
+                Invalid [DateTime] value for + key
+                or
+                Invalid [Guid] value for + key
+            </exception>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.ReadEnum``2(System.String,``0,System.Linq.Expressions.Expression{System.Func{``1}},System.Boolean,Moonrise.Utils.Standard.Config.Settings.WhatAttributeOfEnum)">
+            <summary>
+                Reads the specified key into a supplied property as an enum.
+                Usage: Settings.Application.Read("LoggingFile", SettingsConfig, ()=>SettingsConfig.LogFilename)
+            </summary>
+            <typeparam name="T">The type of the instance that has the property</typeparam>
+            <typeparam name="U">The type of the property</typeparam>
+            <param name="key">The key.</param>
+            <param name="instance">The instance.</param>
+            <param name="property">The property.</param>
+            <param name="addIfNotExists">Determines if the setting should be added if it doesn't exist.</param>
+            <param name="what">
+                If the value is to be added, <see cref="T:Moonrise.Utils.Standard.Config.Settings.WhatAttributeOfEnum" /> indicates how that enum will be
+                written.
+            </param>
+            <returns>True if the value to be read was found</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.ReadEnum``1(System.String,``0@,System.Boolean,Moonrise.Utils.Standard.Config.Settings.WhatAttributeOfEnum)">
+            <summary>
+                Reads a typed enum from the config file. The enum will be parsed from a string into the enum and can be represented
+                in many ways, as per <see cref="T:Moonrise.Utils.Standard.Config.Settings.WhatAttributeOfEnum" />.
+            </summary>
+            <typeparam name="T">The enum type being read</typeparam>
+            <param name="key">The key.</param>
+            <param name="value">
+                in - the default value to use if key doesn't exist, and also the value to use if consequently to be
+                written, out - the value in config
+            </param>
+            <param name="addIfnotExists">If true adds the key to the config if it doesn't already exist</param>
+            <param name="what">
+                If the value is to be added, <see cref="T:Moonrise.Utils.Standard.Config.Settings.WhatAttributeOfEnum" /> indicates how that enum will be
+                written.
+            </param>
+            <returns>True if the value to be read was found</returns>
+            <exception cref="T:System.ArgumentException">If <typeparamref name="T" /> is not an Enum</exception>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.RefreshAnyCaches">
+            <summary>
+                Refreshes any caches.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.ReplaceSettingsProvider(Moonrise.Utils.Standard.Config.ISettingsProvider)">
+            <summary>
+                Replaces the settings provider - across the board, not just for the calling thread.
+            </summary>
+            <param name="newOne">The new one.</param>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.Write``1(System.String,``0,System.Boolean)">
+            <summary>
+                Writes the specified key and value to the indicated settings via the current <see cref="T:Moonrise.Utils.Standard.Config.ISettingsProvider" />. DO
+                NOT USE THIS TO STORE SETTINGS IN THE APPLICATION SETTINGS AT RUNTIME> THIS IS VERY BAD PRACTICE! Fine for user
+                settings, well crucial actually, OR for creating application settings files away from runtime.
+            </summary>
+            <typeparam name="T">
+                The type of the value being written - This is "autofilled" by the compiler based on what type of
+                value you actually pass!
+            </typeparam>
+            <param name="key">The key.</param>
+            <param name="value">The value.</param>
+            <param name="encrypt">If true, the value should be written encrypted</param>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.Encrypt(System.String)">
+            <summary>
+                Encrypts and then encodes the supplied string
+            </summary>
+            <param name="writeThis">The clear string</param>
+            <returns>The encoded, encrypted string</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.ReadCommon(System.String,Moonrise.Utils.Standard.Config.SettingType)">
+            <summary>
+                Common setting read method. Decrypts any encrypted settings
+            </summary>
+            <param name="key">The key for the setting to read</param>
+            <param name="type">The type of the setting</param>
+            <returns>A setting ready for further processing</returns>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Config.SettingsExceptionReason">
+            <summary>
+                The reason why a <see cref="T:Moonrise.Utils.Standard.Config.SettingsException" /> has been thrown
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Config.SettingsExceptionReason.UnknownException">
+            <summary>
+                An unknown exception occurred within one of the Settings modules inside the method: {0} \nException
+                message; \n{1}
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Config.SettingsExceptionReason.NoEncryptionProvider">
+            <summary>
+                An encrypted setting was found but no SettingsEncryptor has been specified.
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Config.SettingsExceptionReason.InvalidKey">
+            <summary>
+                The key syntax for [{0}] is not valid.
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Config.SettingsExceptionReason.InvalidData">
+            <summary>
+                The setting [{0}] contained invalid data.
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Config.SettingsException">
+            <summary>
+                Represents exceptional problems that arise whilst processing Settings functions
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.SettingsException.#ctor(Moonrise.Utils.Standard.Config.SettingsExceptionReason,System.Object[])">
+            <summary>
+                Initialises a new instance of the SettingsException class.
+            </summary>
+            <param name="reason">The reason for the exception.</param>
+            <param name="args">
+                Each reason has an associated description string. Most of these take one or more arguments which
+                should be passed here.
+            </param>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.SettingsException.#ctor(System.Exception,Moonrise.Utils.Standard.Config.SettingsExceptionReason,System.Object[])">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.Config.SettingsException" /> class.
+            </summary>
+            <param name="innerException">The inner exception.</param>
+            <param name="reason">The reason for the exception.</param>
+            <param name="args">
+                Each reason has an associated description string. Most of these take one or more arguments which
+                should be passed here.
+            </param>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.CSV.CsvColumnAttribute">
+            <summary>
+                Defines metadata about how to convert from CSV data into the attributed property.
+            </summary>
+            <seealso cref="T:System.Attribute" />
+        </member>
+        <member name="M:Moonrise.Utils.Standard.CSV.CsvColumnAttribute.#ctor(System.String)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.CSV.CsvColumnAttribute" /> class. i.e. default takes the header name.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.CSV.CsvColumnAttribute.ColumnName">
+            <summary>
+                The header name for a CSV column
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.CSV.CsvColumnAttribute.Converter">
+            <summary>
+                A custom converter.
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.CSV.CsvParseException">
+            <summary>
+                Indicates an exception whilst parsing a CSV file
+            </summary>
+            <seealso cref="T:System.Exception" />
+        </member>
+        <member name="M:Moonrise.Utils.Standard.CSV.CsvParseException.#ctor">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.CSV.CsvParseException" /> class.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.CSV.CsvParseException.#ctor(System.Int32,System.String,System.String,System.Exception)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.CSV.CsvParseException" /> class.
+            </summary>
+            <param name="rowNo">The row no.</param>
+            <param name="rowContent">Content of the row.</param>
+            <param name="columnName">Name of the column.</param>
+            <param name="exception">The exception.</param>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.CSV.CsvParseException.CollatedExceptions">
+            <summary>
+                Collated exceptions. See <seealso cref="P:Moonrise.Utils.Standard.CSV.CsvParser`2.CollateExceptions" />
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.CSV.CsvParseException.ColumnName">
+            <summary>
+                The name of the column the exception occurred processing.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.CSV.CsvParseException.Exception">
+            <summary>
+                The exception that occurred.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.CSV.CsvParseException.RowContent">
+            <summary>
+                The content of the column the exception occurred processing.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.CSV.CsvParseException.RowNo">
+            <summary>
+                The row number the exception occurred processing.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.CSV.CsvParseException.Add(Moonrise.Utils.Standard.CSV.CsvParseException)">
+            <summary>
+                Adds the specified parse exception.
+            </summary>
+            <param name="parseException">The parse exception.</param>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.CSV.CsvParser`1">
+            <summary>
+                Parses text in CSV format that includes a header that is mapped via a <see cref="T:Moonrise.Utils.Standard.CSV.CsvColumnAttribute" />
+                defined against the properties of the class.
+            </summary>
+            <typeparam name="TTarget">The type of the target.</typeparam>
+            <seealso cref="T:Moonrise.Utils.Standard.CSV.CsvParser`2" />
+        </member>
+        <member name="T:Moonrise.Utils.Standard.CSV.CsvParser`2">
+            <summary>
+                Parses text in CSV format that includes a header that is mapped via a <see cref="T:Moonrise.Utils.Standard.CSV.CsvColumnAttribute" />
+                defined in a seperate overlay, usually an interface.
+            </summary>
+            <typeparam name="TTarget">The type of the target.</typeparam>
+            <typeparam name="TOverlay">The type of the overlay.</typeparam>
+            <seealso cref="T:Moonrise.Utils.Standard.CSV.CsvParser`2" />
+        </member>
+        <member name="M:Moonrise.Utils.Standard.CSV.CsvParser`2.#ctor">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.CSV.CsvParser`2" /> class.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.CSV.CsvParser`2.CollateExceptions">
+            <summary>
+                Determines if exceptions should be collated and thrown out as one with all errors for all rows, or just the first
+                error encountered.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.CSV.CsvParser`2.Parse(System.String,System.String,System.String,System.Boolean)">
+            <summary>
+                Parses the specified filepath as a CSV and returns a list of imported instantied classes.
+            </summary>
+            <param name="filepath">The filepath of the CSV formatted file.</param>
+            <param name="delimiter">The delimiter, typically commas.</param>
+            <param name="qualifier">
+                A qualifier, typically double quotes. i.e. Can be used to enclose whitespace, including the
+                delimiter, within the one value.
+            </param>
+            <param name="trimData">Should the qualifiers be trimmed?</param>
+            <returns>An enumerable of imported rows of the Type</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.CSV.CsvParser`2.Parse(System.Collections.Generic.IList{System.String},System.String,System.String,System.Boolean)">
+            <summary>
+                Parses the array of strings as a CSV and returns a list of imported instantied classes.
+            </summary>
+            <param name="lines">The array of strings containing the CSV formatted data.</param>
+            <param name="delimiter">The delimiter, typically commas.</param>
+            <param name="qualifier">
+                A qualifier, typically double quotes. i.e. Can be used to enclose whitespace, including the
+                delimiter, within the one value.
+            </param>
+            <param name="trimData">Should the qualifiers be trimmed?</param>
+            <returns>An enumerable of imported rows of the Type</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.CSV.CsvParser`2.ParseDictionaries(System.Collections.Generic.IEnumerable{System.Collections.Generic.Dictionary{System.String,System.Object}})">
+            <summary>
+            Parses a collection of string object dictionaries.
+            </summary>
+            <param name="dictionaries">The dictionaries.</param>
+            <returns>A collection of parsed target instances</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.CSV.CsvParser`2.BuildColumnDefinitions">
+            <summary>
+                Builds the column definitions from the specified <see cref="!:TOverlay" />.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.CSV.CsvParser`2.ProcessRow(System.String,`0[],System.Int32,System.String,System.String,System.Boolean)">
+            <summary>
+                Processes a row.
+            </summary>
+            <param name="row">The full row as a string.</param>
+            <param name="targets">The array of targets.</param>
+            <param name="i">The index of the row being processed.</param>
+            <param name="delimiter">The delimiter, typically commas.</param>
+            <param name="qualifier">
+                A qualifier, typically double quotes. i.e. Can be used to enclose whitespace, including the
+                delimiter, within the one value.
+            </param>
+            <param name="trimData">Should the qualifiers be trimmed?</param>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.CSV.CsvParseSkipThisLineException">
+            <summary>
+                Indicates that a condition has been detected whereby the entire line is to be skipped/discarded
+            </summary>
+            <seealso cref="T:System.Exception" />
+        </member>
+        <member name="T:Moonrise.Utils.Standard.CSV.ICsvConverter">
+            <summary>
+                Used to convert Csv input strings to whatever your heart desires to be stored in your object.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.CSV.ICsvConverter.Convert(System.String)">
+            <summary>
+                Converts the specified input.
+            </summary>
+            <param name="input">The input.</param>
+            <returns>Your dream</returns>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.DatesTimes.IDateTimeOffsetProvider">
+            <summary>
+                An interface for changing the time - H.G.Wells would be proud!
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.DatesTimes.IDateTimeOffsetProvider.Now">
+            <summary>
+                What is considered to be "now"
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.DatesTimes.DateTimeOffsetProvider">
+            <summary>
+                Provides a replaceable date time offset provider
+            </summary>
+            <seealso cref="T:Moonrise.Utils.Standard.DatesTimes.IDateTimeProvider" />
+        </member>
+        <member name="F:Moonrise.Utils.Standard.DatesTimes.DateTimeOffsetProvider.Providers">
+            <summary>
+                The per thread store of providers
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.DatesTimes.DateTimeOffsetProvider.Now">
+            <summary>
+                Gets the current DateTimeOffset
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.DatesTimes.DateTimeOffsetProvider.Provider">
+            <summary>
+                The provider of DateTimeOffsets
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.DatesTimes.DateTimeOffsetProvider.Moonrise#Utils#Standard#DatesTimes#IDateTimeOffsetProvider#Now">
+            <summary>
+                Gets the normal now.
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.DatesTimes.IDateTimeProvider">
+            <summary>
+                An interface for changing the time - H.G.Wells would be proud!
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.DatesTimes.IDateTimeProvider.Now">
+            <summary>
+                What is considered to be "now"
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.DatesTimes.DateTimeProvider">
+            <summary>
+                Provides a replaceable date time provider
+            </summary>
+            <seealso cref="T:Moonrise.Utils.Standard.DatesTimes.IDateTimeProvider" />
+        </member>
+        <member name="F:Moonrise.Utils.Standard.DatesTimes.DateTimeProvider.Providers">
+            <summary>
+                The per thread store of providers
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.DatesTimes.DateTimeProvider.Now">
+            <summary>
+                Gets the current DateTime
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.DatesTimes.DateTimeProvider.Provider">
+            <summary>
+                The provider of DateTimes
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.DatesTimes.DateTimeProvider.Moonrise#Utils#Standard#DatesTimes#IDateTimeProvider#Now">
+            <summary>
+                Gets the normal now.
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Debugger.DebuggerUtils">
+            <summary>
+                Helpful additions to work with the Debugger
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Debugger.DebuggerUtils.Break">
+            <summary>
+                Causes the debugger to break, or launch if not attached.
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.DependencyInjection.InjectableAttribute">
+            <summary>
+                Describes a property as being injectable.
+            </summary>
+            see also http://simpleinjector.readthedocs.io/en/latest/advanced.html#ipropertyselectionbehavior
+            <seealso cref="T:System.Attribute" />
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Exceptions.ReasonedException`1">
+            <summary>
+                Reasoned exceptions require an enum to identify the reason for the exception.
+                The enum Description attribute carries the message for the exception. This gives you a concise list of all of the
+                reasons you expect an exception to be thrown and collates all of the messages into one place. The reason
+                descriptions
+                can contain parameter placeholders that will be passed to string.Format. If the Description attribute is repeated
+                as
+                the enum value XML summary documentation then you will also get intellisense on the message associated with the
+                reason.
+                <example>
+                    <para>
+                        Define the reason as follows;
+                        public enum YourExceptionReason {
+                        &lt;summary&gt;
+                        An unknown exception occurred inside the method: {0}
+                        &lt;/summary&gt;
+                        [Description("An unknown exception occurred inside the method: {0}")]
+                        UnknownException,
+                        &lt;summary&gt;
+                        The widget diameter of {0} was out of range. At this point it should be between {1} &amp; {2}.
+                        &lt;/summary&gt;
+                        [Description("The widget diameter of {0} was out of range. At this point it should be between {1} &amp;
+                        {2}.")]
+                        WidgetDiameterOutOfRange
+                        }
+                    </para>
+                    <para>
+                        public class YourException : ReasonedException&lt;YourExceptionReason&gt; ....
+                    </para>
+                    <para>
+                        The exception would then be thrown as;
+                        throw new YourException(YourExceptionReason.WidgetDiameterOutOfRange, widget.Diameter, MinWidgetDiameter,
+                        MaxWidgetDiameter);
+                    </para>
+                </example>
+            </summary>
+            <typeparam name="TReason">The type of the reason enum</typeparam>
+            <seealso cref="T:System.Exception" />
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Exceptions.ReasonedException`1.#ctor(`0,System.Object[])">
+            <summary>
+                Initialises a new instance of the ReasonedException class.
+            </summary>
+            <param name="reason">The reason for the exception.</param>
+            <param name="args">
+                Each reason has an associated description string. Most of these take one or more arguments which
+                should be passed here.
+            </param>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Exceptions.ReasonedException`1.#ctor(System.Exception,`0,System.Object[])">
+            <summary>
+                Initialises a new instance of the ReasonedException class but can take an inner exception.
+            </summary>
+            <param name="innerException">The inner exception.</param>
+            <param name="reason">The reason for the exception.</param>
+            <param name="args">
+                Each reason has an associated description string. Most of these take one or more arguments which
+                should be passed here.
+            </param>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Exceptions.ReasonedException`1.ErrorCode">
+            <summary>
+                Gets the numeric error code for the reason of the exception.
+            </summary>
+            <value>The code.</value>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Exceptions.ReasonedException`1.ReasonCode">
+            <summary>
+                Gets or sets the reason for the exception as one of the defined enum values.
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Extensions.ClassExtensions">
+            <summary>
+                Extension methods that apply to classes
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.ClassExtensions.DisplayName``2(``0,System.Linq.Expressions.Expression{System.Func{``0,``1}})">
+            <summary>
+                Gets the name from any applied <see cref="T:System.ComponentModel.DataAnnotations.DisplayAttribute" />.
+            </summary>
+            <typeparam name="TClass">The class type being extended - typically a model class</typeparam>
+            <typeparam name="TProperty">The property type whose display name we want</typeparam>
+            <param name="model">The class type being extended - typically a model class</param>
+            <param name="propertyExpression">The property type whose display name we want</param>
+            <returns>The display name or null</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.ClassExtensions.MethodName(System.Object,System.String)">
+            <summary>
+                Gives the caller's class qualified method name.
+                <para>
+                    Usage: this.MethodName()
+                </para>
+            </summary>
+            <param name="instance">The instance.</param>
+            <param name="caller">The caller.</param>
+            <returns>The class qualifed method name</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.ClassExtensions.FQMethodName(System.Object,System.String)">
+            <summary>
+                Gives the caller's fully qualified method name.
+                <para>
+                    Usage: this.FQMethodName()
+                </para>
+            </summary>
+            <param name="instance">The instance.</param>
+            <param name="caller">The caller.</param>
+            <returns>The fully qualifed method name</returns>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Extensions.LastFew">
+            <summary>
+                Enum for use with <see cref="M:Moonrise.Utils.Standard.Extensions.DateTimeExtensions.Within(System.DateTime,System.Int32,Moonrise.Utils.Standard.Extensions.LastFew)" />.
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Extensions.DateTimeExtensions">
+            <summary>
+                Extensions for the <see cref="T:System.DateTime" /> class.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.DateTimeExtensions.ToLocalTime(System.DateTime,System.Boolean)">
+            <summary>
+                Converts value of DateTime to local British time and optionally appends time zone info
+            </summary>
+            <param name="dateTime">The date time.</param>
+            <param name="includeTimezone">True to append time zone info</param>
+            <returns>
+                A localised DateTime
+            </returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.DateTimeExtensions.Within(System.DateTime,System.Int32,Moonrise.Utils.Standard.Extensions.LastFew)">
+            <summary>
+                Determines if the <see cref="T:System.DateTime" /> is within the specified number of whatever <see cref="T:Moonrise.Utils.Standard.Extensions.LastFew" /> units.
+            </summary>
+            <param name="dateTime">The date time.</param>
+            <param name="number">The number.</param>
+            <param name="units">The <see cref="T:Moonrise.Utils.Standard.Extensions.LastFew" /> units.</param>
+            <returns>True if the relevant date time is within the last few units of now.</returns>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Extensions.DateTimeOffsetExtensions">
+            <summary>
+                Contains extension methods for DateTimeOffset.
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Extensions.DateTimeOffsetExtensions.TrimOff">
+            <summary>
+                What to trim off
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.DateTimeOffsetExtensions.Truncate(System.DateTimeOffset,Moonrise.Utils.Standard.Extensions.DateTimeOffsetExtensions.TrimOff)">
+            <summary>
+                Trims a DateTimeOffset to a whole number of seconds
+            </summary>
+            <param name="dto">The DateTimeOffset value to truncate</param>
+            <param name="trim">The part of the DTO to trim off</param>
+            <returns>A new DateTimeOffset with 0 milliseconds</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.DateTimeOffsetExtensions.Within(System.DateTimeOffset,System.Int32,Moonrise.Utils.Standard.Extensions.LastFew)">
+            <summary>
+                Determines if the <see cref="T:System.DateTimeOffset" /> is within the specified number of whatever <see cref="T:Moonrise.Utils.Standard.Extensions.LastFew" />
+                units.
+            </summary>
+            <param name="dateTime">The date time.</param>
+            <param name="number">The number.</param>
+            <param name="units">The <see cref="T:Moonrise.Utils.Standard.Extensions.LastFew" /> units.</param>
+            <returns>True if the relevant date time is within the last few units of now.</returns>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Extensions.EnumExtensions">
+            <summary>
+                Contains extension methods for enums.
+            </summary>
+            <remarks>
+                Originally written by Will Hopkins 2010-2013
+            </remarks>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Extensions.EnumExtensions.UpdatedDescriptions">
+            <summary>
+                Caches descriptions of enums - whether original or changed.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.EnumExtensions.Description(System.Enum)">
+            <summary>
+                Enum extension method to get the description of an enum.
+                <para>
+                    The description is as specified by the changed description, DescriptionAttribute, or the string value if no
+                    description. PascalCase enum names will be sentenced to "Pascal Case".
+                </para>
+            </summary>
+            <param name="enumValue">The enum value.</param>
+            <returns>The description of the enum value.</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.EnumExtensions.Enumerable``1">
+            <summary>
+                Allows an enum to be enumerated as follows;
+                <para>
+                    foreach (EnumType enumLoopVar in EnumExtensions.Enumerable{EnumType}()) { ...code... }
+                </para>
+            </summary>
+            <typeparam name="T">This will always be an Enum!</typeparam>
+            <returns>
+                The enumerable list of enums
+            </returns>
+            <exception cref="T:System.ArgumentException">Enumerable{T} must only be used on Enums</exception>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.EnumExtensions.FromString``1(System.String)">
+            <summary>
+                Returns an enum value from a string.
+                <para>
+                    The string matches either the enum "name" or if there is a description attribute for a member then the
+                    description.
+                    The name takes precedence over the description - in case a description is given to a member and there is
+                    another
+                    member whose name is the same as that description!
+                    Usage: EnumType eVar = EnumExtensions.FromString{EnumType}("string_representation");
+                </para>
+            </summary>
+            <typeparam name="T">The actual enum type</typeparam>
+            <param name="candidateValue">The candidate value.</param>
+            <returns>The resultant enum</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.EnumExtensions.FromString``1(System.String,``0)">
+            <summary>
+                Returns an enum value from a string.
+                <para>
+                    The string matches either the enum "name" or if there is a description attribute for a member then the
+                    description.
+                    The name takes precedence over the description - in case a description is given to a member and there is
+                    another
+                    member whose name is the same as that description!
+                    Usage: EnumType eVar = EnumExtensions.FromString{EnumType}("string_representation");
+                </para>
+            </summary>
+            <typeparam name="T">The actual enum type</typeparam>
+            <param name="candidateValue">The candidate value.</param>
+            <param name="unfoundValue">The value to use if the value cannot be found as an enum</param>
+            <returns>The resultant enum</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.EnumExtensions.In``1(``0,``0[])">
+            <summary>
+                Determines if an enum value is in a range of possible enum values.
+            </summary>
+            <typeparam name="T">This is the enum type</typeparam>
+            <param name="val">The value that may or may not be in the list</param>
+            <param name="values">
+                A comma separated list (i.e. a variable parameter list - NOT a comma separated string!) of the
+                possible enum values
+            </param>
+            <returns>true if in the list, or false if not!</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.EnumExtensions.ModifyDescription(System.Enum,System.String)">
+            <summary>
+                Modifies the Description attributed to an enum value
+            </summary>
+            <param name="enumValue">Value who's description is to be changed</param>
+            <param name="newDescription">New description</param>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.EnumExtensions.OriginalDescription(System.Enum)">
+            <summary>
+                Enum extension method to get the original, attributed, description of an enum.
+                <para>
+                    The description is as specified - in this order - by the DescriptionAttribute, or the DisplayAttribute.Name, 
+                    or the DisplayAttribute.Description, or the string value if no description.
+                </para>
+            </summary>
+            <param name="enumValue">The enum value.</param>
+            <returns>The description of the enum value.</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.EnumExtensions.ToInt(System.Enum)">
+            <summary>
+                Converts an Enum type value to integer
+            </summary>
+            <param name="enumValue">Enum value to convert</param>
+            <returns>Integer value</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.EnumExtensions.FromString``1(System.String,``0,System.Boolean)">
+            <summary>
+                Private version to simply deal better with supplying unfound values since a default parameter value for a generic
+                enum is not possible to set to a known unique value to indicate that the parameter wasn't passed! (I tried
+                <see cref="F:System.Int32.MinValue" /> for example - no dice).
+            </summary>
+            <typeparam name="T">Will always be an enum</typeparam>
+            <param name="candidateValue">The candidate value.</param>
+            <param name="unfoundValue">The unfound value.</param>
+            <param name="useUnfound">if set to <c>true</c> [use unfound].</param>
+            <returns>The enum converted from the string</returns>
+            <exception cref="T:System.ArgumentException">FromString{T} must only be used on Enums</exception>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Extensions.IndexOfOptions">
+            <summary>
+                Options to apply then using the ocerloaded IndexOf/LastIndexOf that can ignore whitespace in the target string
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Extensions.IndexOfOptions.IgnoreCase">
+            <summary>
+                Ignore the case - this results in the default IndexOf/LastIndexOf being used
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Extensions.IndexOfOptions.IgnoreCaseAndWhitespace">
+            <summary>
+                Ignore both the case and whitespace. So looking for "fox" would match both "Fo\r\n\txy lady" AND "she was a foxy
+                lady"
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Extensions.IndexOfOptions.IgnoreWhitespace">
+            <summary>
+                Ignore whitespace in the target. So looking for "fox" would match "she was a f o\nxy lady" but not "Fo\r\n\txy
+                lady"
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Extensions.StringExtensions">
+            <summary>
+                Extension methods for use with strings
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.CSL``1(System.Collections.Generic.IEnumerable{``0},System.String)">
+            <summary>
+                Creates a Comma Separated List string. Well anything separated list really.
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+            <param name="list">A list of the generic type</param>
+            <param name="separator">The separator character(s)</param>
+            <returns>A string with each element separated by, well whatever you pass.</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.CSL``1(System.Collections.Generic.IEnumerable{``0},System.String,System.String,System.String)">
+            <summary>
+                Creates a Comma Separated List string. Well anything separated list really.
+            </summary>
+            <typeparam name="T">Generic type</typeparam>
+            <param name="list">A list of the generic type</param>
+            <param name="separator">The separator character(s)</param>
+            <param name="surroundLeft">The string to surround the individual element in on the left</param>
+            <param name="surroundRight">The string to surround the individual element in on the right</param>
+            <returns>A string with each element separated by, well whatever you pass.</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.Description(System.Object)">
+            <summary>
+                Object extension method to get description of a type.
+                <para>
+                    The description is as specified by the DescriptionAttribute, or the basic type name if no description.
+                </para>
+            </summary>
+            <param name="instance">The instance to get the type description of.</param>
+            <returns>The description of the instance's type</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.Extract(System.String,System.String,System.String,System.Boolean)">
+            <summary>
+                Extracts a string using a start marker and optional end marker.
+            </summary>
+            <param name="fromWhat">The string to look in</param>
+            <param name="startMarker">The start to look for</param>
+            <param name="endMarker">The end to look for</param>
+            <param name="trim">if set to <c>true</c> DOES trim the returned string.</param>
+            <returns>
+                The extracted, trimmed string.
+            </returns>
+            <exception cref="T:System.DataMisalignedException">Marker was not found</exception>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.Extract(System.String,System.Int32@,System.String,System.String,System.Boolean)">
+            <summary>
+                Extracts a string using a start point, then a start marker and end marker.
+            </summary>
+            <param name="fromWhat">The string to look in</param>
+            <param name="start">Where in the string to start looking. Updated with the point AFTER the end marker</param>
+            <param name="startMarker">The start to look for</param>
+            <param name="endMarker">The end to look for</param>
+            <param name="trim">if set to <c>true</c> DOES trim the returned string.</param>
+            <returns>
+                The extracted, trimmed string.
+            </returns>
+            <exception cref="T:System.DataMisalignedException">Marker was not found</exception>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.Extract(System.String,System.Int32@,System.String,System.Int32,System.String,System.Boolean)">
+            <summary>
+                Extracts a string using a start point, then a number of start markers and end marker.
+            </summary>
+            <param name="fromWhat">The string to look in</param>
+            <param name="start">Where in the string to start looking. Updated with the point AFTER the end marker</param>
+            <param name="startMarker">The start to look for</param>
+            <param name="howMany">How many markers to get past</param>
+            <param name="endMarker">The end to look for</param>
+            <param name="trim">if set to <c>true</c> DOES trim the returned string.</param>
+            <returns>The extracted, trimmed string.</returns>
+            <exception cref="T:System.DataMisalignedException">Marker was not found</exception>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.Extract(System.String,System.Int32@,System.String,System.Boolean)">
+            <summary>
+                Extracts a string using a start point and end marker.
+            </summary>
+            <param name="fromWhat">The string to look in</param>
+            <param name="start">Where in the string to start looking. Updated with the point AFTER the end marker</param>
+            <param name="endMarker">What to look for</param>
+            <param name="trim">if set to <c>true</c> DOES trim the returned string.</param>
+            <returns>The extracted, trimmed string.</returns>
+            <exception cref="T:System.DataMisalignedException">Marker was not found</exception>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.FindEnd(System.String,System.Int32,System.String)">
+            <summary>
+                Finds the end point of a string to extract.
+            </summary>
+            <param name="inWhat">The string to look for it in</param>
+            <param name="start">Where in the string to start looking</param>
+            <param name="endMarker">What to look for</param>
+            <returns>The point at which the end marker is found</returns>
+            <exception cref="T:System.DataMisalignedException">Marker was not found</exception>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.FindStart(System.String,System.Int32@,System.String)">
+            <summary>
+                Finds the start point of a string to extract based on skipping past a single start marker.
+            </summary>
+            <param name="inWhat">The string to look for it in</param>
+            <param name="start">Where in the string to start looking. Updated with the point AFTER the start marker</param>
+            <param name="startMarker">What to look for</param>
+            <exception cref="T:System.DataMisalignedException">Marker was not found</exception>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.FindStart(System.String,System.Int32@,System.String,System.Int32)">
+            <summary>
+                Finds the start point of a string to extract based on skipping a number of start markers
+            </summary>
+            <param name="inWhat">The string to look for it in</param>
+            <param name="start">Where in the string to start looking. Updated with the point AFTER the last start marker</param>
+            <param name="startMarker">What to look for</param>
+            <param name="howMany">How many markers to get past</param>
+            <exception cref="T:System.DataMisalignedException">Marker was not found</exception>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.IndexOf(System.String,System.String,Moonrise.Utils.Standard.Extensions.IndexOfOptions)">
+            <summary>
+                Finds a string inside another but can ignore any whitespace in the target string. e.g. Look for "fox" will match
+                "fo x", "f   o x" or "f\r\no\tx"!
+            </summary>
+            <param name="inWhat">The string to look in</param>
+            <param name="findThis">The string to look for</param>
+            <param name="options">How you want to search</param>
+            <returns>The index of the START of the (potentially) whitespace interrupted string</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.IsValidEmail(System.String)">
+            <summary>
+                Determines if a string contains something that at least looks like an email address
+            </summary>
+            <param name="email">String to check</param>
+            <returns>true or false</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.IsValidPhone(System.String)">
+            <summary>
+                Determines if a string contains something that at least looks like a phone number
+            </summary>
+            It should only have '0'-'9' ' ' '(' ')' '+' '-' and then be at least 11 chars long.
+            The characters that allow "ext", "ddi", "direct" or "dial" are also allowed.
+            <param name="phone">String to check</param>
+            <returns>true or false</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.LastIndexOf(System.String,System.String,Moonrise.Utils.Standard.Extensions.IndexOfOptions)">
+            <summary>
+                Reverse finds a string inside another but can ignore any whitespace in the target string. e.g. Look for "fox" will
+                match "fo x", "f   o x" or "f\r\no\tx"!
+            </summary>
+            <param name="inWhat">The string to look in</param>
+            <param name="findThis">The string to look for</param>
+            <param name="options">How you want to search</param>
+            <returns>The index of the START of the (potentially) whitespace interrupted string</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.Left(System.String,System.Int32)">
+            <summary>
+                Returns up to <paramref name="count" /> characters from the left of a string. Does NOT throw
+                <see cref="T:System.IndexOutOfRangeException" />!
+            </summary>
+            <param name="source">The source.</param>
+            <param name="count">The count of characters to return.</param>
+            <returns>Left part of the string</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.Mid(System.String,System.Int32,System.Int32)">
+            <summary>
+                Returns up to <paramref name="count" /> characters from the inner of a string. Does NOT throw
+                <see cref="T:System.IndexOutOfRangeException" />!
+            </summary>
+            <param name="source">The source.</param>
+            <param name="start">The start of the "middle".</param>
+            <param name="count">The count of characters to return.</param>
+            <returns>Middle part of the string</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.Pluralise(System.String,System.Int32,System.Boolean)">
+            <summary>
+                Pluralises word based on count
+            </summary>
+            <param name="item">The string to pluralise.</param>
+            <param name="count">Number of items</param>
+            <param name="includeCount">if set to <c>true</c> [include count].</param>
+            <returns>
+                Pluralised word prefixed with count
+            </returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.Pluralise(System.String,System.Int32,System.String,System.Boolean)">
+            <summary>
+                Pluralises word based on count
+            </summary>
+            <param name="item">The string to pluralise.</param>
+            <param name="count">Number of items</param>
+            <param name="plural">Plural form of word</param>
+            <param name="includeCount">if set to <c>true</c> [include count].</param>
+            <returns>
+                Pluralised word prefixed with count
+            </returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.ReplaceBetween(System.String,System.String,System.String,System.String)">
+            <summary>
+                Replaces a string between two string markers with another.
+            </summary>
+            <param name="source">The source.</param>
+            <param name="startFrom">The string that marks the start of the replacement boundary.</param>
+            <param name="endWith">The string that marks the end of the replacement boundary.</param>
+            <param name="putThisInstead">The string to place BETWEEN the two boundaries.</param>
+            <returns>
+                The replaced string
+            </returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.ReplaceBetween(System.String,System.Int32@,System.String,System.String,System.String)">
+            <summary>
+                Replaces a string between two string markers with another.
+            </summary>
+            <param name="source">The source.</param>
+            <param name="startPos">The start position -  Updated with the point AFTER the end marker</param>
+            <param name="startFrom">The string that marks the start of the replacement boundary.</param>
+            <param name="endWith">The string that marks the end of the replacement boundary.</param>
+            <param name="putThisInstead">The string to place BETWEEN the two boundaries.</param>
+            <returns>The replaced string</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.Right(System.String,System.Int32)">
+            <summary>
+                Returns up to <paramref name="count" /> characters from the right of a string. Does NOT throw
+                <see cref="T:System.IndexOutOfRangeException" />!
+            </summary>
+            <param name="source">The source.</param>
+            <param name="count">The count of characters to return.</param>
+            <returns>Right part of the string</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.SplitRow(System.String,System.String,System.String,System.Boolean)">
+            <summary>
+                Splits a string as though it were a row typically found in a CSV formatted file.
+                <para>
+                    Taken from the answer by Sam Jazz @
+                    https://stackoverflow.com/questions/3776458/split-a-comma-separated-string-with-both-quoted-and-unquoted-strings
+                </para>
+            </summary>
+            <param name="record">The record.</param>
+            <param name="delimiter">The delimiter, typically commas.</param>
+            <param name="qualifier">
+                A qualifier, typically double quotes. i.e. Can be used to enclose whitespace, including the
+                delimiter, within the one value.
+            </param>
+            <param name="trimData">Should the qualifiers be trimmed?</param>
+            <returns></returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.ToIntList(System.String,System.Char)">
+            <summary>
+                Creates a list of integers from a "Comma Separated List" string. A counterpart to CSL string extension method.
+            </summary>
+            <param name="csl">"this" string containing separated list</param>
+            <param name="separator">the separator character</param>
+            <returns>A list of integers. NOTE: If the string is null or empty you will get a list with 0 entries.</returns>
+            <exception>Anything that <see cref="M:System.Int32.Parse(System.String)" /> will throw!</exception>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.ToSentence(System.String)">
+            <summary>
+                "TurnsCasedText" into "Turns Cased Text".
+            </summary>
+            <param name="instance">The string being sentenced.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.ToStringList(System.String,System.Char)">
+            <summary>
+                Creates a list of strings from a "Comma Separated List" string. A counterpart to CSL string
+                extension method.
+            </summary>
+            <param name="csl">"this" string containing separated list</param>
+            <param name="separator">the separator character</param>
+            <returns>A list of trimmed strings. NOTE: If the string is null or empty you will get a list with 0 entries.</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.Trim(System.String,System.String)">
+            <summary>
+                Removes a single instance of a specified string from the start and end of a string.
+            </summary>
+            <param name="instance">The string being trimmed</param>
+            <param name="what">What to trim off the start and end</param>
+            <returns>The trimmed string</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.TrimEnd(System.String,System.String)">
+            <summary>
+                Removes a single instance of a specified string from the end of a string.
+            </summary>
+            <param name="instance">The string being trimmed</param>
+            <param name="what">What to trim off the end</param>
+            <returns>The trimmed string</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.TrimStart(System.String,System.String)">
+            <summary>
+                Removes a single instance of a specified string from the start of a string.
+            </summary>
+            <param name="instance">The string being trimmed</param>
+            <param name="what">What to trim off the start</param>
+            <returns>The trimmed string</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Extensions.StringExtensions.AssertFound(System.Int32)">
+            <summary>
+                Determines if the IndexOf operation found the required text or not. Saves multiple in-line found checking after
+                each IndexOf.
+            </summary>
+            Only used by the marker extraction extensions below
+            <param name="indexOfResult">If text wasn't found (-1), throws an exception.</param>
+            <returns>Otherwise returns the result.</returns>
+            <exception cref="T:System.DataMisalignedException">Marker was not found</exception>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Files.FileUtils">
+            <summary>
+                Contains utility methods for working with files.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Files.FileUtils.ApplicationPath">
+            <summary>
+                Gets the application path.
+            </summary>
+            <returns>As above!</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Files.FileUtils.ApplicationName">
+            <summary>
+                Gets the application name.
+            </summary>
+            <returns>As above!</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Files.FileUtils.GetParentDirectory(System.String)">
+            <summary>
+            Gets the parent directory of a specified filepath. To get the parent of a FOLDER path, the path needs to end with a separator!
+            </summary>
+            <param name="filepath">The filepath.</param>
+            <returns>The parent folder, or null if already at the root of a drive!</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Files.FileUtils.ReadFile(System.String,System.String)">
+            <summary>
+                Reads a complete file as a string.
+            </summary>
+            <param name="dir">The directory for the file.</param>
+            <param name="fileName">Name of the file.</param>
+            <returns>Null if the directory/file could not be found OR the contents of the file</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Files.FileUtils.ReadFile(System.String)">
+            <summary>
+                Reads a complete file as a string.
+            </summary>
+            <param name="filePath">The full file path.</param>
+            <returns>Null if the directory/file could not be found OR the contents of the file</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Files.FileUtils.RoamingUserApplicationPath(System.String)">
+            <summary>
+                Gets the user application path.
+                Note: Automatically strips any trailing ".vshost"!
+            </summary>
+            <param name="defaultCompanyName">If the company name cannot be worked out</param>
+            <returns>As above!</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Files.FileUtils.WriteFile(System.String,System.String,System.String)">
+            <summary>
+                Overwrites a complete string into a file.
+            </summary>
+            <param name="dir">The directory for the file.</param>
+            <param name="fileName">Name of the file.</param>
+            <param name="content">The content to write.</param>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Files.StreamUtils">
+            <summary>
+                Methods to make using streams a little smoother!
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Files.StreamUtils.StringStream(System.String)">
+            <summary>
+                Generates a memory stream from string. Remember to use;
+                <para>
+                    using (Stream strStream = StreamUtils.StringStream(string s)){...}
+                </para>
+            </summary>
+            <param name="s">The feed string.</param>
+            <returns>A memory stream ready to rock.</returns>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Hash.HashUtils">
+            <summary>
+                Utility methods for working with hashes.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Hash.HashUtils.GetMd5Hash(System.Security.Cryptography.MD5,System.String)">
+            <summary>
+                Computes the MD5 hash value of a string and returns the hash as a 32-character, hexadecimal-formatted string
+            </summary>
+            <param name="md5Hash">The <see cref="T:System.Security.Cryptography.MD5" /> instance to be used to generate the hash</param>
+            <param name="input">The string to hash.</param>
+            <returns>The hex-formatted hash string.</returns>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.ICloneable">
+            <summary>
+            DNC (.Net Core) doesn't have an ICloneable interface!
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.ICloneable.Clone">
+            <summary>
+            Clones this instance.
+            </summary>
+            <returns>A new instance with the same contents values as itself</returns>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.IOffer">
+            <summary>
+                An interface that implements <see cref="T:Moonrise.Utils.Standard.IOffer" /> is an interface that has been declared to show what public
+                properties/methods are offered out by a class. This also then means that that class can be substituted - typically
+                for tests. Now there's nothing really new about this except the reasoning of why an interface has been defined. The
+                standard concept is that an interface is defined to say what is REQUIRED and tends to get passed in to the object
+                that REQUIRES them. An <see cref="T:Moonrise.Utils.Standard.IOffer" /> interface is what is OFFERED and is passed out, or rather actually
+                defined in the same namespace and then actually implemented by, the class that OFFERS itself out.
+                <para>
+                    An <see cref="T:Moonrise.Utils.Standard.IOffer" /> interface MIGHT also make use of definitions, typically enums, that are found - now
+                    wait for it,
+                    this does conceptually hang together - inside the class that offers that interface, i.e. actually implements
+                    it! So how does this hang together? An interface is supposed to be abstracted and separate from the
+                    implementation
+                    but you're reading that it actually DEPENDS on it's implementation? Yes you are my friend. THAT'S THE POINT, an
+                    <see cref="T:Moonrise.Utils.Standard.IOffer" /> is OFFERED BY the implementation. The advantage for you, dear reader, is that by doing so
+                    it means you can actually substitute it if you need to - essentially for testing!
+                </para>
+                An <see cref="T:Moonrise.Utils.Standard.IOffer" /> has no definition BEYOND indicating 'why' the interface has been offered.
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.IRequire">
+            <summary>
+                An interface that implements <see cref="T:Moonrise.Utils.Standard.IRequire" /> is an interface that has been declared to indicate a cohesive
+                set of functionality that is required by a particular class. Typically that class will then define a nested class
+                that contains instances of each required interface, with the constructor for the class taking in the nested class
+                that contains all of the instances it requires to do its job. Now there's nothing new about this at all and
+                <see cref="T:Moonrise.Utils.Standard.IRequire" /> has just been created simply to indicate that an interface is a required interface.
+                <para>
+                    An <see cref="T:Moonrise.Utils.Standard.IRequire" /> has no definition BEYOND indicating that the interface is from this pattern.
+                </para>
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Misc.RestorableExtension">
+            <summary>
+                Class to define the extension method in.
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Misc.RestorableExtension.RestoreableValue`1">
+            <summary>
+                Grabs a property in it's constructor and resets it to the value it had when passed as it disposes.
+            </summary>
+            <typeparam name="T">Here to allow for the Func&lt;T&gt;</typeparam>
+            <seealso cref="T:System.IDisposable" />
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Misc.RestorableExtension.RestoreableValue`1.instance">
+            <summary>
+                The instance whose value will be reset
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Misc.RestorableExtension.RestoreableValue`1.originalValue">
+            <summary>
+                The original VALUE of the property
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Misc.RestorableExtension.RestoreableValue`1.propInfo">
+            <summary>
+                The property information for the property that needs to be restoreable
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Misc.RestorableExtension.RestoreableValue`1.#ctor(System.Object,System.Linq.Expressions.Expression{System.Func{`0}},System.Boolean)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.Misc.RestorableExtension.RestoreableValue`1" /> class.
+                <para>
+                    Note: If you use this class YOU NEED TO NUGET "DeepCloner by Force"!
+                </para>
+            </summary>
+            <param name="_instance">The _instance whose property is being passed.</param>
+            <param name="property">The property to be restored on <see cref="M:Moonrise.Utils.Standard.Misc.RestorableExtension.RestoreableValue`1.Dispose" />.</param>
+            <param name="deepCopy">
+                Indicates if a deep copy is performed on the property - you usually will want this - though
+                there is only an effect on properties that are an object
+            </param>
+            <exception cref="T:System.ArgumentException">The property HAS to belong to the type</exception>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Misc.RestorableExtension.RestoreableValue`1.Dispose">
+            <summary>
+                Restores the instance's property value back to what it was
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Misc.RestorableExtension.RestoreableValue`1.SetOriginalProperty(System.Object)">
+            <summary>
+                Sets the original property.
+            </summary>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Misc.RestorableExtension.Restoreable``1(System.Object,System.Linq.Expressions.Expression{System.Func{``0}},System.Boolean)">
+            <summary>
+                Restores a property to its original value when the using scope is exited.
+                <para>
+                    Usage:
+                </para>
+                <para>
+                    using (instance.Restorable(()=>instance.Property))
+                </para>
+                <para>
+                    Note: If you use this extension method then YOU NEED TO NUGET "DeepCloner"!
+                </para>
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="ext">The ext.</param>
+            <param name="property">The property.</param>
+            <param name="deepCopy">
+                Indicates if a deep copy is performed on the property - you usually will want this - though
+                there is only an effect on properties that are an object
+            </param>
+            <returns></returns>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Networking.NetworkUtils">
+            <summary>
+                Utility methods for doing various network related stuff
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Networking.NetworkUtils.IsIPAddress(System.String,System.Boolean,System.Boolean)">
+            <summary>
+                Determines whether the specified address is an IP address. NOTE: Prefixes, such as "http:\\" are NOT allowed.
+            </summary>
+            <param name="addr">The address string to check.</param>
+            <param name="checkFullDotNotation">
+                Determines if the string uses dot notation, as by default "5" would be treated as
+                "000.000.000.005"! - ONLY CURRENTLY VALID FOR IPv4!
+            </param>
+            <param name="allowPort">Determines if a port number can be on the end - ONLY CURRENTLY VALID FOR IPv4!</param>
+            <returns>
+                True or False
+            </returns>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Threading.ScopedNestableThreadGlobalSingleton`1">
+            <summary>
+                Provides scoped, nestable, thread global values.
+                <para>
+                    Scoped because any call to get the value (via a static) that occurs somewhere INSIDE the using scope will get
+                    that value.
+                </para>
+                <para>
+                    Nestable because if you open another scope (through an interior/nested using) then THAT becomes the value
+                    anything inside of THAT scope will receive whereas once outside of THAT using scope the value for the PREVIOUS
+                    scope is the static value.
+                </para>
+                <para>
+                    Thread because a <see cref="T:System.Threading.ThreadLocal`1" /> is used as the backing store and so each scopes within different
+                    threads are just for that thread.
+                </para>
+                <para>
+                    Global because it's sort of acting like a global variable!
+                </para>
+                <para>
+                    Another way of thinking about this class is that it is a smuggler. It can smuggle values way down into call
+                    heirarchies without you needing to retrofit paramters to pass to each call. You know the way you can use class
+                    variables for temporary working purposes without them being true properties/attributes of that class (from the
+                    design rather than language persepective here)? Well, a <see cref="T:Moonrise.Utils.Standard.Threading.ScopedNestableThreadGlobalSingleton`1" />
+                    is really the same thing, but for a thread. Kinda!
+                </para>
+                <remarks>
+                    <para>
+                        Usage:
+                        <para>
+                            public class SUT : NestableThreadGlobalSingleton&lt;string&gt;{public SUT(string value) :
+                            base(value){}
+                        </para>
+                    </para>
+                </remarks>
+                <example>
+                    Wrap any significant "outer code" with
+                    <para>
+                        using (new SUT("value")) { YOUR CODE }
+                    </para>
+                    Then anywhere, even deep, within YOUR CODE you can get the current nested, threaded global value via
+                    SUT.CurrentValue()
+                </example>
+            </summary>
+            <typeparam name="T">The type of the singelton</typeparam>
+            <seealso cref="T:System.IDisposable" />
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Threading.ScopedNestableThreadGlobalSingleton`1.ThreadedCurrentGlobal">
+            <summary>
+                The current "thing". This is stored on a per thread basis.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Threading.ScopedNestableThreadGlobalSingleton`1.#ctor">
+            <summary>
+                Prevents a default instance of the <see cref="T:Moonrise.Utils.Standard.Threading.ScopedNestableThreadGlobalSingleton`1" /> class from being created.
+                However we do need to be create one to initially populate the <see cref="T:System.Threading.ThreadLocal`1" />
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Threading.ScopedNestableThreadGlobalSingleton`1.#ctor(`0)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.Threading.ScopedNestableThreadGlobalSingleton`1" /> class.
+            </summary>
+            <param name="value">The value which will be the current NestedThreadGlobal value.</param>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Threading.ScopedNestableThreadGlobalSingleton`1.CurrentValue">
+            <summary>
+                Gets the current Nestable Thread Global Singleton value. If not already set this will be the default for generic type.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Threading.ScopedNestableThreadGlobalSingleton`1.Current">
+            <summary>
+                Gets the current <see cref="T:Moonrise.Utils.Standard.Threading.ScopedNestableThreadGlobalSingleton`1" />
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Threading.ScopedNestableThreadGlobalSingleton`1.Previous">
+            <summary>
+                The previous NestableThreadGlobalSingleton. This allows us to nest scopes, should we so desire.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Threading.ScopedNestableThreadGlobalSingleton`1.Value">
+            <summary>
+                The nested global threaded value
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Threading.ScopedNestableThreadGlobalSingleton`1.Dispose">
+            <summary>
+                Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Threading.ScopedNestableThreadGlobalSingleton`1.Disposing">
+            <summary>
+                Indicates that the current <see cref="T:Moonrise.Utils.Standard.Threading.ScopedNestableThreadGlobalSingleton`1" /> is being disposed. Override this
+                to take
+                additional actions.
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute">
+            <summary>
+                Allows range limits to be set at runtime, rather than only compile time.
+                <remarks>
+                    This attribute is NOT able to be fully dynamic as there is no passing of any context in. Typically used for
+                    ranges that are configured ONCE, say in a config file or database, typically at application startup.
+                </remarks>
+            </summary>
+            <seealso cref="T:System.ComponentModel.DataAnnotations.ValidationAttribute" />
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.DynamicValidationValues">
+            <summary>
+                Default implementation of <see cref="T:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.IDynamicValidationValues" />. You will need to create a sub-class that simply
+                defines a static property, by default call it Instance, that is initialised in your constructor to itself. Then
+                set the appropriate properties to the dynamic values you require.
+                <para>
+                    Ideally use a ThreadLocal implementation of the static property - see the tests on this class for an example.
+                </para>
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.DynamicValidationValues.MaxByte">
+            <summary>
+            The maximum byte value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.DynamicValidationValues.MaxDateTime">
+            <summary>
+            The maximum DateTime value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.DynamicValidationValues.MaxDateTimeOffset">
+            <summary>
+            The maximum DateTimeOffset value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.DynamicValidationValues.MaxDouble">
+            <summary>
+            The maximum double value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.DynamicValidationValues.MaxInt">
+            <summary>
+            The maximum int value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.DynamicValidationValues.MaxString">
+            <summary>
+            The maximum string value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.DynamicValidationValues.MinByte">
+            <summary>
+            The minimum byte value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.DynamicValidationValues.MinDateTime">
+            <summary>
+            The minimum DateTime value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.DynamicValidationValues.MinDateTimeOffset">
+            <summary>
+            The minimum DateTimeOffset value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.DynamicValidationValues.MinDouble">
+            <summary>
+            The minimum double value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.DynamicValidationValues.MinInt">
+            <summary>
+            The minimum int value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.DynamicValidationValues.MinString">
+            <summary>
+            The minimum string value
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.IDynamicValidationValues">
+            <summary>
+                Represents the different Min/Max values that can be set to validate against.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.IDynamicValidationValues.MaxByte">
+            <summary>
+            The maximum byte value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.IDynamicValidationValues.MaxDateTime">
+            <summary>
+            The maximum DateTime value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.IDynamicValidationValues.MaxDateTimeOffset">
+            <summary>
+            The maximum DateTimeOffset value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.IDynamicValidationValues.MaxDouble">
+            <summary>
+            The maximum double value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.IDynamicValidationValues.MaxInt">
+            <summary>
+            The maximum int value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.IDynamicValidationValues.MaxString">
+            <summary>
+            The maximum string value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.IDynamicValidationValues.MinByte">
+            <summary>
+            The minimum byte value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.IDynamicValidationValues.MinDateTime">
+            <summary>
+            The minimum DateTime value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.IDynamicValidationValues.MinDateTimeOffset">
+            <summary>
+            The minimum DateTimeOffset value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.IDynamicValidationValues.MinDouble">
+            <summary>
+            The minimum double value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.IDynamicValidationValues.MinInt">
+            <summary>
+            The minimum int value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.IDynamicValidationValues.MinString">
+            <summary>
+            The minimum string value
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.#ctor(System.Type)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute" /> class.
+            </summary>
+            <param name="validationValuesImplementation">The validation values implementation.</param>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.InstanceName">
+            <summary>
+                The name of the static property on the ValidationValues class that returns the instance the values will be set to.
+                Defaults to "Instance".
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.MaxByte">
+            <summary>
+                Property "address" representing the maximum byte value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.MaxInt">
+            <summary>
+                Property "address" representing the maximum int value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.MinByte">
+            <summary>
+                Property "address" representing the minimum byte value
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.MinInt">
+            <summary>
+                Property "address" representing the minimum int value
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
+            <summary>
+                Validates the specified value with respect to the current validation attribute.
+            </summary>
+            <returns>An instance of the <see cref="T:System.ComponentModel.DataAnnotations.ValidationResult" /> class. </returns>
+            <param name="value">The value to validate.</param>
+            <param name="validationContext">The context information about the validation operation.</param>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.DynamicRangeAttribute.GetValidationSupplier">
+            <summary>
+                Gets the validation supplier which will provide the validation ranges dynamically.
+            </summary>
+            <returns>The instance returned by the static method named as the InstanceName</returns>
+            <exception cref="T:System.ComponentModel.DataAnnotations.ValidationException">An exception will be thrown if the type does not contain such a static method</exception>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Validation.FileValidationAttribute">
+            <summary>
+                Validates a filepath string
+            </summary>
+            <seealso cref="T:System.ComponentModel.DataAnnotations.ValidationAttribute" />
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Validation.FileValidationAttribute._exists">
+            <summary>
+                Backing store for <see cref="P:Moonrise.Utils.Standard.Validation.FileValidationAttribute.Exists" />
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.FileValidationAttribute.#ctor">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.Validation.FileValidationAttribute" /> class.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.FileValidationAttribute.Exists">
+            <summary>
+                Determines if the file exists
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.FileValidationAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
+            <summary>
+                Validates the specified value with respect to the current validation attribute.
+            </summary>
+            <returns>An instance of the <see cref="T:System.ComponentModel.DataAnnotations.ValidationResult" /> class. </returns>
+            <param name="value">The value to validate.</param>
+            <param name="validationContext">The context information about the validation operation.</param>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Validation.GuidValidationAttribute">
+            <summary>
+                Validates a string to be a Guid.
+            </summary>
+            <seealso cref="T:System.ComponentModel.DataAnnotations.ValidationAttribute" />
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.GuidValidationAttribute.#ctor">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.Validation.GuidValidationAttribute" /> class.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.GuidValidationAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
+            <summary>
+                Validates the specified value with respect to the current validation attribute.
+            </summary>
+            <returns>An instance of the <see cref="T:System.ComponentModel.DataAnnotations.ValidationResult" /> class. </returns>
+            <param name="value">The value to validate.</param>
+            <param name="validationContext">The context information about the validation operation.</param>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Validation.InterfaceValidator">
+            <summary>
+                Enables validation of an instance against an interface
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.InterfaceValidator.CollateValidationMessages(System.Collections.Generic.ICollection{System.ComponentModel.DataAnnotations.ValidationResult})">
+            <summary>
+                Collates the validation messages.
+            </summary>
+            <param name="results">The validation results.</param>
+            <returns>A list of just the message strings</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.InterfaceValidator.Validate(System.Object,System.Collections.Generic.ICollection{System.ComponentModel.DataAnnotations.ValidationResult})">
+            <summary>
+                Iterates through the interface definition, finding the matching implemented property and validates the instance
+                value against any validation attributes of the interface definition
+            </summary>
+            <param name="instance">The instance of the object implementing the interface.</param>
+            <param name="results">The validation results.</param>
+            <returns>True if valid</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.InterfaceValidator.ValidateAgainstInterface``1(System.Object,System.Collections.Generic.ICollection{System.ComponentModel.DataAnnotations.ValidationResult})">
+            <summary>
+                Iterates through the interface definition, finding the matching implemented property and validates the instance
+                value against any validation attributes of the interface definition
+            </summary>
+            <typeparam name="I">The interface to validate against</typeparam>
+            <param name="instance">The instance of the object implementing the interface.</param>
+            <param name="results">The validation results.</param>
+            <returns>True if valid</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.InterfaceValidator.ValidateProperty(System.Object,System.String,System.Collections.Generic.ICollection{System.ComponentModel.DataAnnotations.ValidationResult},System.String)">
+            <summary>
+                Validates a property of an instance object against any validation attributes on that property or on the interface
+                that the container of that property implements.
+            </summary>
+            <param name="instance">The instance object.</param>
+            <param name="propertyName">Name of the property in the instance object.</param>
+            <param name="results">The results.</param>
+            <param name="locationContext">The location context.</param>
+            <returns>Whether the porperty is valid or not</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.InterfaceValidator.ValidationMessagesAsString(System.Collections.Generic.ICollection{System.ComponentModel.DataAnnotations.ValidationResult})">
+            <summary>
+                Collates validation results as a single string.
+            </summary>
+            <param name="validationResults">The validation results.</param>
+            <returns>The said single string!</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.InterfaceValidator.Validate(System.Object,System.String,System.Collections.Generic.ICollection{System.ComponentModel.DataAnnotations.ValidationResult})">
+            <summary>
+                Validates an instance of an implementation against interface.
+            </summary>
+            <returns>True if valid</returns>
+            <param name="instance">The instance of the object implementing the interface.</param>
+            <param name="locationContext">The location context.</param>
+            <param name="results">The validation results.</param>
+            <returns>True if valid</returns>
+            <exception cref="T:System.ArgumentException">The instance MUST implement the interfaceType</exception>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.InterfaceValidator.ValidateAgainstInterface(System.Object,System.Type,System.String,System.Collections.Generic.ICollection{System.ComponentModel.DataAnnotations.ValidationResult})">
+            <summary>
+                Validates an instance of an implementation against interface.
+            </summary>
+            <returns>True if valid</returns>
+            <param name="instance">The instance of the object implementing the interface.</param>
+            <param name="interfaceType">Type of the interface to validate against.</param>
+            <param name="locationContext">The location context.</param>
+            <param name="results">The validation results.</param>
+            <returns>True if valid</returns>
+            <exception cref="T:System.ArgumentException">The instance MUST implement the interfaceType</exception>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.InterfaceValidator.ValidatePropertyAgainstInterface(System.Reflection.PropertyInfo,System.Object,System.String,System.Boolean,System.Collections.Generic.ICollection{System.ComponentModel.DataAnnotations.ValidationResult})">
+            <summary>
+                Validates the property against interface.
+            </summary>
+            <param name="prop">The interface property information.</param>
+            <param name="instance">The instance of that property in the implementation.</param>
+            <param name="locationContext">The location context (this is used for reporting where in the overall structure we are).</param>
+            <param name="checkAllInterfaces">
+                Determines if we're checking all of the interfaces on a property - essentially we were
+                passed the object's property
+            </param>
+            <param name="results">The validation results.</param>
+            <returns>
+                True if valid
+            </returns>
+            <exception cref="T:System.ArgumentException">IEnumerable has to be generic</exception>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Validation.IpAddressValidationAttribute">
+            <summary>
+                Validates a string to be a valid ip address.
+            </summary>
+            <seealso cref="T:System.ComponentModel.DataAnnotations.ValidationAttribute" />
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Validation.IpAddressValidationAttribute._includePort">
+            <summary>
+                Backing store for <see cref="P:Moonrise.Utils.Standard.Validation.IpAddressValidationAttribute.IncludePort" />
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.IpAddressValidationAttribute.#ctor">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.Validation.IpAddressValidationAttribute" /> class.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.IpAddressValidationAttribute.IncludePort">
+            <summary>
+                Determines if the port number should be included, e.g. ....:nnn. Defaults to False.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.IpAddressValidationAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
+            <summary>
+                Validates the specified value with respect to the current validation attribute.
+            </summary>
+            <returns>An instance of the <see cref="T:System.ComponentModel.DataAnnotations.ValidationResult" /> class. </returns>
+            <param name="value">The value to validate.</param>
+            <param name="validationContext">The context information about the validation operation.</param>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Validation.IValidatableAttribute">
+            <summary>
+                Causes the containing class' <see cref="M:System.ComponentModel.DataAnnotations.IValidatableObject.Validate(System.ComponentModel.DataAnnotations.ValidationContext)" /> to be invoked, allowing for later reported
+                errors (in MVC) to be reported earlier! THIS ONLY WORKS IF THE ELEMENT ATTRIBUTED CAN RETURN ONE ERROR, i.e. is
+                unlikely to be a Composite!
+                <para>
+                    Note: Any validation errors must return both the member name AND the display name. e.g.
+                </para>
+                <para>
+                    yield return new <see cref="T:System.ComponentModel.DataAnnotations.ValidationResult" />("Message xxxx",
+                </para>
+                <para>
+                    new[]{ nameof(XxxProperty),
+                </para>
+                <para>
+                    ((XxxViewModel)validationContext.ObjectInstance).DisplayName(m=>m.XxxProperty)}
+                </para>
+            </summary>
+            <seealso cref="T:System.ComponentModel.DataAnnotations.ValidationAttribute" />
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.IValidatableAttribute.#ctor">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.Validation.IValidatableAttribute" /> class.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.IValidatableAttribute.#ctor(System.String)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.Validation.IValidatableAttribute" /> class.
+                <para>
+                    The message will only be displayed IF the failed validation in <see cref="M:System.ComponentModel.DataAnnotations.IValidatableObject.Validate(System.ComponentModel.DataAnnotations.ValidationContext)" />
+                    returns a null or empty string in ITS message. Sometimes it will make sense to specify the message within the
+                    attribute but other times it may make more sense to specify the message where the check is being done. Your
+                    choice!
+                </para>
+            </summary>
+            <param name="message">
+                The message to display IF the failed validation in <see cref="M:System.ComponentModel.DataAnnotations.IValidatableObject.Validate(System.ComponentModel.DataAnnotations.ValidationContext)" />
+                returns a null or empty string in IT'S message.
+            </param>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.IValidatableAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
+            <summary>
+                Returns true if ... is valid.
+            </summary>
+            <param name="value">The value to validate.</param>
+            <param name="validationContext">The context information about the validation operation.</param>
+            <returns>
+                An instance of the <see cref="T:System.ComponentModel.DataAnnotations.ValidationResult" /> class.
+            </returns>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Validation.ListContentValidationAttribute">
+            <summary>
+                Validation attribute to indicate that nulls should not be allowed to be stored in an IEnumerable
+            </summary>
+            <seealso cref="T:System.ComponentModel.DataAnnotations.ValidationAttribute" />
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.ListContentValidationAttribute.#ctor(System.Func{System.String})">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.Validation.ListContentValidationAttribute" /> class.
+            </summary>
+            <param name="errorMessageAccessor">The function that enables access to validation resources.</param>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.ListContentValidationAttribute.#ctor(System.String)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.Validation.ListContentValidationAttribute" /> class.
+            </summary>
+            <param name="errorMessage">The error message to associate with a validation control.</param>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.ListContentValidationAttribute.AllowNulls">
+            <summary>
+                Determines if null elements are allowed in the "list"
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.ListContentValidationAttribute.AppendFurtherErrorDetails">
+            <summary>
+                Indicates whether further details about the invalidity are appended. e.g. needs X elements, following [x],[y] are
+                null, etc. Defaults to false.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.ListContentValidationAttribute.MaxElements">
+            <summary>
+                The maximum number of elements expected
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.ListContentValidationAttribute.MinElements">
+            <summary>
+                The minimum number of elements expected
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.ListContentValidationAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
+            <summary>Validates the specified value with respect to the current validation attribute.</summary>
+            <returns>An instance of the <see cref="T:System.ComponentModel.DataAnnotations.ValidationResult" /> class. </returns>
+            <param name="value">The value to validate.</param>
+            <param name="validationContext">The context information about the validation operation.</param>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Validation.NonDefaultAttribute">
+            <summary>
+                Checks that whatever it is applied to is NOT the default value. If you apply this to ints etc, then you are stating
+                they are NOT to be zero!
+            </summary>
+            <seealso cref="T:System.ComponentModel.DataAnnotations.ValidationAttribute" />
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.NonDefaultAttribute.#ctor">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.Validation.NonDefaultAttribute" /> class.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.NonDefaultAttribute.#ctor(System.String)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.Validation.NonDefaultAttribute" /> class.
+            </summary>
+            <param name="errorMessage">The error message.</param>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.NonDefaultAttribute.IsDefault(System.Object)">
+            <summary>
+                Determines if a given object is equal to its default value
+            </summary>
+            <param name="value">the object concerned</param>
+            <returns>True if it has the default value</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.NonDefaultAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
+            <summary>
+                Returns true if ... is valid.
+            </summary>
+            <param name="value">The value.</param>
+            <param name="context">The context of the validation.</param>
+            <returns>true or false!</returns>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Validation.ValidateChildAttribute">
+            <summary>
+                Used on a "composite property", i.e. a class, it indicates that if ANY validation on the child members fails, then
+                this "parent"
+                validation will also fail.
+            </summary>
+            <seealso cref="T:System.ComponentModel.DataAnnotations.ValidationAttribute" />
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.ValidateChildAttribute.#ctor(System.String)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.Validation.ValidatedByParentAttribute" /> class.
+            </summary>
+            <param name="message">The additional message to display if ANY of the class members have validation that fails.</param>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.ValidateChildAttribute.AppendChildMessage">
+            <summary>
+                Indicates if the message from the child's <see cref="T:Moonrise.Utils.Standard.Validation.ValidatedByParentAttribute" /> should be appended to the end
+                of this attribute's
+                <see cref="P:System.ComponentModel.DataAnnotations.ValidationAttribute.ErrorMessage" />. Defaults to true.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.ValidateChildAttribute.MemberToHighlight">
+            <summary>
+                The name of the member/field to highlight on invalidity.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.ValidateChildAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
+            <summary>
+                Returns true if ... is valid.
+            </summary>
+            <param name="value">The value to validate.</param>
+            <param name="validationContext">The context information about the validation operation.</param>
+            <returns>
+                An instance of the <see cref="T:System.ComponentModel.DataAnnotations.ValidationResult" /> class.
+            </returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.ValidateChildAttribute.CreateValidationResult(System.Reflection.PropertyInfo)">
+            <summary>
+                Creates the validation result.
+            </summary>
+            <param name="propertyInfo">The property information.</param>
+            <returns>The created validation result!</returns>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Validation.ValidatedByParentAttribute">
+            <summary>
+                An attribute to indicate that a property will be evaluated as part of a <see cref="T:Moonrise.Utils.Standard.Validation.ValidateChildAttribute" />.
+                <para>
+                    SOME validation implementations may make use of this to decide not to validate this "child" data, but only do
+                    so in the context of
+                    validating the "parent"!
+                </para>
+                <para>
+                    You would typically use this where you want to use a composite view model with re-useable class data contained
+                    in it that must be validated but use a specific message for failures of individual instances.
+                </para>
+            </summary>
+            <seealso cref="T:System.Attribute" />
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.ValidatedByParentAttribute.#ctor(System.String)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.Validation.ValidatedByParentAttribute" /> class.
+            </summary>
+            <param name="errorMessage">The error message.</param>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Validation.ValidatedByParentAttribute.#ctor">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.Validation.ValidatedByParentAttribute" /> class.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.ValidatedByParentAttribute.ErrorMessage">
+            <summary>
+                The error message. The use of this will be determined by
+                <seealso cref="P:Moonrise.Utils.Standard.Validation.ValidateChildAttribute.AppendChildMessage" />.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Validation.ValidatedByParentAttribute.MemberToHighlight">
+            <summary>
+                Indicates the name of the member to "highlight" if validation of the attributed member fails. Usually this will be
+                used where the attributed member does not have a visible element to highlight but another member does.
+            </summary>
+        </member>
+    </members>
+</doc>

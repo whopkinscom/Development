@@ -1,8 +1,9 @@
+﻿<#@ output extension = ".nuspec" encoding ="Windows-1252" #>
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
 	  <id>Moonrise.TestUtils.NetStd</id>
-	  <version>4.2020.1116.22082</version>
+	  <version><#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #></version>
 	  <copyright>Moonrise Media Ltd.</copyright>
 	  <authors>Will Hopkins</authors>
 	  <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -17,8 +18,8 @@
     <language>en-GB</language>
     <dependencies>
       <!--<dependency id="Moq" />-->
-      <dependency id="Moonrise.LoggingUtils.NetStd" version="4.2020.1116.22082"/>
-	  <dependency id="Moonrise.StandardUtils.NetStd" version="4.2020.1116.22082"/>
+      <dependency id="Moonrise.LoggingUtils.NetStd" version="<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>"/>
+	  <dependency id="Moonrise.StandardUtils.NetStd" version="<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>"/>
   </dependencies>
 	  <icon>images\Logo.png</icon>
   </metadata>
@@ -30,3 +31,4 @@
     <file src="Properties\Mm Button.png" target="images\Logo.png"/>
   </files>
 </package>
+<#@include file="..\..\Shared\Moonrise.Version\Properties\VersionNumber.t4" #>

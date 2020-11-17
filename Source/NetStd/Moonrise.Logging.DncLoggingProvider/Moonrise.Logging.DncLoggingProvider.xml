@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Moonrise.Logging.DncLoggingProvider</name>
+    </assembly>
+    <members>
+        <member name="T:Moonrise.Logging.DncLogProvider">
+            <summary>
+                Uses the Microsoft Extensions Logging Abstractions logger to log from the Moonrise logging.
+            </summary>
+            <seealso cref="T:Moonrise.Logging.ILoggingProvider" />
+        </member>
+        <member name="F:Moonrise.Logging.DncLogProvider.loggerFactory">
+            <summary>
+                The logger factory
+            </summary>
+        </member>
+        <member name="M:Moonrise.Logging.DncLogProvider.#ctor(Microsoft.Extensions.Logging.ILoggerFactory)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Moonrise.Logging.DncLogProvider" /> class.
+            </summary>
+            <param name="_loggerFactory">The logger factory.</param>
+        </member>
+        <member name="P:Moonrise.Logging.DncLogProvider.NextLogger">
+            <summary>
+                The next logger to pass the log message on to. Allows additional loggers to be used. Don't create circular links
+                though eh!
+            </summary>
+        </member>
+        <member name="M:Moonrise.Logging.DncLogProvider.Clone">
+            <summary>
+                Clones this instance.
+            </summary>
+            <returns>
+                A new instance with the same contents values as itself
+            </returns>
+        </member>
+        <member name="M:Moonrise.Logging.DncLogProvider.LogThis(Moonrise.Logging.LoggingLevel,System.String,Moonrise.Logging.LogTag,System.String)">
+            <summary>
+                Logs the appropriate level of message.
+            </summary>
+            <param name="level">The level.</param>
+            <param name="msg">The message.</param>
+        </member>
+    </members>
+</doc>
