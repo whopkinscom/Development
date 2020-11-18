@@ -77,13 +77,12 @@ namespace Moonrise.Logging
         /// </summary>
         ILoggingProvider NextLogger { get; set; }
 
-        /// <summary>
-        /// Logs the appropriate level of message.
-        /// </summary>
+        /// <summary>Logs the appropriate level of message.</summary>
         /// <param name="level">The level.</param>
-        /// <param name="context">The context.</param>
+        /// <param name="context">The context - if <see cref="Logger.UseContext" /> is false, this will be empty.</param>
+        /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId"/> is false, this will be empty.</param>
         /// <param name="logTag">The log tag.</param>
         /// <param name="msg">The message.</param>
-        void LogThis(LoggingLevel level, string context, LogTag logTag, string msg);
+        void LogThis(LoggingLevel level, string context, string threadId, LogTag logTag, string msg);
     }
 }

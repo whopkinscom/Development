@@ -46,7 +46,6 @@ using Moonrise.Utils.Standard.DatesTimes;
 using Moonrise.Utils.Standard.Exceptions;
 using Moonrise.Utils.Test.ObjectCreation;
 using Moonrise.Utils.Standard.Extensions;
-using Moonrise.Utils.Standard.Exceptions;
 
 namespace Moonrise
 {
@@ -732,19 +731,19 @@ namespace Moonrise
         public static void Logging()
         {
             Settings.Application.Read("Logging", ref LoggingConfiguration, true);
+            
+            {
+                // You could also read this into a LoggingConfig property - yes it's perhaps a bit of a pain to repeat the property twice in this call but that's just how you need to do it!
+                // POINT IS, if you want to use it as a property, then go ahead, you can!
+                Settings.Application.Read("Logging", LoggingConfigurationAsProperty,
+                    () => LoggingConfigurationAsProperty,
+                    true);
 
-            // You could also read this into a LoggingConfig property - yes it's perhaps a bit of a pain to repeat the property twice but that's just how you need to do it!
-            // POINT IS, if you want to use it as a property, then go ahead, you can!
-            Settings.Application.Read("Logging", LoggingConfigurationAsProperty, () => LoggingConfigurationAsProperty,
-                true);
+                if (LoggingConfigurationAsProperty.Logger.OutputLevel != LoggingConfiguration.Logger.OutputLevel)
+                    throw new ApplicationException("Go on, I dare you!");
+            }
 
-            if (LoggingConfigurationAsProperty.Level != LoggingConfiguration.Level)
-                throw new ApplicationException("Go on, I dare you!");
-
-            Logger.LogProvider = new BasicFileLogProvider(LoggingConfiguration.LogFile);
-            Logger.OutputLevel = LoggingConfiguration.Level;
-            Logger.UseContext = LoggingConfiguration.UseLoggingContext;
-            Logger.ActivateLogTags(LoggingConfiguration.LogTags);
+            Logger.Initialise(LoggingConfiguration.Logger, new BasicFileLogProvider(LoggingConfiguration.LogFile));
             Logger.Seperate('*');
             Logger.Debug("Just logging the current logging settings");
             Logger.Debug(LoggingConfiguration);
@@ -757,24 +756,14 @@ namespace Moonrise
         public class LoggingConfig
         {
             /// <summary>
-            ///     The level of logging to report - messages of this level and higher priority will get logged
+            ///     Base logger configuration
             /// </summary>
-            public Logger.ReportingLevel Level { get; set; } = Logger.ReportingLevel.Information;
+            public Logger.Config Logger { get; set; } = new Logger.Config();
 
             /// <summary>
             ///     File logger configuration
             /// </summary>
             public BasicFileLogProvider.Config LogFile { get; set; } = new BasicFileLogProvider.Config();
-
-            /// <summary>
-            ///     A list of the log tag names that should be considered active to be logged
-            /// </summary>
-            public List<string> LogTags { get; set; } // = new List<string>{ "NoTags", "AreCurrently", "Defined"};
-
-            /// <summary>
-            ///     True if logging context is to be emitted
-            /// </summary>
-            public bool UseLoggingContext { get; set; } = true;
         }
     }
 
@@ -825,26 +814,46 @@ namespace Moonrise
   // settings from Logging to perhaps MoonriseLogging or whatever. You'd just change the corresponding Settings.Read(...)
   "Logging": {
     // Everything inside this bit of settings tree now matches the structure of the Moonrise.Samples.Initialise.LoggingConfig class
-    "Level": "Debug",
+    "Logger": {
+      // Everything inside this bit of settings tree now matches the structure of the Moonrise.Logging.Logger.Config class
+      // i.e. showing a sample of reading complete object trees.
+      "LogMethodName": false,
+      // Generally you want to put all of the LogTags that you use in here.
+      // Then to turn them Off or On, simply put or remove an x from in front of them. The LogTags are simply matched 
+      // against a string so if the active ones have an x in front, they won't match, remove the preceeding x and 
+      // they will match!
+      "LogTags": [
+        "NoTags",
+        "AreCurrently",
+        "Defined",
+        "SampleLogging"
+      ],
+      // For the enum if you let them get written out if not existing, they'll be written as their numeric value
+      // You can use the numeric, the enum "name" or the enum "Description" for enum settings being read in.
+      "OutputLevel": "Debug",
+      "StackTracingEnabled": false,
+      "UseConsoleOutput": false,
+      "UseContext": true,
+      "UseThreadId": false
+
+      // Another thing to note about reading settings as a complete object.
+      // It uses NewtonSoft.Json.JsonConvert to read the JSON into an instantiated object which means it reads the public
+      // settable properties.
+      // You do not need to have all of the properties defined in the JSON and they do not need to be in any particular order
+      // but any properties that are not in the JSON will be set as per the default settings for those properties on creation
+      // i.e. Any values in the structure that are set BEFORE reading the settings will get effectively replaced by a new
+      // instance with EITHER the defaults OR the value in the JSON!
+    },
     "LogFile": {
       // Note that this settings subtree now matches the structure of the Moonrise.Logging.BasicFileLogProvider.Config class,
-      // i.e. showing a sample of reading complete object trees.
       "DateTimeFormatterPrefix": "{0:HH:mm:ss} ",
       "LogCycling": "Weekly",
       "LogFilePerThread": false,
-      "LoggingFile": "../../../Logging.log"
-    },
-    // Generally you want to put all of the LogTags that you use in here.
-    // Then to turn them Off or On, simply put or remove an x from in front of them. The LogTags are simply matched 
-    // against a string so if the active ones have an x in front, they won't match, remove the preceeding x and 
-    // they will match!
-    "LogTags": [
-      "NoTags",
-      "AreCurrently",
-      "Defined",
-      "xSampleLogging"
-    ],
-    "UseLoggingContext": true
+      // This will place the logging file back up from the build output into the project directory
+      "LoggingFile": "../../../Logging.log",
+      "MaxEntries": 0,
+      "ByCountFilenameDateTimeFormat": "yyyyMMddhhmmss"
+    }
   }
 }
 

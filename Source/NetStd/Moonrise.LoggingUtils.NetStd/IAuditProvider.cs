@@ -32,9 +32,10 @@ namespace Moonrise.Logging
         /// Audits the message.
         /// </summary>
         /// <param name="msg">The message.</param>
-        /// <param name="context">The context.</param>
+        /// <param name="context">The context - if <see cref="Logger.UseContext" /> is false, this will be empty.</param>
+        /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId"/> is false, this will be empty.</param>
         /// <param name="logTag">The log tag.</param>
-        void AuditThis(string msg, string context, LogTag logTag);
+        void AuditThis(string msg, string context, string threadId, LogTag logTag);
 
         /// <summary>
         /// Audits an object. Can be used IF a specific object is to be audited by an implementation rather than simply a
@@ -43,8 +44,9 @@ namespace Moonrise.Logging
         /// <param name="message">The message.</param>
         /// <param name="auditObject">The audit object.</param>
         /// <param name="auditLevel">The audit level.</param>
-        /// <param name="context">The context.</param>
+        /// <param name="context">The context - if <see cref="Logger.UseContext" /> is false, this will be empty.</param>
+        /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId"/> is false, this will be empty.</param>
         /// <param name="logTag">The log tag.</param>
-        void AuditThisObject(string message, object auditObject, LoggingLevel auditLevel, string context, LogTag logTag);
+        void AuditThisObject(string message, object auditObject, LoggingLevel auditLevel, string context, string threadId, LogTag logTag);
     }
 }

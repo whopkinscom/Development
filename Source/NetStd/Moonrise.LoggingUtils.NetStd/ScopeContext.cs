@@ -58,7 +58,7 @@ namespace Moonrise.Logging
             // If we aren't putting the context in front of each message then we log the entry and exit points and increment and decrement the indent every time we enter and leave scope
             if (!Logger.UseContext)
             {
-                Logger.Debug($"{scopeName}() - Entry");
+                Logger.Debug($"{scopeName} - Entry");
                 Logger._Indent.Value++;
             }
         }
@@ -89,7 +89,7 @@ namespace Moonrise.Logging
         }
 
         /// <summary>
-        /// Called when exiting a using scope. In this case, unwunds the scope context and the logging indent.
+        /// Called when exiting a using scope. In this case, unwinds the scope context and the logging indent.
         /// </summary>
         protected override void Disposing()
         {

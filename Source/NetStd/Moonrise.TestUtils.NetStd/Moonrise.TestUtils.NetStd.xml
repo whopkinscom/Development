@@ -35,6 +35,11 @@
                 The context in play
             </summary>
         </member>
+        <member name="P:Moonrise.Utils.Test.Logging.TestLogAuditProvider.LogEntry.ThreadId">
+            <summary>
+                The current thread id
+            </summary>
+        </member>
         <member name="M:Moonrise.Utils.Test.Logging.TestLogAuditProvider.#ctor(System.Int32)">
             <summary>
                 Initializes a new instance of the <see cref="T:Moonrise.Utils.Test.Logging.TestLogAuditProvider" /> class using a specified initial size
@@ -65,16 +70,17 @@
                 though eh!
             </summary>
         </member>
-        <member name="M:Moonrise.Utils.Test.Logging.TestLogAuditProvider.AuditThis(System.String,System.String,Moonrise.Logging.LogTag)">
+        <member name="M:Moonrise.Utils.Test.Logging.TestLogAuditProvider.AuditThis(System.String,System.String,System.String,Moonrise.Logging.LogTag)">
             <summary>
             Audits the message.
             </summary>
             <param name="msg">The message.</param>
-            <param name="context">The context.</param>
+            <param name="context">The context - if <see cref="P:Moonrise.Logging.Logger.UseContext" /> is false, this will be empty.</param>
+            <param name="threadId">The thread identifier - if <see cref="P:Moonrise.Logging.Logger.UseThreadId"/> is false, this will be empty.</param>
             <param name="logTag">The log tag.</param>
             <exception cref="T:System.NotImplementedException"></exception>
         </member>
-        <member name="M:Moonrise.Utils.Test.Logging.TestLogAuditProvider.AuditThisObject(System.String,System.Object,Moonrise.Logging.LoggingLevel,System.String,Moonrise.Logging.LogTag)">
+        <member name="M:Moonrise.Utils.Test.Logging.TestLogAuditProvider.AuditThisObject(System.String,System.Object,Moonrise.Logging.LoggingLevel,System.String,System.String,Moonrise.Logging.LogTag)">
             <summary>
             Audits an object. Can be used IF a specific object is to be audited by an implementation rather than simply a
             string.
@@ -82,7 +88,8 @@
             <param name="message">The message.</param>
             <param name="auditObject">The audit object.</param>
             <param name="auditLevel">The audit level.</param>
-            <param name="context">The context.</param>
+            <param name="context">The context - if <see cref="P:Moonrise.Logging.Logger.UseContext" /> is false, this will be empty.</param>
+            <param name="threadId">The thread identifier - if <see cref="P:Moonrise.Logging.Logger.UseThreadId"/> is false, this will be empty.</param>
             <param name="logTag">The log tag.</param>
         </member>
         <member name="M:Moonrise.Utils.Test.Logging.TestLogAuditProvider.Clone">
@@ -91,11 +98,14 @@
             </summary>
             <returns>A new object that is a copy of this instance.</returns>
         </member>
-        <member name="M:Moonrise.Utils.Test.Logging.TestLogAuditProvider.LogThis(Moonrise.Logging.LoggingLevel,System.String,Moonrise.Logging.LogTag,System.String)">
+        <member name="M:Moonrise.Utils.Test.Logging.TestLogAuditProvider.LogThis(Moonrise.Logging.LoggingLevel,System.String,System.String,Moonrise.Logging.LogTag,System.String)">
             <summary>
                 Logs the appropriate level of message.
             </summary>
             <param name="level">The level.</param>
+            <param name="context">The context - if <see cref="P:Moonrise.Logging.Logger.UseContext" /> is false, this will be empty.</param>
+            <param name="threadId">The thread identifier - if <see cref="P:Moonrise.Logging.Logger.UseThreadId"/> is false, this will be empty.</param>
+            <param name="logTag">The log tag.</param>
             <param name="msg">The message.</param>
         </member>
         <member name="T:Moonrise.Utils.Test.ObjectCreation.Creator">

@@ -12,7 +12,6 @@ using Moonrise.Utils.Standard.DatesTimes;
 using Moonrise.Utils.Standard.Exceptions;
 using Moonrise.Utils.Test.ObjectCreation;
 using Moonrise.Utils.Standard.Extensions;
-using Moonrise.Utils.Standard.Exceptions;
 
 namespace Moonrise
 {
@@ -698,19 +697,19 @@ namespace Moonrise
         public static void Logging()
         {
             Settings.Application.Read("Logging", ref LoggingConfiguration, true);
+            
+            {
+                // You could also read this into a LoggingConfig property - yes it's perhaps a bit of a pain to repeat the property twice in this call but that's just how you need to do it!
+                // POINT IS, if you want to use it as a property, then go ahead, you can!
+                Settings.Application.Read("Logging", LoggingConfigurationAsProperty,
+                    () => LoggingConfigurationAsProperty,
+                    true);
 
-            // You could also read this into a LoggingConfig property - yes it's perhaps a bit of a pain to repeat the property twice but that's just how you need to do it!
-            // POINT IS, if you want to use it as a property, then go ahead, you can!
-            Settings.Application.Read("Logging", LoggingConfigurationAsProperty, () => LoggingConfigurationAsProperty,
-                true);
+                if (LoggingConfigurationAsProperty.Logger.OutputLevel != LoggingConfiguration.Logger.OutputLevel)
+                    throw new ApplicationException("Go on, I dare you!");
+            }
 
-            if (LoggingConfigurationAsProperty.Level != LoggingConfiguration.Level)
-                throw new ApplicationException("Go on, I dare you!");
-
-            Logger.LogProvider = new BasicFileLogProvider(LoggingConfiguration.LogFile);
-            Logger.OutputLevel = LoggingConfiguration.Level;
-            Logger.UseContext = LoggingConfiguration.UseLoggingContext;
-            Logger.ActivateLogTags(LoggingConfiguration.LogTags);
+            Logger.Initialise(LoggingConfiguration.Logger, new BasicFileLogProvider(LoggingConfiguration.LogFile));
             Logger.Seperate('*');
             Logger.Debug("Just logging the current logging settings");
             Logger.Debug(LoggingConfiguration);
@@ -723,24 +722,14 @@ namespace Moonrise
         public class LoggingConfig
         {
             /// <summary>
-            ///     The level of logging to report - messages of this level and higher priority will get logged
+            ///     Base logger configuration
             /// </summary>
-            public Logger.ReportingLevel Level { get; set; } = Logger.ReportingLevel.Information;
+            public Logger.Config Logger { get; set; } = new Logger.Config();
 
             /// <summary>
             ///     File logger configuration
             /// </summary>
             public BasicFileLogProvider.Config LogFile { get; set; } = new BasicFileLogProvider.Config();
-
-            /// <summary>
-            ///     A list of the log tag names that should be considered active to be logged
-            /// </summary>
-            public List<string> LogTags { get; set; } // = new List<string>{ "NoTags", "AreCurrently", "Defined"};
-
-            /// <summary>
-            ///     True if logging context is to be emitted
-            /// </summary>
-            public bool UseLoggingContext { get; set; } = true;
         }
     }
 

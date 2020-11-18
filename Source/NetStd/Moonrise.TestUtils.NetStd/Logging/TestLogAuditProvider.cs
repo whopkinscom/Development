@@ -52,6 +52,11 @@ namespace Moonrise.Utils.Test.Logging
             ///     The context in play
             /// </summary>
             public string Context { get; set; }
+
+            /// <summary>
+            ///     The current thread id
+            /// </summary>
+            public string ThreadId { get; set; }
         }
 
         /// <summary>
@@ -94,12 +99,13 @@ namespace Moonrise.Utils.Test.Logging
         /// Audits the message.
         /// </summary>
         /// <param name="msg">The message.</param>
-        /// <param name="context">The context.</param>
+        /// <param name="context">The context - if <see cref="Logger.UseContext" /> is false, this will be empty.</param>
+        /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId"/> is false, this will be empty.</param>
         /// <param name="logTag">The log tag.</param>
         /// <exception cref="System.NotImplementedException"></exception>
-        public void AuditThis(string msg, string context, LogTag logTag)
+        public void AuditThis(string msg, string context, string threadId, LogTag logTag)
         {
-            LogThis(LoggingLevel.Audit, context, logTag, msg);
+            LogThis(LoggingLevel.Audit, context, threadId, logTag, msg);
         }
 
         /// <summary>
@@ -109,12 +115,13 @@ namespace Moonrise.Utils.Test.Logging
         /// <param name="message">The message.</param>
         /// <param name="auditObject">The audit object.</param>
         /// <param name="auditLevel">The audit level.</param>
-        /// <param name="context">The context.</param>
+        /// <param name="context">The context - if <see cref="Logger.UseContext" /> is false, this will be empty.</param>
+        /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId"/> is false, this will be empty.</param>
         /// <param name="logTag">The log tag.</param>
-        public void AuditThisObject(string message, object auditObject, LoggingLevel auditLevel, string context, LogTag logTag)
+        public void AuditThisObject(string message, object auditObject, LoggingLevel auditLevel, string context, string threadId, LogTag logTag)
         {
             string json = JsonConvert.SerializeObject(auditObject);
-            LogThis(LoggingLevel.Audit, context, logTag, $"{message} AuditLevel: {auditLevel} :{json}");
+            LogThis(LoggingLevel.Audit, context, threadId, logTag, $"{message} AuditLevel: {auditLevel} :{json}");
         }
 
         /// <summary>
@@ -132,15 +139,19 @@ namespace Moonrise.Utils.Test.Logging
         ///     Logs the appropriate level of message.
         /// </summary>
         /// <param name="level">The level.</param>
+        /// <param name="context">The context - if <see cref="Logger.UseContext" /> is false, this will be empty.</param>
+        /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId"/> is false, this will be empty.</param>
+        /// <param name="logTag">The log tag.</param>
         /// <param name="msg">The message.</param>
-        public void LogThis(LoggingLevel level, string context, LogTag logTag, string msg)
+        public void LogThis(LoggingLevel level, string context, string threadId, LogTag logTag, string msg)
         {
             LogBuffer.Add(new LogEntry
                           {
                               Context = context,
                               LogTag = logTag,
                               Level = level,
-                              Message = msg
+                              Message = msg,
+                              ThreadId = threadId
                           });
         }
     }

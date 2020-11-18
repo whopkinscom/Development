@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
 	  <id>Moonrise.StandardUtils.NetStd</id>
-	  <version>4.2020.1116.22082</version>
+	  <version>4.2020.1118.14322</version>
 	  <copyright>Moonrise Media Ltd.</copyright>
 	  <authors>Will Hopkins</authors>
 	  <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -21,7 +21,7 @@
     ConfigFile has been renamed Settings and now has indexers, can target User settings as well as Application settings and has configurable settings providers, via ISettingsProvider.</releaseNotes>
     <language>en-GB</language>
     <dependencies>
-      <dependency id="Moonrise.LoggingUtils.NetStd"  version="4.2020.1116.22082"/>
+      <dependency id="Moonrise.LoggingUtils.NetStd"  version="4.2020.1118.14322"/>
     </dependencies>
 	  <icon>images\Logo.png</icon>
   </metadata>

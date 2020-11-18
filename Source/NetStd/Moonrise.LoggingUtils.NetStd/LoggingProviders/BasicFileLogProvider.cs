@@ -340,16 +340,17 @@ namespace Moonrise.Logging.LoggingProviders
         /// Audits the message.
         /// </summary>
         /// <param name="msg">The message.</param>
-        /// <param name="context">The context.</param>
+        /// <param name="context">The context - if <see cref="Logger.UseContext" /> is false, this will be empty.</param>
+        /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId"/> is false, this will be empty.</param>
         /// <param name="logTag">The log tag.</param>
-        public void AuditThis(string msg, string context, LogTag logTag)
+        public void AuditThis(string msg, string context, string threadId, LogTag logTag)
         {
             // We simply log this. The way we're LIKELY to get used is that there will be a different FileLogger for logging and auditing with different filenames for each.
             if (fileLoggingEnabled)
             {
                 // Get the current datetime to help determine the resultant filename
                 DateTime now = _dateTimeProvider.Now;
-                LogMsg(FormatLogMsg(now, LoggingLevel.Audit, context, logTag, msg), now);
+                LogMsg(FormatLogMsg(now, LoggingLevel.Audit, context, threadId, logTag, msg), now);
             }
         }
 
@@ -360,13 +361,14 @@ namespace Moonrise.Logging.LoggingProviders
         /// <param name="message">The message.</param>
         /// <param name="auditObject">The object to audit - it will be JSONd</param>
         /// <param name="auditLevel">The level of audit</param>
-        /// <param name="context">The context.</param>
+        /// <param name="context">The context - if <see cref="Logger.UseContext" /> is false, this will be empty.</param>
+        /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId"/> is false, this will be empty.</param>
         /// <param name="logTag">The log tag.</param>
-        public void AuditThisObject(string message, object auditObject, LoggingLevel auditLevel, string context, LogTag logTag)
+        public void AuditThisObject(string message, object auditObject, LoggingLevel auditLevel, string context, string threadId, LogTag logTag)
         {
             // The basic implementation simply audits the Json version
             string auditMsg = auditLevel == LoggingLevel.Audit ? string.Empty : auditLevel + $" {message}\r\n{Logger.JsonIt(auditObject)}";
-            AuditThis(auditMsg, context, logTag);
+            AuditThis(auditMsg, context, threadId, logTag);
         }
 
         /// <summary>Creates a new object that is a copy of the current instance.</summary>
@@ -383,16 +385,17 @@ namespace Moonrise.Logging.LoggingProviders
         /// Logs the appropriate level of message.
         /// </summary>
         /// <param name="level">The level.</param>
-        /// <param name="context">The context.</param>
+        /// <param name="context">The context - if <see cref="Logger.UseContext" /> is false, this will be empty.</param>
+        /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId"/> is false, this will be empty.</param>
         /// <param name="logTag">The log tag.</param>
         /// <param name="msg">The message.</param>
-        public void LogThis(LoggingLevel level, string context, LogTag logTag, string msg)
+        public void LogThis(LoggingLevel level, string context, string threadId, LogTag logTag, string msg)
         {
             if (fileLoggingEnabled)
             {
                 // Get the current datetime to help determine the resultant filename
                 DateTime now = _dateTimeProvider.Now;
-                LogMsg(FormatLogMsg(now, level, context, logTag, msg), now);
+                LogMsg(FormatLogMsg(now, level, context, threadId, logTag, msg), now);
             }
         }
 
@@ -406,16 +409,22 @@ namespace Moonrise.Logging.LoggingProviders
         /// <param name="dateTime">The date time of the logging message. This time is consistent with the one used to generate the filename!</param>
         /// <param name="level">The logging level</param>
         /// <param name="context">The logging context <seealso cref="Logger.Context" /></param>
+        /// <param name="threadId">The thread identifier.</param>
         /// <param name="logTag">The log tag used. NOTE: LogTag filtering HAS ALREADY BEEN APPLIED.</param>
         /// <param name="msg">The message passed to the logging function.</param>
         /// <returns>A formatted string to be written out.</returns>
-        protected virtual string FormatLogMsg(DateTime dateTime, LoggingLevel level, string context, LogTag logTag, string msg)
+        protected virtual string FormatLogMsg(DateTime dateTime, LoggingLevel level, string context, string threadId, LogTag logTag, string msg)
         {
             string retVal;
 
             if (!string.IsNullOrWhiteSpace(context))
             {
                 msg = $"{context}: {msg}";
+            }
+
+            if (!string.IsNullOrWhiteSpace(threadId))
+            {
+                msg = $"<{threadId}> {msg}";
             }
 
             if (level == LoggingLevel.Fatal)

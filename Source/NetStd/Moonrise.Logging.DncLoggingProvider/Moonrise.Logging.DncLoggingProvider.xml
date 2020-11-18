@@ -35,11 +35,14 @@
                 A new instance with the same contents values as itself
             </returns>
         </member>
-        <member name="M:Moonrise.Logging.DncLogProvider.LogThis(Moonrise.Logging.LoggingLevel,System.String,Moonrise.Logging.LogTag,System.String)">
+        <member name="M:Moonrise.Logging.DncLogProvider.LogThis(Moonrise.Logging.LoggingLevel,System.String,System.String,Moonrise.Logging.LogTag,System.String)">
             <summary>
                 Logs the appropriate level of message.
             </summary>
             <param name="level">The level.</param>
+            <param name="context">The context - if <see cref="P:Moonrise.Logging.Logger.UseContext" /> is false, this will be empty.</param>
+            <param name="threadId">The thread identifier - if <see cref="P:Moonrise.Logging.Logger.UseThreadId"/> is false, this will be empty.</param>
+            <param name="logTag">The log tag.</param>
             <param name="msg">The message.</param>
         </member>
     </members>

@@ -15,15 +15,16 @@
                 links though eh!
             </summary>
         </member>
-        <member name="M:Moonrise.Logging.IAuditProvider.AuditThis(System.String,System.String,Moonrise.Logging.LogTag)">
+        <member name="M:Moonrise.Logging.IAuditProvider.AuditThis(System.String,System.String,System.String,Moonrise.Logging.LogTag)">
             <summary>
             Audits the message.
             </summary>
             <param name="msg">The message.</param>
-            <param name="context">The context.</param>
+            <param name="context">The context - if <see cref="P:Moonrise.Logging.Logger.UseContext" /> is false, this will be empty.</param>
+            <param name="threadId">The thread identifier - if <see cref="P:Moonrise.Logging.Logger.UseThreadId"/> is false, this will be empty.</param>
             <param name="logTag">The log tag.</param>
         </member>
-        <member name="M:Moonrise.Logging.IAuditProvider.AuditThisObject(System.String,System.Object,Moonrise.Logging.LoggingLevel,System.String,Moonrise.Logging.LogTag)">
+        <member name="M:Moonrise.Logging.IAuditProvider.AuditThisObject(System.String,System.Object,Moonrise.Logging.LoggingLevel,System.String,System.String,Moonrise.Logging.LogTag)">
             <summary>
             Audits an object. Can be used IF a specific object is to be audited by an implementation rather than simply a
             string.
@@ -31,7 +32,8 @@
             <param name="message">The message.</param>
             <param name="auditObject">The audit object.</param>
             <param name="auditLevel">The audit level.</param>
-            <param name="context">The context.</param>
+            <param name="context">The context - if <see cref="P:Moonrise.Logging.Logger.UseContext" /> is false, this will be empty.</param>
+            <param name="threadId">The thread identifier - if <see cref="P:Moonrise.Logging.Logger.UseThreadId"/> is false, this will be empty.</param>
             <param name="logTag">The log tag.</param>
         </member>
         <member name="T:Moonrise.Logging.ICloneable">
@@ -104,12 +106,11 @@
                 though eh!
             </summary>
         </member>
-        <member name="M:Moonrise.Logging.ILoggingProvider.LogThis(Moonrise.Logging.LoggingLevel,System.String,Moonrise.Logging.LogTag,System.String)">
-            <summary>
-            Logs the appropriate level of message.
-            </summary>
+        <member name="M:Moonrise.Logging.ILoggingProvider.LogThis(Moonrise.Logging.LoggingLevel,System.String,System.String,Moonrise.Logging.LogTag,System.String)">
+            <summary>Logs the appropriate level of message.</summary>
             <param name="level">The level.</param>
-            <param name="context">The context.</param>
+            <param name="context">The context - if <see cref="P:Moonrise.Logging.Logger.UseContext" /> is false, this will be empty.</param>
+            <param name="threadId">The thread identifier - if <see cref="P:Moonrise.Logging.Logger.UseThreadId"/> is false, this will be empty.</param>
             <param name="logTag">The log tag.</param>
             <param name="msg">The message.</param>
         </member>
@@ -141,7 +142,8 @@
         </member>
         <member name="F:Moonrise.Logging.Logger.ReportingLevel.Trace">
             <summary>
-                All messages of Trace and higher (<see cref="F:Moonrise.Logging.Logger.ReportingLevel.Debug" />, <see cref="F:Moonrise.Logging.Logger.ReportingLevel.Information" />, <see cref="F:Moonrise.Logging.Logger.ReportingLevel.Warning" />, <see cref="F:Moonrise.Logging.Logger.ReportingLevel.Error" />,
+                All messages of Trace and higher (<see cref="F:Moonrise.Logging.Logger.ReportingLevel.Debug" />, <see cref="F:Moonrise.Logging.Logger.ReportingLevel.Information" />, <see cref="F:Moonrise.Logging.Logger.ReportingLevel.Warning" />,
+                <see cref="F:Moonrise.Logging.Logger.ReportingLevel.Error" />,
                 <see cref="F:Moonrise.Logging.Logger.ReportingLevel.Fatal" />) will be output
             </summary>
         </member>
@@ -231,9 +233,9 @@
         <member name="P:Moonrise.Logging.Logger.AuditProvider">
             <summary>
                 The root <see cref="T:Moonrise.Logging.IAuditProvider" />. Only the first auditor to be assigned will be accepted. Additional auditors
-                can be managed via <see cref="P:Moonrise.Logging.Logger.NextAuditor" />. If you need to replace the original auditor you will need to use
-                <see cref="M:Moonrise.Logging.Logger.ReplaceAuditProvider(Moonrise.Logging.IAuditProvider)" /> as subsequent settings via <see cref="P:Moonrise.Logging.Logger.AuditProvider" /> will only affect the
-                current thread.
+                can be managed via the <see cref="P:Moonrise.Logging.Logger.NextAuditor" />property of your <see cref="T:Moonrise.Logging.IAuditProvider"/>. If you need to
+                replace the original auditor you will need to use <see cref="M:Moonrise.Logging.Logger.ReplaceAuditProvider(Moonrise.Logging.IAuditProvider)" /> as subsequent settings via
+                <see cref="P:Moonrise.Logging.Logger.AuditProvider" /> will only affect the current thread.
             </summary>
             <remarks>
                 If you set to null, then currently the auditor on ALL threads will be nulled out. Basically this shouldn't be done,
@@ -265,7 +267,7 @@
         <member name="P:Moonrise.Logging.Logger.LogProvider">
             <summary>
                 The root <see cref="T:Moonrise.Logging.ILoggingProvider" />. Only the first logger to be assigned will be accepted. Additional loggers
-                can be managed via <see cref="P:Moonrise.Logging.Logger.NextLogger" />. If you need to replace the original logger you will need to use
+                can be managed via the <see cref="P:Moonrise.Logging.Logger.NextLogger" /> property of your <see cref="T:Moonrise.Logging.ILoggingProvider"/>. If you need to replace the original logger you will need to use
                 <see cref="M:Moonrise.Logging.Logger.ReplaceLoggingProvider(Moonrise.Logging.ILoggingProvider)" /> as subsequent settings via <see cref="P:Moonrise.Logging.Logger.LogProvider" /> will only affect the
                 current thread.
             </summary>
@@ -293,7 +295,8 @@
         </member>
         <member name="P:Moonrise.Logging.Logger.StackTracingEnabled">
             <summary>
-                Allows stack tracing to be switched on and off
+                Allows stack tracing to be switched on and off - as in supressing or allowing the output of
+                <see cref="M:Moonrise.Logging.Logger.TraceStack" />
             </summary>
         </member>
         <member name="P:Moonrise.Logging.Logger.UseConsoleOutput">
@@ -319,23 +322,25 @@
                 links though eh!
             </summary>
         </member>
-        <member name="M:Moonrise.Logging.Logger.AuditThis(System.String,System.String,Moonrise.Logging.LogTag)">
+        <member name="M:Moonrise.Logging.Logger.AuditThis(System.String,System.String,System.String,Moonrise.Logging.LogTag)">
             <summary>
-            Audits the message.
+                Audits the message.
             </summary>
             <param name="msg">The message.</param>
-            <param name="context">The context.</param>
+            <param name="context">The context - if <see cref="P:Moonrise.Logging.Logger.UseContext" /> is false, this will be empty.</param>
+            <param name="threadId">The thread identifier - if <see cref="P:Moonrise.Logging.Logger.UseThreadId"/> is false, this will be empty.</param>
             <param name="logTag">The log tag.</param>
         </member>
-        <member name="M:Moonrise.Logging.Logger.AuditThisObject(System.String,System.Object,Moonrise.Logging.LoggingLevel,System.String,Moonrise.Logging.LogTag)">
+        <member name="M:Moonrise.Logging.Logger.AuditThisObject(System.String,System.Object,Moonrise.Logging.LoggingLevel,System.String,System.String,Moonrise.Logging.LogTag)">
             <summary>
-            Audits an object. Can be used IF a specific object is to be audited by an implementation rather than simply a
-            string.
+                Audits an object. Can be used IF a specific object is to be audited by an implementation rather than simply a
+                string.
             </summary>
             <param name="message">The message.</param>
             <param name="auditObject">The object to audit - it will be JSONd</param>
             <param name="auditLevel">The level of audit</param>
-            <param name="context">The context.</param>
+            <param name="context">The context - if <see cref="P:Moonrise.Logging.Logger.UseContext" /> is false, this will be empty.</param>
+            <param name="threadId">The thread identifier - if <see cref="P:Moonrise.Logging.Logger.UseThreadId"/> is false, this will be empty.</param>
             <param name="logTag">The log tag.</param>
             <exception cref="T:System.NotImplementedException"></exception>
         </member>
@@ -354,7 +359,7 @@
             </remarks>
             <returns>A new object that is a copy of this instance.</returns>
         </member>
-        <member name="M:Moonrise.Logging.Logger.LogThis(Moonrise.Logging.LoggingLevel,System.String,Moonrise.Logging.LogTag,System.String)">
+        <member name="M:Moonrise.Logging.Logger.LogThis(Moonrise.Logging.LoggingLevel,System.String,System.String,Moonrise.Logging.LogTag,System.String)">
             <summary>
             Logs an error message to the console.
             <para>
@@ -363,8 +368,22 @@
             </summary>
             <param name="level">The level for this message</param>
             <param name="context">The context.</param>
+            <param name="threadId">The thread identifier - if <see cref="P:Moonrise.Logging.Logger.UseThreadId" /> is false, this will be empty.</param>
             <param name="logTag">The log tag.</param>
             <param name="msg">The message to log</param>
+        </member>
+        <member name="M:Moonrise.Logging.Logger.Initialise(Moonrise.Logging.Logger.Config,Moonrise.Logging.ILoggingProvider,Moonrise.Logging.IAuditProvider)">
+            <summary>A one-shot initialisation using the specified configuration.</summary>
+            <param name="config">The configuration.</param>
+            <param name="loggingProvider">The logging provider.</param>
+            <param name="auditProvider">
+                The audit provider, defaults to NULL - which means an calls to <see cref="M:Moonrise.Logging.Logger.Audit(System.String,System.Object,Moonrise.Logging.LogTag,Moonrise.Logging.LoggingLevel,System.String)" /> will be
+                logged as an Audit message.
+            </param>
+            <remarks>
+                Each of the properties in the config can be set individually, this just makes that initialisation a bit more
+                compact, especially if you've read the config as an object from a settings file.
+            </remarks>
         </member>
         <member name="M:Moonrise.Logging.Logger.ActivateLogTag(Moonrise.Logging.LogTag)">
             <summary>
@@ -402,24 +421,28 @@
         </member>
         <member name="M:Moonrise.Logging.Logger.Audit(System.String,System.Object,Moonrise.Logging.LogTag,Moonrise.Logging.LoggingLevel,System.String)">
             <summary>
-            Logs an object in JSON format as a <see cref="F:Moonrise.Logging.LoggingLevel.Audit" />. It also passes the object to the
-            <see cref="T:Moonrise.Logging.IAuditProvider" /> which may wish to audit the actual object.
-            <remarks>
-            Note, this override of Audit will be used unless a more specific override is used. i.e. It will not JSON a
-            String!
-            Audit messages are log messages with a level of Audit. Audit is the highest level log message and will ALWAYS
-            be logged, even if Logging has been disabled. Different <see cref="T:Moonrise.Logging.ILoggingProvider" />s MAY decide to also
-            treat Audit messages differently, however in addition you CAN also supply an <see cref="T:Moonrise.Logging.IAuditProvider" /> (or
-            chain of them) which will only be passed Audit messages via <see cref="M:Moonrise.Logging.IAuditProvider.AuditThis(System.String,System.String,Moonrise.Logging.LogTag)" />.
-            </remarks><para>
-            Also you don't need to log AND audit as the audit message will be logged and if you supply an auditLevel
-            other than <see cref="F:Moonrise.Logging.LoggingLevel.Audit" /> then the message will be prefixed with that level. So, you can
-            audit errors and info. Unlikely you'd want to audit Debug but you could!
-            </para>
+                Logs an object in JSON format as a <see cref="F:Moonrise.Logging.LoggingLevel.Audit" />. It also passes the object to the
+                <see cref="T:Moonrise.Logging.IAuditProvider" /> which may wish to audit the actual object.
+                <remarks>
+                    Note, this override of Audit will be used unless a more specific override is used. i.e. It will not JSON a
+                    String!
+                    Audit messages are log messages with a level of Audit. Audit is the highest level log message and will ALWAYS
+                    be logged, even if Logging has been disabled. Different <see cref="T:Moonrise.Logging.ILoggingProvider" />s MAY decide to also
+                    treat Audit messages differently, however in addition you CAN also supply an <see cref="T:Moonrise.Logging.IAuditProvider" /> (or
+                    chain of them) which will only be passed Audit messages via <see cref="M:Moonrise.Logging.IAuditProvider.AuditThis(System.String,System.String,System.String,Moonrise.Logging.LogTag)" />.
+                </remarks>
+                <para>
+                    Also you don't need to log AND audit as the audit message will be logged and if you supply an auditLevel
+                    other than <see cref="F:Moonrise.Logging.LoggingLevel.Audit" /> then the message will be prefixed with that level. So, you can
+                    audit errors and info. Unlikely you'd want to audit Debug but you could!
+                </para>
             </summary>
             <param name="message">The message to accompany the audit</param>
             <param name="anything">The object to be logged using JSON</param>
-            <param name="logTag">The log tag. Unlike for Logging, auditing will always audit so the logTag can be used for extra information by the <see cref="T:Moonrise.Logging.IAuditProvider" /> where required.</param>
+            <param name="logTag">
+                The log tag. Unlike for Logging, auditing will always audit so the logTag can be used for extra
+                information by the <see cref="T:Moonrise.Logging.IAuditProvider" /> where required.
+            </param>
             <param name="auditLevel">The audit level.</param>
             <param name="caller">The name of the caller of this Audit.</param>
         </member>
@@ -495,7 +518,10 @@
                     using (Logger.ScopedLogTag()){code} or Logger.ScopedLogTag("whatever"){code}
                 </para>
             </summary>
-            <param name="logTagScope">The log tag to scope - if null, a LogTag will be created of the same name as the caller's name - Not really recommended though.</param>
+            <param name="logTagScope">
+                The log tag to scope - if null, a LogTag will be created of the same name as the caller's
+                name - Not really recommended though.
+            </param>
             <param name="callerContext">The caller context - defaults to the name of the caller</param>
             <returns>A <see cref="T:Moonrise.Logging.LogTag.Scoped" /> that SHOULD be used in a using statement</returns>
         </member>
@@ -509,8 +535,10 @@
         </member>
         <member name="M:Moonrise.Logging.Logger.Trace(System.String,Moonrise.Logging.LogTag,System.String)">
             <summary>
-                Logs the specified message as a <see cref="F:Moonrise.Logging.LoggingLevel.Trace" />.<para>
-            Try not to use this too often for DETAIL, use Debug in preference UNLESS YOU NEED LOTS OF DETAIL </para>
+                Logs the specified message as a <see cref="F:Moonrise.Logging.LoggingLevel.Trace" />.
+                <para>
+                    Try not to use this too often for DETAIL, use Debug in preference UNLESS YOU NEED LOTS OF DETAIL
+                </para>
             </summary>
             <param name="msg">The string to log.</param>
             <param name="logTag">An optional log tag.</param>
@@ -530,9 +558,13 @@
         <member name="M:Moonrise.Logging.Logger.Trace(System.Object,Moonrise.Logging.LogTag,System.String)">
             <summary>
                 Logs any object using JSON as a <see cref="F:Moonrise.Logging.LoggingLevel.Trace" />. This will log the field name and value of the
-                object.<para>
-            Try not to use this too often for DETAIL, use Debug in preference UNLESS YOU NEED LOTS OF DETAIL </para><para>
-            IF YOU CALL THIS MAKE SURE YOU HAVE A REFERENCE TO NewtonSoft.Json</para>
+                object.
+                <para>
+                    Try not to use this too often for DETAIL, use Debug in preference UNLESS YOU NEED LOTS OF DETAIL
+                </para>
+                <para>
+                    IF YOU CALL THIS MAKE SURE YOU HAVE A REFERENCE TO NewtonSoft.Json
+                </para>
             </summary>
             Note, this override of Log will be used unless a more specific override is used. i.e. It will not JSON an Exception or a String!
             <param name="anything">The object to be logged using JSON</param>
@@ -686,6 +718,11 @@
             <param name="args">Any arguments.</param>
             The whole line will be 79/80 chars total with the message centered in the ----- lines ------
         </member>
+        <member name="M:Moonrise.Logging.Logger.TraceStack">
+            <summary>
+                Spits a stack trace out to the log.
+            </summary>
+        </member>
         <member name="M:Moonrise.Logging.Logger.Warning(System.String,System.String)">
             <summary>
                 Logs the specified message as a <see cref="F:Moonrise.Logging.LoggingLevel.Warning" />.
@@ -711,6 +748,51 @@
             <param name="msg">Message to log.</param>
             <param name="logTag">An optional log tag.</param>
             <param name="caller">The method name of the caller. Will be displayed if <seealso cref="P:Moonrise.Logging.Logger.LogMethodName" /> is true.</param>
+        </member>
+        <member name="T:Moonrise.Logging.Logger.Config">
+            <summary>
+                Configuration data so that the Logger's static properties can be set in one hit, typically from a settings file.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Logging.Logger.Config.LogMethodName">
+            <summary>
+                Indicates if the name of the method that calls one of the logging methods (Debug, Info, Warning, Error or Fatal)
+                will be displayed as a prefix in the log message.
+                <para>
+                    NOTE: This will only be the method name, and will not include the class or namespace!
+                </para>
+            </summary>
+        </member>
+        <member name="P:Moonrise.Logging.Logger.Config.LogTags">
+            <summary>The set of log tags to initially activate. See also <seealso cref="M:Moonrise.Logging.Logger.ActivateLogTags(System.Collections.Generic.IEnumerable{System.String})"/></summary>
+        </member>
+        <member name="P:Moonrise.Logging.Logger.Config.OutputLevel">
+            <summary>
+                Gets or sets the current logging output level
+            </summary>
+        </member>
+        <member name="P:Moonrise.Logging.Logger.Config.StackTracingEnabled">
+            <summary>
+                Allows stack tracing to be switched on and off - as in supressing or allowing the output of
+                <see cref="M:Moonrise.Logging.Logger.TraceStack" />
+            </summary>
+        </member>
+        <member name="P:Moonrise.Logging.Logger.Config.UseConsoleOutput">
+            <summary>
+                Determines if we should use Console output in addition to the LogProvider. Needs to be set AFTER the LogProvider
+                has been determined.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Logging.Logger.Config.UseContext">
+            <summary>
+                Determines if any context is going to be printed in front of messages. If False, any scope WILL be logged at the
+                point of the scope and indentation will be used instead.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Logging.Logger.Config.UseThreadId">
+            <summary>
+                Determines if the log message is to be prefixed with the thread id.
+            </summary>
         </member>
         <member name="T:Moonrise.Logging.Logger.LocalLogger">
             <summary>
@@ -959,15 +1041,16 @@
                 The timestamp prefix
             </summary>
         </member>
-        <member name="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.AuditThis(System.String,System.String,Moonrise.Logging.LogTag)">
+        <member name="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.AuditThis(System.String,System.String,System.String,Moonrise.Logging.LogTag)">
             <summary>
             Audits the message.
             </summary>
             <param name="msg">The message.</param>
-            <param name="context">The context.</param>
+            <param name="context">The context - if <see cref="P:Moonrise.Logging.Logger.UseContext" /> is false, this will be empty.</param>
+            <param name="threadId">The thread identifier - if <see cref="P:Moonrise.Logging.Logger.UseThreadId"/> is false, this will be empty.</param>
             <param name="logTag">The log tag.</param>
         </member>
-        <member name="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.AuditThisObject(System.String,System.Object,Moonrise.Logging.LoggingLevel,System.String,Moonrise.Logging.LogTag)">
+        <member name="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.AuditThisObject(System.String,System.Object,Moonrise.Logging.LoggingLevel,System.String,System.String,Moonrise.Logging.LogTag)">
             <summary>
             Audits an object. Can be used IF a specific object is to be audited by an implementation rather than simply a
             string.
@@ -975,23 +1058,25 @@
             <param name="message">The message.</param>
             <param name="auditObject">The object to audit - it will be JSONd</param>
             <param name="auditLevel">The level of audit</param>
-            <param name="context">The context.</param>
+            <param name="context">The context - if <see cref="P:Moonrise.Logging.Logger.UseContext" /> is false, this will be empty.</param>
+            <param name="threadId">The thread identifier - if <see cref="P:Moonrise.Logging.Logger.UseThreadId"/> is false, this will be empty.</param>
             <param name="logTag">The log tag.</param>
         </member>
         <member name="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Clone">
             <summary>Creates a new object that is a copy of the current instance.</summary>
             <returns>A new object that is a copy of this instance.</returns>
         </member>
-        <member name="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.LogThis(Moonrise.Logging.LoggingLevel,System.String,Moonrise.Logging.LogTag,System.String)">
+        <member name="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.LogThis(Moonrise.Logging.LoggingLevel,System.String,System.String,Moonrise.Logging.LogTag,System.String)">
             <summary>
             Logs the appropriate level of message.
             </summary>
             <param name="level">The level.</param>
-            <param name="context">The context.</param>
+            <param name="context">The context - if <see cref="P:Moonrise.Logging.Logger.UseContext" /> is false, this will be empty.</param>
+            <param name="threadId">The thread identifier - if <see cref="P:Moonrise.Logging.Logger.UseThreadId"/> is false, this will be empty.</param>
             <param name="logTag">The log tag.</param>
             <param name="msg">The message.</param>
         </member>
-        <member name="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.FormatLogMsg(System.DateTime,Moonrise.Logging.LoggingLevel,System.String,Moonrise.Logging.LogTag,System.String)">
+        <member name="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.FormatLogMsg(System.DateTime,Moonrise.Logging.LoggingLevel,System.String,System.String,Moonrise.Logging.LogTag,System.String)">
             <summary>
             In cases where you want to use a log file <see cref="T:Moonrise.Logging.LoggingProviders.BasicFileLogProvider" /> will generally do
             everything, however if you want more precise control over formatting the message - perhaps for
@@ -1002,6 +1087,7 @@
             <param name="dateTime">The date time of the logging message. This time is consistent with the one used to generate the filename!</param>
             <param name="level">The logging level</param>
             <param name="context">The logging context <seealso cref="M:Moonrise.Logging.Logger.Context(System.String,Moonrise.Logging.LogTag,System.String)" /></param>
+            <param name="threadId">The thread identifier.</param>
             <param name="logTag">The log tag used. NOTE: LogTag filtering HAS ALREADY BEEN APPLIED.</param>
             <param name="msg">The message passed to the logging function.</param>
             <returns>A formatted string to be written out.</returns>
@@ -1231,7 +1317,7 @@
         </member>
         <member name="M:Moonrise.Logging.ScopeContext.Disposing">
             <summary>
-            Called when exiting a using scope. In this case, unwunds the scope context and the logging indent.
+            Called when exiting a using scope. In this case, unwinds the scope context and the logging indent.
             </summary>
         </member>
         <member name="T:Moonrise.Logging.Util.ScopedNestableThreadGlobalSingleton`1">

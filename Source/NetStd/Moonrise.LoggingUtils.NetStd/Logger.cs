@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
@@ -60,7 +61,8 @@ namespace Moonrise.Logging
             All = LoggingLevel.Trace - 1,
 
             /// <summary>
-            ///     All messages of Trace and higher (<see cref="Debug" />, <see cref="Information" />, <see cref="Warning" />, <see cref="Error" />,
+            ///     All messages of Trace and higher (<see cref="Debug" />, <see cref="Information" />, <see cref="Warning" />,
+            ///     <see cref="Error" />,
             ///     <see cref="Fatal" />) will be output
             /// </summary>
             Trace = LoggingLevel.Trace,
@@ -101,8 +103,7 @@ namespace Moonrise.Logging
             /// <summary>
             ///     No messages will be output, except Audit messages
             /// </summary>
-            [Description("None")]
-            Off = LoggingLevel.Audit
+            [Description("None")] Off = LoggingLevel.Audit
         }
 
         /// <summary>
@@ -152,9 +153,9 @@ namespace Moonrise.Logging
 
         /// <summary>
         ///     The root <see cref="IAuditProvider" />. Only the first auditor to be assigned will be accepted. Additional auditors
-        ///     can be managed via <see cref="NextAuditor" />. If you need to replace the original auditor you will need to use
-        ///     <see cref="ReplaceAuditProvider" /> as subsequent settings via <see cref="AuditProvider" /> will only affect the
-        ///     current thread.
+        ///     can be managed via the <see cref="NextAuditor" />property of your <see cref="IAuditProvider"/>. If you need to
+        ///     replace the original auditor you will need to use <see cref="ReplaceAuditProvider" /> as subsequent settings via
+        ///     <see cref="AuditProvider" /> will only affect the current thread.
         /// </summary>
         /// <remarks>
         ///     If you set to null, then currently the auditor on ALL threads will be nulled out. Basically this shouldn't be done,
@@ -248,7 +249,7 @@ namespace Moonrise.Logging
 
         /// <summary>
         ///     The root <see cref="ILoggingProvider" />. Only the first logger to be assigned will be accepted. Additional loggers
-        ///     can be managed via <see cref="NextLogger" />. If you need to replace the original logger you will need to use
+        ///     can be managed via the <see cref="NextLogger" /> property of your <see cref="ILoggingProvider"/>. If you need to replace the original logger you will need to use
         ///     <see cref="ReplaceLoggingProvider" /> as subsequent settings via <see cref="LogProvider" /> will only affect the
         ///     current thread.
         /// </summary>
@@ -356,7 +357,8 @@ namespace Moonrise.Logging
         public static ReportingLevel OutputLevel { get; set; }
 
         /// <summary>
-        ///     Allows stack tracing to be switched on and off
+        ///     Allows stack tracing to be switched on and off - as in supressing or allowing the output of
+        ///     <see cref="Logger.TraceStack" />
         /// </summary>
         public static bool StackTracingEnabled { get; set; }
 
@@ -384,33 +386,36 @@ namespace Moonrise.Logging
         public IAuditProvider NextAuditor { get; set; }
 
         /// <summary>
-        /// Audits the message.
+        ///     Audits the message.
         /// </summary>
         /// <param name="msg">The message.</param>
-        /// <param name="context">The context.</param>
+        /// <param name="context">The context - if <see cref="Logger.UseContext" /> is false, this will be empty.</param>
+        /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId"/> is false, this will be empty.</param>
         /// <param name="logTag">The log tag.</param>
-        public void AuditThis(string msg, string context, LogTag logTag)
+        public void AuditThis(string msg, string context, string threadId, LogTag logTag)
         {
             if (UseConsoleOutput) Console.Out.WriteLine("AUDIT: " + msg);
         }
 
         /// <summary>
-        /// Audits an object. Can be used IF a specific object is to be audited by an implementation rather than simply a
-        /// string.
+        ///     Audits an object. Can be used IF a specific object is to be audited by an implementation rather than simply a
+        ///     string.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="auditObject">The object to audit - it will be JSONd</param>
         /// <param name="auditLevel">The level of audit</param>
-        /// <param name="context">The context.</param>
+        /// <param name="context">The context - if <see cref="Logger.UseContext" /> is false, this will be empty.</param>
+        /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId"/> is false, this will be empty.</param>
         /// <param name="logTag">The log tag.</param>
         /// <exception cref="System.NotImplementedException"></exception>
-        public void AuditThisObject(string message, object auditObject, LoggingLevel auditLevel, string context, LogTag logTag)
+        public void AuditThisObject(string message, object auditObject, LoggingLevel auditLevel, string context,
+            string threadId, LogTag logTag)
         {
             // The basic implementation simply audits the Json version
             var auditMsg = auditLevel == LoggingLevel.Audit
                 ? message
                 : auditLevel + $" {message}\r\n{JsonIt(auditObject)}";
-            AuditThis(auditMsg, context, logTag);
+            AuditThis(auditMsg, context, threadId, logTag);
         }
 
         /// <summary>
@@ -440,11 +445,41 @@ namespace Moonrise.Logging
         /// </summary>
         /// <param name="level">The level for this message</param>
         /// <param name="context">The context.</param>
+        /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId" /> is false, this will be empty.</param>
         /// <param name="logTag">The log tag.</param>
         /// <param name="msg">The message to log</param>
-        public void LogThis(LoggingLevel level, string context, LogTag logTag, string msg)
+        public void LogThis(LoggingLevel level, string context, string threadId, LogTag logTag, string msg)
         {
             UseConsoleOutput = true;
+        }
+
+        /// <summary>A one-shot initialisation using the specified configuration.</summary>
+        /// <param name="config">The configuration.</param>
+        /// <param name="loggingProvider">The logging provider.</param>
+        /// <param name="auditProvider">
+        ///     The audit provider, defaults to NULL - which means an calls to <see cref="Audit" /> will be
+        ///     logged as an Audit message.
+        /// </param>
+        /// <remarks>
+        ///     Each of the properties in the config can be set individually, this just makes that initialisation a bit more
+        ///     compact, especially if you've read the config as an object from a settings file.
+        /// </remarks>
+        public static void Initialise(Config config, ILoggingProvider logProvider,
+            IAuditProvider auditProvider = null)
+        {
+            LogProvider = logProvider;
+            AuditProvider = auditProvider;
+            LogMethodName = config.LogMethodName;
+            OutputLevel = config.OutputLevel;
+            StackTracingEnabled = config.StackTracingEnabled;
+            UseConsoleOutput = config.UseConsoleOutput;
+            UseContext = config.UseContext;
+            UseThreadId = config.UseThreadId;
+
+            if (config.LogTags != null && config.LogTags.Count > 0)
+            {
+                ActivateLogTags(config.LogTags);
+            }
         }
 
         /// <summary>
@@ -501,27 +536,32 @@ namespace Moonrise.Logging
         }
 
         /// <summary>
-        /// Logs an object in JSON format as a <see cref="LoggingLevel.Audit" />. It also passes the object to the
-        /// <see cref="IAuditProvider" /> which may wish to audit the actual object.
-        /// <remarks>
-        /// Note, this override of Audit will be used unless a more specific override is used. i.e. It will not JSON a
-        /// String!
-        /// Audit messages are log messages with a level of Audit. Audit is the highest level log message and will ALWAYS
-        /// be logged, even if Logging has been disabled. Different <see cref="ILoggingProvider" />s MAY decide to also
-        /// treat Audit messages differently, however in addition you CAN also supply an <see cref="IAuditProvider" /> (or
-        /// chain of them) which will only be passed Audit messages via <see cref="IAuditProvider.AuditThis" />.
-        /// </remarks><para>
-        /// Also you don't need to log AND audit as the audit message will be logged and if you supply an auditLevel
-        /// other than <see cref="LoggingLevel.Audit" /> then the message will be prefixed with that level. So, you can
-        /// audit errors and info. Unlikely you'd want to audit Debug but you could!
-        /// </para>
+        ///     Logs an object in JSON format as a <see cref="LoggingLevel.Audit" />. It also passes the object to the
+        ///     <see cref="IAuditProvider" /> which may wish to audit the actual object.
+        ///     <remarks>
+        ///         Note, this override of Audit will be used unless a more specific override is used. i.e. It will not JSON a
+        ///         String!
+        ///         Audit messages are log messages with a level of Audit. Audit is the highest level log message and will ALWAYS
+        ///         be logged, even if Logging has been disabled. Different <see cref="ILoggingProvider" />s MAY decide to also
+        ///         treat Audit messages differently, however in addition you CAN also supply an <see cref="IAuditProvider" /> (or
+        ///         chain of them) which will only be passed Audit messages via <see cref="IAuditProvider.AuditThis" />.
+        ///     </remarks>
+        ///     <para>
+        ///         Also you don't need to log AND audit as the audit message will be logged and if you supply an auditLevel
+        ///         other than <see cref="LoggingLevel.Audit" /> then the message will be prefixed with that level. So, you can
+        ///         audit errors and info. Unlikely you'd want to audit Debug but you could!
+        ///     </para>
         /// </summary>
         /// <param name="message">The message to accompany the audit</param>
         /// <param name="anything">The object to be logged using JSON</param>
-        /// <param name="logTag">The log tag. Unlike for Logging, auditing will always audit so the logTag can be used for extra information by the <see cref="IAuditProvider" /> where required.</param>
+        /// <param name="logTag">
+        ///     The log tag. Unlike for Logging, auditing will always audit so the logTag can be used for extra
+        ///     information by the <see cref="IAuditProvider" /> where required.
+        /// </param>
         /// <param name="auditLevel">The audit level.</param>
         /// <param name="caller">The name of the caller of this Audit.</param>
-        public static void Audit(string message, object anything, LogTag logTag = null, LoggingLevel auditLevel = LoggingLevel.Audit, [CallerMemberName]string caller = null)
+        public static void Audit(string message, object anything, LogTag logTag = null,
+            LoggingLevel auditLevel = LoggingLevel.Audit, [CallerMemberName] string caller = null)
         {
             try
             {
@@ -537,7 +577,7 @@ namespace Moonrise.Logging
 
                 while (nextAuditor != null && maxAuditors-- > 0)
                 {
-                    nextAuditor.AuditThisObject(message, anything, auditLevel, ScopeContext.CurrentValue, logTag);
+                    nextAuditor.AuditThisObject(message, anything, auditLevel, ScopeContext.CurrentValue, $"{Thread.CurrentThread.ManagedThreadId}", logTag);
                     nextAuditor = nextAuditor.NextAuditor;
                 }
             }
@@ -638,7 +678,10 @@ namespace Moonrise.Logging
         ///         using (Logger.ScopedLogTag()){code} or Logger.ScopedLogTag("whatever"){code}
         ///     </para>
         /// </summary>
-        /// <param name="logTagScope">The log tag to scope - if null, a LogTag will be created of the same name as the caller's name - Not really recommended though.</param>
+        /// <param name="logTagScope">
+        ///     The log tag to scope - if null, a LogTag will be created of the same name as the caller's
+        ///     name - Not really recommended though.
+        /// </param>
         /// <param name="callerContext">The caller context - defaults to the name of the caller</param>
         /// <returns>A <see cref="LogTag.Scoped" /> that SHOULD be used in a using statement</returns>
         public static LogTag.Scoped ScopedLogTag(LogTag logTagScope = null,
@@ -667,8 +710,10 @@ namespace Moonrise.Logging
         }
 
         /// <summary>
-        ///     Logs the specified message as a <see cref="LoggingLevel.Trace" />.<para>
-        /// Try not to use this too often for DETAIL, use Debug in preference UNLESS YOU NEED LOTS OF DETAIL </para>
+        ///     Logs the specified message as a <see cref="LoggingLevel.Trace" />.
+        ///     <para>
+        ///         Try not to use this too often for DETAIL, use Debug in preference UNLESS YOU NEED LOTS OF DETAIL
+        ///     </para>
         /// </summary>
         /// <param name="msg">The string to log.</param>
         /// <param name="logTag">An optional log tag.</param>
@@ -706,9 +751,13 @@ namespace Moonrise.Logging
 
         /// <summary>
         ///     Logs any object using JSON as a <see cref="LoggingLevel.Trace" />. This will log the field name and value of the
-        ///     object.<para>
-        /// Try not to use this too often for DETAIL, use Debug in preference UNLESS YOU NEED LOTS OF DETAIL </para><para>
-        /// IF YOU CALL THIS MAKE SURE YOU HAVE A REFERENCE TO NewtonSoft.Json</para>
+        ///     object.
+        ///     <para>
+        ///         Try not to use this too often for DETAIL, use Debug in preference UNLESS YOU NEED LOTS OF DETAIL
+        ///     </para>
+        ///     <para>
+        ///         IF YOU CALL THIS MAKE SURE YOU HAVE A REFERENCE TO NewtonSoft.Json
+        ///     </para>
         /// </summary>
         /// Note, this override of Log will be used unless a more specific override is used. i.e. It will not JSON an Exception or a String!
         /// <param name="anything">The object to be logged using JSON</param>
@@ -773,11 +822,13 @@ namespace Moonrise.Logging
             }
             else if (excep.HelpLink == "Handled")
             {
-                LogMsgCommon(LoggingLevel.Error, msg + "\r\n" + "Exception propogated;\r\n\t" + excep.Message, null, caller);
+                LogMsgCommon(LoggingLevel.Error, msg + "\r\n" + "Exception propogated;\r\n\t" + excep.Message, null,
+                    caller);
             }
             else
             {
-                LogMsgCommon(LoggingLevel.Error, msg + "\r\n\t" + excep.Message + "\r\n\t" + excep.StackTrace, null, caller);
+                LogMsgCommon(LoggingLevel.Error, msg + "\r\n\t" + excep.Message + "\r\n\t" + excep.StackTrace, null,
+                    caller);
             }
         }
 
@@ -1058,7 +1109,6 @@ namespace Moonrise.Logging
             LogMsgCommon((LoggingLevel) OutputLevel, title);
         }
 
-#if !DotNetCore
         /// <summary>
         ///     Spits a stack trace out to the log.
         /// </summary>
@@ -1068,10 +1118,7 @@ namespace Moonrise.Logging
             Justification = "I excuse exceptions and returns!")]
         public static void TraceStack()
         {
-            if (Disabled)
-            {
-                return;
-            }
+            if (Disabled) return;
 
             if (StackTracingEnabled)
             {
@@ -1082,15 +1129,12 @@ namespace Moonrise.Logging
                 string stackList = "Stack Trace:\n  ";
 
                 foreach (StackFrame stackFrame in stackFrames)
-                {
                     stackList += stackFrame.GetMethod().DeclaringType + "." + stackFrame.GetMethod().Name + "-->";
-                }
 
                 // Stack traces will only ever go out at Debug level
                 LogMsgCommon(LoggingLevel.Debug, stackList);
             }
-    }
-#endif
+        }
 
         /// <summary>
         ///     Logs the specified message as a <see cref="LoggingLevel.Warning" />.
@@ -1148,12 +1192,8 @@ namespace Moonrise.Logging
             {
                 if (LogMethodName && !string.IsNullOrEmpty(caller)) msg = $"{caller}(): {msg}";
 
-                if (UseContext)
-                    msg = ScopeContext.CurrentValue + msg;
-                else if (_TraceCalls.Value || ScopeContext.CurrentValue != null)
+                if (!UseContext && (_TraceCalls.Value || ScopeContext.CurrentValue != null))
                     msg = msg.PadLeft(msg.Length + _Indent.Value);
-
-                if (UseThreadId) msg = $"{Thread.CurrentThread.ManagedThreadId}: {msg}";
 
                 ILoggingProvider nextLogger = LogProvider;
 
@@ -1164,7 +1204,7 @@ namespace Moonrise.Logging
                     // Ensure that there is a lock on the log provider!
                     lock (LockObject)
                     {
-                        nextLogger.LogThis(level, UseContext?ScopeContext.CurrentValue:String.Empty, logTag, msg);
+                        nextLogger.LogThis(level, UseContext ? ScopeContext.CurrentValue : string.Empty, UseThreadId ? $"{Thread.CurrentThread.ManagedThreadId}" : string.Empty, logTag, msg);
                     }
 
                     nextLogger = nextLogger.NextLogger;
@@ -1172,6 +1212,52 @@ namespace Moonrise.Logging
 
                 if (UseConsoleOutput) Console.Out.WriteLine(msg);
             }
+        }
+
+        /// <summary>
+        ///     Configuration data so that the Logger's static properties can be set in one hit, typically from a settings file.
+        /// </summary>
+        public class Config
+        {
+            /// <summary>
+            ///     Indicates if the name of the method that calls one of the logging methods (Debug, Info, Warning, Error or Fatal)
+            ///     will be displayed as a prefix in the log message.
+            ///     <para>
+            ///         NOTE: This will only be the method name, and will not include the class or namespace!
+            ///     </para>
+            /// </summary>
+            public bool LogMethodName { get; set; }
+
+            /// <summary>The set of log tags to initially activate. See also <seealso cref="Logger.ActivateLogTags"/></summary>
+            public List<String> LogTags { get; set; }
+
+            /// <summary>
+            ///     Gets or sets the current logging output level
+            /// </summary>
+            public ReportingLevel OutputLevel { get; set; } = ReportingLevel.Information;
+
+            /// <summary>
+            ///     Allows stack tracing to be switched on and off - as in supressing or allowing the output of
+            ///     <see cref="Logger.TraceStack" />
+            /// </summary>
+            public bool StackTracingEnabled { get; set; }
+
+            /// <summary>
+            ///     Determines if we should use Console output in addition to the LogProvider. Needs to be set AFTER the LogProvider
+            ///     has been determined.
+            /// </summary>
+            public bool UseConsoleOutput { get; set; }
+
+            /// <summary>
+            ///     Determines if any context is going to be printed in front of messages. If False, any scope WILL be logged at the
+            ///     point of the scope and indentation will be used instead.
+            /// </summary>
+            public bool UseContext { get; set; }
+
+            /// <summary>
+            ///     Determines if the log message is to be prefixed with the thread id.
+            /// </summary>
+            public bool UseThreadId { get; set; }
         }
 
         /// <summary>
