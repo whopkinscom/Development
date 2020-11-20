@@ -48,5 +48,10 @@ namespace Moonrise.Logging
         /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId"/> is false, this will be empty.</param>
         /// <param name="logTag">The log tag.</param>
         void AuditThisObject(string message, object auditObject, LoggingLevel auditLevel, string context, string threadId, LogTag logTag);
+
+        /// <summary>
+        /// Flush any buffers currently in use.
+        /// </summary>
+        void FlushBuffers();
     }
 }

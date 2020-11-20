@@ -36,6 +36,11 @@
             <param name="threadId">The thread identifier - if <see cref="P:Moonrise.Logging.Logger.UseThreadId"/> is false, this will be empty.</param>
             <param name="logTag">The log tag.</param>
         </member>
+        <member name="M:Moonrise.Logging.IAuditProvider.FlushBuffers">
+            <summary>
+            Flush any buffers currently in use.
+            </summary>
+        </member>
         <member name="T:Moonrise.Logging.ICloneable">
             <summary>
             DNC (.Net Core) doesn't have an ICloneable interface!
@@ -113,6 +118,11 @@
             <param name="threadId">The thread identifier - if <see cref="P:Moonrise.Logging.Logger.UseThreadId"/> is false, this will be empty.</param>
             <param name="logTag">The log tag.</param>
             <param name="msg">The message.</param>
+        </member>
+        <member name="M:Moonrise.Logging.ILoggingProvider.FlushBuffers">
+            <summary>
+            Flush any buffers currently in use.
+            </summary>
         </member>
         <member name="T:Moonrise.Logging.Logger">
             <summary>
@@ -740,6 +750,16 @@
             <param name="anything">The object to be logged using JSON</param>
             <param name="caller">The method name of the caller. Will be displayed if <seealso cref="P:Moonrise.Logging.Logger.LogMethodName" /> is true.</param>
         </member>
+        <member name="M:Moonrise.Logging.Logger.FlushBuffers">
+            <summary>
+            Flush any buffers currently in use.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Logging.Logger.Flush">
+            <summary>
+            Ensures all loggers get flushed.
+            </summary>
+        </member>
         <member name="M:Moonrise.Logging.Logger.LogMsgCommon(Moonrise.Logging.LoggingLevel,System.String,Moonrise.Logging.LogTag,System.String)">
             <summary>
                 Another single point to call the log provider
@@ -824,144 +844,6 @@
                 not write.
             </summary>
         </member>
-        <member name="T:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config">
-            <summary>
-                Configuration required by this class
-            </summary>
-        </member>
-        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config.DateTimeFormatterPrefix">
-            <summary>
-                Gives the timestamp prefix to use, e.g. "{0: HH:mm:ss.fffff}"
-            </summary>
-        </member>
-        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config.LogCycling">
-            <summary>
-                How should the log files be recycled
-            </summary>
-        </member>
-        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config.LogFilePerThread">
-            <summary>
-                if set to true there is a different file per thread.
-            </summary>
-        </member>
-        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config.LoggingFile">
-            <summary>
-                The path of the filename to write to, please include an extension.
-            </summary>
-        </member>
-        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config.MaxEntries">
-            <summary>
-                The maximum entries for a file when using the <see cref="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config.LogCycling"/> value of <see cref="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Cycle.ByCount"/>.
-            </summary>
-        </member>
-        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config.ByCountFilenameDateTimeFormat">
-            <summary>
-                The filename time format for a file when using the <see cref="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config.LogCycling"/> value of <see cref="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Cycle.ByCount"/>.
-            </summary>
-        </member>
-        <member name="T:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.IDateTimeProvider">
-            <summary>
-                Allows control over the current <see cref="T:System.DateTime" /> to use - should you need to use it. Typically used for
-                testing.
-            </summary>
-        </member>
-        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.IDateTimeProvider.Now">
-            <summary>
-                The current <see cref="T:System.DateTime" /> to use
-            </summary>
-        </member>
-        <member name="T:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.DateTimeProvider">
-            <summary>
-                Provides an implementation of <see cref="T:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.IDateTimeProvider" /> that uses current time.
-            </summary>
-        </member>
-        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.DateTimeProvider.Now">
-            <summary>
-                The current <see cref="T:System.DateTime" /> to use
-            </summary>
-        </member>
-        <member name="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider._cloned">
-            <summary>
-                Indicates if an instance is a cloned instance or the original
-            </summary>
-        </member>
-        <member name="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider._dateTimeProvider">
-            <summary>
-                The date time provider, for generating timestamps and filenames.
-            </summary>
-        </member>
-        <member name="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.config">
-            <summary>
-                The retained initial configuration, in case of needing to <see cref="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Clone" />
-            </summary>
-        </member>
-        <member name="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.lockObject">
-            <summary>
-                The lock object to use to single thread file writing.
-            </summary>
-        </member>
-        <member name="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider._count">
-            <summary>
-                The count of the number of messages logged in a given file.
-            </summary>
-        </member>
-        <member name="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider._nextLogger">
-            <summary>
-                The _next <see cref="T:Moonrise.Logging.ILoggingProvider" /> to pass logging messages on to.
-            </summary>
-        </member>
-        <member name="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.extension">
-            <summary>
-                The logging file extension
-            </summary>
-        </member>
-        <member name="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.failCount">
-            <summary>
-                Keeps track of consecutive log write failures, More than 5 means file logging becomes disabled!
-            </summary>
-        </member>
-        <member name="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.fileLoggingEnabled">
-            <summary>
-                Since log providers offer pass through with the <see cref="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.NextLogger" /> property we can choose to
-                disable file logging by having a blank filename - usually going to be passed through from configuration.
-                This field indicates that.
-            </summary>
-        </member>
-        <member name="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.filename">
-            <summary>
-                The main name part of the logging filename
-            </summary>
-            The actual filename is computed on each log statement in case we get a filename flip over
-        </member>
-        <member name="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.#ctor(System.String,Moonrise.Logging.LoggingProviders.BasicFileLogProvider.IDateTimeProvider)">
-            <summary>
-                A very basic text file logger that writes any logging to the specified text file. Does not give a timestamp prefix.
-            </summary>
-            <param name="_filename">The path of the filename to wrote to.</param>
-            <param name="dateTimeProvider">
-                If you want to control the DateTime to use for the logfile name and for timestamps in
-                the log file
-            </param>
-        </member>
-        <member name="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.#ctor(System.String,System.String,Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Cycle,System.Boolean,Moonrise.Logging.LoggingProviders.BasicFileLogProvider.IDateTimeProvider,System.Boolean)">
-            <summary>
-                A very basic text file logger that writes any logging to the specified text file.
-            </summary>
-            <param name="_filename">The path of the filename to write to.</param>
-            <param name="dateTimeFormatterPrefix">Gives the timestamp prefix to use, e.g. {0: HH:mm:ss.fffff}</param>
-            <param name="recycle">How should the log files be recycled</param>
-            <param name="filePerThread">if set to <c>true</c> there is a different file per thread.</param>
-            <param name="dateTimeProvider">The date time provider.</param>
-            <param name="cloned">Indicates if this construction is via an act of cloning. Please leave this false!</param>
-        </member>
-        <member name="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.#ctor(Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config,Moonrise.Logging.LoggingProviders.BasicFileLogProvider.IDateTimeProvider,System.Boolean)">
-            <summary>
-                A very basic text file logger that writes any logging to the specified text file.
-            </summary>
-            <param name="_config">The configuration.</param>
-            <param name="dateTimeProvider">The date time provider.</param>
-            <param name="cloned">Indicates if this construction is via an act of cloning. Please leave this false!</param>
-        </member>
         <member name="T:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Cycle">
             <summary>
                 Determines how filenames will get recycled. When a filename is recycled any previous file of the same name is
@@ -1004,9 +886,90 @@
             <summary>
                 The filename is "never" recycled and a new log file is created every X messages. "_YYYYMMDDThhmmss" for the year,
                 month and day of the month and time of creation is added before the file extension.
-                <para>The format for the datetime part of the filename can be set via <see cref="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config.ByCountFilenameDateTimeFormat"/>.
+                <para>
+                    The format for the datetime part of the filename can be set via
+                    <see cref="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config.ByCountFilenameDateTimeFormat" />.
                 </para>
             </summary>
+        </member>
+        <member name="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.lockObject">
+            <summary>
+                The lock object to use to single thread file writing.
+            </summary>
+        </member>
+        <member name="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider._cloned">
+            <summary>
+                Indicates if an instance is a cloned instance or the original
+            </summary>
+        </member>
+        <member name="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider._dateTimeProvider">
+            <summary>
+                The date time provider, for generating timestamps and filenames.
+            </summary>
+        </member>
+        <member name="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.config">
+            <summary>
+                The retained initial configuration, in case of needing to <see cref="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Clone" />
+            </summary>
+        </member>
+        <member name="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider._count">
+            <summary>
+                The count of the number of messages logged in a given file.
+            </summary>
+        </member>
+        <member name="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider._currentBufferCount">
+            <summary>The current number of messages written into the buffer</summary>
+        </member>
+        <member name="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider._filenameChanged">
+            <summary>
+                Indicates if the latest message caused the filename to change.
+            </summary>
+        </member>
+        <member name="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider._nextLogger">
+            <summary>
+                The _next <see cref="T:Moonrise.Logging.ILoggingProvider" /> to pass logging messages on to.
+            </summary>
+        </member>
+        <member name="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.extension">
+            <summary>
+                The logging file extension
+            </summary>
+        </member>
+        <member name="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.failCount">
+            <summary>
+                Keeps track of consecutive log write failures, More than 5 means file logging becomes disabled!
+            </summary>
+        </member>
+        <member name="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.fileLoggingEnabled">
+            <summary>
+                Since log providers offer pass through with the <see cref="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.NextLogger" /> property we can choose to
+                disable file logging by having a blank filename - usually going to be passed through from configuration.
+                This field indicates that.
+            </summary>
+        </member>
+        <member name="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.filename">
+            <summary>
+                The main name part of the logging filename
+            </summary>
+            The actual filename is computed on each log statement in case we get a filename flip over
+        </member>
+        <member name="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.#ctor(System.String,Moonrise.Logging.LoggingProviders.BasicFileLogProvider.IDateTimeProvider)">
+            <summary>
+                A very basic text file logger that writes any logging to the specified text file. Does not give a timestamp prefix.
+            </summary>
+            <param name="_filename">The path of the filename to wrote to.</param>
+            <param name="dateTimeProvider">
+                If you want to control the DateTime to use for the logfile name and for timestamps in
+                the log file
+            </param>
+        </member>
+        <member name="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.#ctor(Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config,Moonrise.Logging.LoggingProviders.BasicFileLogProvider.IDateTimeProvider,System.Boolean)">
+            <summary>
+                A very basic text file logger that writes any logging to the specified text file.
+            </summary>
+            <param name="_config">The configuration.</param>
+            <param name="dateTimeProvider">The date time provider.</param>
+            <param name="cloned">Indicates if this construction is via an act of cloning. Please leave this false!</param>
         </member>
         <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.FilePerThread">
             <summary>
@@ -1020,17 +983,6 @@
                 on the <see cref="T:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Cycle" /> setting in use.
             </summary>
         </member>
-        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.NextAuditor">
-            <summary>
-                The next auditor to pass the audit message on to. Allows additional auditors to be used. Don't create circular
-                links though eh!
-            </summary>
-        </member>
-        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.NextLogger">
-            <summary>
-                The _next <see cref="T:Moonrise.Logging.ILoggingProvider" /> to pass logging messages on to.
-            </summary>
-        </member>
         <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Recycle">
             <summary>
                 The current filename recycling setting
@@ -1041,26 +993,37 @@
                 The timestamp prefix
             </summary>
         </member>
+        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.NextAuditor">
+            <summary>
+                The next auditor to pass the audit message on to. Allows additional auditors to be used. Don't create circular
+                links though eh!
+            </summary>
+        </member>
         <member name="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.AuditThis(System.String,System.String,System.String,Moonrise.Logging.LogTag)">
             <summary>
-            Audits the message.
+                Audits the message.
             </summary>
             <param name="msg">The message.</param>
             <param name="context">The context - if <see cref="P:Moonrise.Logging.Logger.UseContext" /> is false, this will be empty.</param>
-            <param name="threadId">The thread identifier - if <see cref="P:Moonrise.Logging.Logger.UseThreadId"/> is false, this will be empty.</param>
+            <param name="threadId">The thread identifier - if <see cref="P:Moonrise.Logging.Logger.UseThreadId" /> is false, this will be empty.</param>
             <param name="logTag">The log tag.</param>
         </member>
         <member name="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.AuditThisObject(System.String,System.Object,Moonrise.Logging.LoggingLevel,System.String,System.String,Moonrise.Logging.LogTag)">
             <summary>
-            Audits an object. Can be used IF a specific object is to be audited by an implementation rather than simply a
-            string.
+                Audits an object. Can be used IF a specific object is to be audited by an implementation rather than simply a
+                string.
             </summary>
             <param name="message">The message.</param>
             <param name="auditObject">The object to audit - it will be JSONd</param>
             <param name="auditLevel">The level of audit</param>
             <param name="context">The context - if <see cref="P:Moonrise.Logging.Logger.UseContext" /> is false, this will be empty.</param>
-            <param name="threadId">The thread identifier - if <see cref="P:Moonrise.Logging.Logger.UseThreadId"/> is false, this will be empty.</param>
+            <param name="threadId">The thread identifier - if <see cref="P:Moonrise.Logging.Logger.UseThreadId" /> is false, this will be empty.</param>
             <param name="logTag">The log tag.</param>
+        </member>
+        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.NextLogger">
+            <summary>
+                The _next <see cref="T:Moonrise.Logging.ILoggingProvider" /> to pass logging messages on to.
+            </summary>
         </member>
         <member name="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Clone">
             <summary>Creates a new object that is a copy of the current instance.</summary>
@@ -1068,23 +1031,35 @@
         </member>
         <member name="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.LogThis(Moonrise.Logging.LoggingLevel,System.String,System.String,Moonrise.Logging.LogTag,System.String)">
             <summary>
-            Logs the appropriate level of message.
+                Logs the appropriate level of message.
             </summary>
             <param name="level">The level.</param>
             <param name="context">The context - if <see cref="P:Moonrise.Logging.Logger.UseContext" /> is false, this will be empty.</param>
-            <param name="threadId">The thread identifier - if <see cref="P:Moonrise.Logging.Logger.UseThreadId"/> is false, this will be empty.</param>
+            <param name="threadId">The thread identifier - if <see cref="P:Moonrise.Logging.Logger.UseThreadId" /> is false, this will be empty.</param>
             <param name="logTag">The log tag.</param>
             <param name="msg">The message.</param>
         </member>
+        <member name="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.FlushBuffers">
+            <summary>Flushes the message buffer.</summary>
+            <remarks>You'll rarely need to call this as all messages more severe than Information always get flushed</remarks>
+        </member>
+        <member name="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Finalize">
+            <summary>Finalizes this instance, flushing the file.</summary>
+        </member>
         <member name="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.FormatLogMsg(System.DateTime,Moonrise.Logging.LoggingLevel,System.String,System.String,Moonrise.Logging.LogTag,System.String)">
             <summary>
-            In cases where you want to use a log file <see cref="T:Moonrise.Logging.LoggingProviders.BasicFileLogProvider" /> will generally do
-            everything, however if you want more precise control over formatting the message - perhaps for
-            later ingestion by LogStash/ElasticSearch - then this override will allow that.<para>
-            NOTE: This method is only called AFTER all of the appropriate logging enablement checks have been performed
-            so all you need to do is format the message.</para>
+                In cases where you want to use a log file <see cref="T:Moonrise.Logging.LoggingProviders.BasicFileLogProvider" /> will generally do
+                everything, however if you want more precise control over formatting the message - perhaps for
+                later ingestion by LogStash/ElasticSearch - then this override will allow that.
+                <para>
+                    NOTE: This method is only called AFTER all of the appropriate logging enablement checks have been performed
+                    so all you need to do is format the message.
+                </para>
             </summary>
-            <param name="dateTime">The date time of the logging message. This time is consistent with the one used to generate the filename!</param>
+            <param name="dateTime">
+                The date time of the logging message. This time is consistent with the one used to generate the
+                filename!
+            </param>
             <param name="level">The logging level</param>
             <param name="context">The logging context <seealso cref="M:Moonrise.Logging.Logger.Context(System.String,Moonrise.Logging.LogTag,System.String)" /></param>
             <param name="threadId">The thread identifier.</param>
@@ -1111,10 +1086,113 @@
         </member>
         <member name="M:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.LogMsg(System.String,System.DateTime)">
             <summary>
-            Logs a message with a configured datetime prefix.
+                Logs a message with a configured datetime prefix.
             </summary>
             <param name="msg">The message to log</param>
             <param name="now">The now.</param>
+        </member>
+        <member name="T:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config">
+            <summary>
+                Configuration required by this class
+            </summary>
+        </member>
+        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config.BufferCount">
+            <summary>
+                The max number of lines to be held in memory before writing
+            </summary>
+            <remarks>
+                Defaults to 100
+            </remarks>
+        </member>
+        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config.BufferSize">
+            <summary>
+                The max number of characters to be held in memory before writing
+            </summary>
+            <remarks>
+                Defaults to 10,000
+            </remarks>
+        </member>
+        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config.BufferDelay">
+            <summary>
+                The max number of seconds to hold the buffer in memory before writing
+            </summary>
+            <remarks>
+                Defaults to 30
+            </remarks>
+        </member>
+        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config.DateTimeFormatterPrefix">
+            <summary>
+                Gives the timestamp prefix to use, e.g. "{0: HH:mm:ss.fffff}"
+            </summary>
+            <remarks>
+                Defaults to "{0:HH:mm:ss} "
+            </remarks>
+        </member>
+        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config.FlushOn">
+            <summary>
+                What level of messages will cause a flush of the file logging buffer?
+            </summary>
+            <remarks>
+                Defaults to <see cref="F:Moonrise.Logging.LoggingLevel.Error"/>
+            </remarks>
+        </member>
+        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config.LogCycling">
+            <summary>
+                How should the log files be recycled
+            </summary>
+            <remarks>
+                Defaults to <see cref="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Cycle.Daily" />
+            </remarks>
+        </member>
+        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config.LogFilePerThread">
+            <summary>
+                if set to true there is a different file per thread.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config.LoggingFile">
+            <summary>
+                The path of the filename to write to, please include an extension.
+            </summary>
+            <remarks>
+                Defaults to "./Logging.log"
+            </remarks>
+        </member>
+        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config.MaxEntries">
+            <summary>
+                The maximum entries for a file when using the <see cref="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config.LogCycling" /> value of <see cref="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Cycle.ByCount" />.
+            </summary>
+            <remarks>
+                Defaults to 0, which means no max entries
+            </remarks>
+        </member>
+        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config.ByCountFilenameDateTimeFormat">
+            <summary>
+                The filename time format for a file when using the <see cref="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Config.LogCycling" /> value of <see cref="F:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.Cycle.ByCount" />.
+            </summary>
+            <remarks>
+                Defaults to "yyyyMMddhhmmss"
+            </remarks>
+        </member>
+        <member name="T:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.IDateTimeProvider">
+            <summary>
+                Allows control over the current <see cref="T:System.DateTime" /> to use - should you need to use it. Typically used for
+                testing.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.IDateTimeProvider.Now">
+            <summary>
+                The current <see cref="T:System.DateTime" /> to use
+            </summary>
+        </member>
+        <member name="T:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.DateTimeProvider">
+            <summary>
+                Provides an implementation of <see cref="T:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.IDateTimeProvider" /> that uses current time.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Logging.LoggingProviders.BasicFileLogProvider.DateTimeProvider.Now">
+            <summary>
+                The current <see cref="T:System.DateTime" /> to use
+            </summary>
         </member>
         <member name="T:Moonrise.Logging.LogTag">
             <summary>

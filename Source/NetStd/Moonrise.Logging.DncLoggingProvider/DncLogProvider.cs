@@ -57,6 +57,14 @@ namespace Moonrise.Logging
         }
 
         /// <summary>
+        /// Flush any buffers currently in use.
+        /// </summary>
+        public void FlushBuffers()
+        {
+            // Nothing to do here!
+        }
+
+        /// <summary>
         ///     Logs the appropriate level of message.
         /// </summary>
         /// <param name="level">The level.</param>

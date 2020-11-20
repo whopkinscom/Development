@@ -129,7 +129,7 @@ namespace Moonrise.Logging
         /// <summary>
         ///     Backing field for <see cref="Disabled" />
         /// </summary>
-        private static bool _Disabled = true;
+        private static bool _Disabled = false;
 
         /// <summary>
         ///     The per thread logger provider
@@ -467,7 +467,13 @@ namespace Moonrise.Logging
         public static void Initialise(Config config, ILoggingProvider logProvider,
             IAuditProvider auditProvider = null)
         {
-            LogProvider = logProvider;
+            if (logProvider != null)
+            {
+                // Otherwise setting it to null means the logprovider won't get default to the Logger itself -
+                // which we might want for simple console logging
+                LogProvider = logProvider;
+            }
+
             AuditProvider = auditProvider;
             LogMethodName = config.LogMethodName;
             OutputLevel = config.OutputLevel;
@@ -478,6 +484,7 @@ namespace Moonrise.Logging
 
             if (config.LogTags != null && config.LogTags.Count > 0)
             {
+                ActivateLogTags(null);
                 ActivateLogTags(config.LogTags);
             }
         }
@@ -994,6 +1001,8 @@ namespace Moonrise.Logging
         /// </summary>
         public static void LogActiveLogTags()
         {
+            if (Disabled) return;
+
             Title("Active Log Tags:");
             LogMsgCommon((LoggingLevel) OutputLevel, string.Join(", ", LogTag.ActiveLogTags));
         }
@@ -1004,6 +1013,8 @@ namespace Moonrise.Logging
         /// </summary>
         public static void LogEncounteredLogTags()
         {
+            if (Disabled) return;
+
             Title("Encountered Log Tags:");
             var encountered = LogTag.EncounteredLogTags.ToList();
             encountered.Sort();
@@ -1099,6 +1110,8 @@ namespace Moonrise.Logging
         /// The whole line will be 79/80 chars total with the message centered in the ----- lines ------
         public static void Title(string msg, params object[] args)
         {
+            if (Disabled) return;
+
             msg = string.Format(msg, args);
             var numDashes = (80 - msg.Length - 2) / 2;
             var title = string.Empty;
@@ -1169,6 +1182,51 @@ namespace Moonrise.Logging
             if (Disabled) return;
 
             LogMsgCommon(LoggingLevel.Warning, JsonIt(anything), null, caller);
+        }
+
+        /// <summary>
+        /// Flush any buffers currently in use.
+        /// </summary>
+        public void FlushBuffers()
+        {
+            // Nothing to do here!
+        }
+
+        /// <summary>
+        /// Ensures all loggers get flushed.
+        /// </summary>
+        public static void Flush()
+        {
+            ILoggingProvider nextLogger = LogProvider;
+
+            int maxLoggers = MaxChainedLoggers;
+
+            while (nextLogger != null && maxLoggers-- > 0)
+            {
+                // Ensure that there is a lock on the log provider!
+                lock (LockObject)
+                {
+                    nextLogger.FlushBuffers();
+                }
+
+                nextLogger = nextLogger.NextLogger;
+            }
+
+            IAuditProvider nextAuditProvider = AuditProvider;
+
+            maxLoggers = MaxChainedLoggers;
+
+            while (nextAuditProvider != null && maxLoggers-- > 0)
+            {
+                // Ensure that there is a lock on the log provider!
+                lock (LockObject)
+                {
+                    nextAuditProvider.FlushBuffers();
+                }
+
+                nextAuditProvider = nextAuditProvider.NextAuditor;
+            }
+
         }
 
         /// <summary>

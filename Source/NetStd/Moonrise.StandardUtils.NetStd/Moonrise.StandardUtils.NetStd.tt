@@ -22,7 +22,15 @@
     ConfigFile has been renamed Settings and now has indexers, can target User settings as well as Application settings and has configurable settings providers, via ISettingsProvider.</releaseNotes>
     <language>en-GB</language>
     <dependencies>
-      <dependency id="Moonrise.LoggingUtils.NetStd"  version="<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>"/>
+        <dependency id="DeepCloner" version ="0.10.2"/>
+        <dependency id="Microsoft.Extensions.PlatformAbstractions" version ="1.1.0"/>
+        <dependency id="Newtonsoft.Json" version ="10.0.2"/>
+        <dependency id="System.ComponentModel.Annotations" version ="4.5.0"/>
+        <dependency id="System.Diagnostics.Process" version ="4.3.0"/>
+        <dependency id="System.Runtime.Extensions" version ="4.3.0"/>
+        <dependency id="System.Security.Cryptography.ProtectedData" version ="4.5.0"/>
+        <dependency id="System.Threading.Tasks.Parallel" version ="4.3.0"/>
+	    <dependency id="Moonrise.LoggingUtils.NetStd"  version="<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>"/>
     </dependencies>
 	  <icon>images\Logo.png</icon>
   </metadata>

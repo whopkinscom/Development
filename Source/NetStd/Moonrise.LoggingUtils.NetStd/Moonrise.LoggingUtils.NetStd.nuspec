@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
 	  <id>Moonrise.LoggingUtils.NetStd</id>
-	  <version>4.2020.1118.14322</version>
+	  <version>4.2020.1120.14544</version>
 	  <copyright>Moonrise Media Ltd.</copyright>
 	  <authors>Will Hopkins</authors>
 	  <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -13,6 +13,13 @@
     <releaseNotes>First packaged release of this logging library.</releaseNotes>
     <language>en-GB</language>
 	  <icon>images\Logo.png</icon>
+	  <dependencies>
+		  <dependency id="Newtonsoft.Json" version ="10.0.2"/>
+		  <dependency id="System.Console" version ="4.3.0"/>
+		  <dependency id="System.Diagnostics.Process" version ="4.3.0"/>
+		  <dependency id="System.Diagnostics.StackTrace" version ="4.3.0"/>
+		  <dependency id="System.Threading.Thread" version ="4.3.0"/>
+	  </dependencies>
   </metadata>
   <files>
     <file src=".\bin\Release\netstandard2.1\Moonrise.LoggingUtils.NetStd.dll" target="lib\netstandard2.1\Moonrise.LoggingUtils.NetStd.dll" />

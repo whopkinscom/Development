@@ -24,11 +24,18 @@ namespace Moonrise
     /// </remarks>
     public class Samples
     {
+        public static bool initialised = false;
+
         public static void Run()
         {
             try
             {
-                SuggestedInitialisation();
+                if (!initialised)
+                {
+                    SuggestedInitialisation();
+                    initialised = true;
+                }
+
                 SampleLogging();
                 SampleTestObjectCreation();
                 TrySomeParsing();

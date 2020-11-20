@@ -108,6 +108,11 @@
             <param name="logTag">The log tag.</param>
             <param name="msg">The message.</param>
         </member>
+        <member name="M:Moonrise.Utils.Test.Logging.TestLogAuditProvider.FlushBuffers">
+            <summary>
+            Flush any buffers currently in use.
+            </summary>
+        </member>
         <member name="T:Moonrise.Utils.Test.ObjectCreation.Creator">
             <summary>
                 Creates objects filled with data and can also create random data of different types.

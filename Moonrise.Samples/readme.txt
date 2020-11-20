@@ -58,11 +58,18 @@ namespace Moonrise
     /// </remarks>
     public class Samples
     {
+        public static bool initialised = false;
+
         public static void Run()
         {
             try
             {
-                SuggestedInitialisation();
+                if (!initialised)
+                {
+                    SuggestedInitialisation();
+                    initialised = true;
+                }
+
                 SampleLogging();
                 SampleTestObjectCreation();
                 TrySomeParsing();
@@ -851,8 +858,18 @@ namespace Moonrise
       "LogFilePerThread": false,
       // This will place the logging file back up from the build output into the project directory
       "LoggingFile": "../../../Logging.log",
+      // The number of log entries that can be written to a log file before cycling to another file that day
       "MaxEntries": 0,
-      "ByCountFilenameDateTimeFormat": "yyyyMMddhhmmss"
+      // This determines the naming format if there are multiple files created in a single day as determined from the MaxEntries being exceeded
+      "ByCountFilenameDateTimeFormat": "yyyyMMddhhmmss",
+      // The number of log entries to buffer up before flushing
+      "BufferCount": 1000,
+      // The number of log message bytes to buffer up before flushing - none get lost if it exceeds that value
+      "BufferSize": 102400,
+      // The number of seconds since the last log was written before flushing. NOTE THIS IS ONLY EFFECTIVE WHEN THE NEXT LOG MSG IS PRODUCED
+      "BufferDelay": 30,
+      // The logging level on which to flush
+      "FlushOn": "Error"
     }
   }
 }

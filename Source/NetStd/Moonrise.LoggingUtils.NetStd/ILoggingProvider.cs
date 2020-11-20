@@ -84,5 +84,10 @@ namespace Moonrise.Logging
         /// <param name="logTag">The log tag.</param>
         /// <param name="msg">The message.</param>
         void LogThis(LoggingLevel level, string context, string threadId, LogTag logTag, string msg);
+
+        /// <summary>
+        /// Flush any buffers currently in use.
+        /// </summary>
+        void FlushBuffers();
     }
 }

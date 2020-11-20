@@ -154,5 +154,14 @@ namespace Moonrise.Utils.Test.Logging
                               ThreadId = threadId
                           });
         }
+
+        /// <summary>
+        /// Flush any buffers currently in use.
+        /// </summary>
+        public void FlushBuffers()
+        {
+            // Nothing to do here!
+        }
+
     }
 }
