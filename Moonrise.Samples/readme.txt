@@ -415,6 +415,7 @@ namespace Moonrise
                     {
                         Logger.Info("You'll get a JSON representation of the Logging Configuration");
                         Logger.Info(Initialise.LoggingConfiguration);
+                        Logger.Info($"Here's the Logging Configuration - {Logger.JsonIt(Initialise.LoggingConfiguration)}");
 
                         throw new AmbiguousImplementationException("Now let's log an exception!");
                     }

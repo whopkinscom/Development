@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
 	  <id>Moonrise.StandardUtils.NetStd</id>
-	  <version>4.2020.1120.14544</version>
+	  <version>4.2020.1120.18304</version>
 	  <copyright>Moonrise Media Ltd.</copyright>
 	  <authors>Will Hopkins</authors>
 	  <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -29,7 +29,7 @@
         <dependency id="System.Runtime.Extensions" version ="4.3.0"/>
         <dependency id="System.Security.Cryptography.ProtectedData" version ="4.5.0"/>
         <dependency id="System.Threading.Tasks.Parallel" version ="4.3.0"/>
-	    <dependency id="Moonrise.LoggingUtils.NetStd"  version="4.2020.1120.14544"/>
+	    <dependency id="Moonrise.LoggingUtils.NetStd"  version="4.2020.1120.18304"/>
     </dependencies>
 	  <icon>images\Logo.png</icon>
   </metadata>
