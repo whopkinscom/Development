@@ -17,7 +17,6 @@
 #endregion
 using System.Collections.Generic;
 using Moonrise.Logging;
-using Moonrise.Utils.Standard.Extensions;
 using Newtonsoft.Json;
 
 namespace Moonrise.Utils.Test.Logging

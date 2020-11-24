@@ -22,7 +22,6 @@
       <dependency id="Microsoft.CSharp" version ="4.5.0"/>
       <dependency id="System.ComponentModel.Annotations" version ="4.5.0"/>
       <dependency id="System.Dynamic.Runtime" version ="4.3.0"/>
-      <dependency id="Moonrise.LoggingUtils.NetStd" version="<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>"/>
 	  <dependency id="Moonrise.StandardUtils.NetStd" version="<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>"/>
   </dependencies>
 	  <icon>images\Logo.png</icon>

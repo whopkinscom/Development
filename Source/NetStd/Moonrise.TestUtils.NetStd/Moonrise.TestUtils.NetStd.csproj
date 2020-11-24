@@ -13,11 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Moonrise.LoggingUtils.NetStd\Moonrise.LoggingUtils.NetStd.csproj" />
-    <ProjectReference Include="..\Moonrise.StandardUtils.NetStd\Moonrise.StandardUtils.NetStd.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
     <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
@@ -51,7 +46,12 @@
 
   <ItemGroup>
     <Folder Include="Extensions\" />
+    <Folder Include="Logging\" />
     <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Moonrise.StandardUtils.NetStd\Moonrise.StandardUtils.NetStd.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
