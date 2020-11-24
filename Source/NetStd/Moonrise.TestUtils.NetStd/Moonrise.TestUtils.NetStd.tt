@@ -11,10 +11,9 @@
     <description>
       Particular favourites are;
       PrivateWrapper - to allow access to the private methods of a "wrapped" object - via dynamic.
-      Creator - To create repeatable but random data for "filled" classes to test - various properties available to control the range of filling.
+      Creator - To create repeatable but random data for "filled" classes to test - various properties available to control the range of filling. This one's the dog's!
     </description>
     <summary>Utility classes I find useful with writing tests.</summary>
-    <releaseNotes>Initial NuGet package up.</releaseNotes>
     <language>en-GB</language>
     <dependencies>
       <!--<dependency id="Moq" />-->

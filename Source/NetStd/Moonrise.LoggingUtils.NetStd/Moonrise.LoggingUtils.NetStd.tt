@@ -9,7 +9,9 @@
 	  <authors>Will Hopkins</authors>
 	  <requireLicenseAcceptance>false</requireLicenseAcceptance>
 	  <license type="file">License.txt</license>
-    <description>Yes, another logger! Efficient and pluggable. Can log to separate logging and auditing providers. Supplied console, event, file, and log4net providers. Thread-global Singleton based, so all the advantages of Singletons without the threading problems.</description>
+    <description>Yes, another logger! Fast, efficient and pluggable. Can log to separate logging and auditing providers. Supplied console, and file providers. 
+	    Thread-global Singleton based, so all the advantages of Singletons without the threading problems. Easy to write additional providers can supply structured logging. Has nested context scopes and "LogTags" - metadata for filtering that doesn't appear in the message.
+		Similar to other loggers such as Serilog, but less sophisticated and simpler to use? I think so, it's why I wrote it!</description>
     <summary>A logger with darned useful functions</summary>
     <releaseNotes>First packaged release of this logging library.</releaseNotes>
     <language>en-GB</language>

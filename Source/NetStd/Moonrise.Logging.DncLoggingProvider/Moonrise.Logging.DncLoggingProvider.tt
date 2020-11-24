@@ -10,9 +10,9 @@
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<license type="file">License.txt</license>
 		<description>
-			A logging provider that uses the DNC Microsoft Extensions Logging
+			A Moonrise logging provider that uses the DNC Microsoft Extensions Logging
 		</description>
-		<summary>A logging provider that uses the DNC Microsoft Extensions Logging </summary>
+		<summary>A Moonrise logging provider that uses the DNC Microsoft Extensions Logging</summary>
 		<language>en-GB</language>
 		<dependencies>
 			<dependency id="Moonrise.LoggingUtils.NetStd"  version="<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>"/>

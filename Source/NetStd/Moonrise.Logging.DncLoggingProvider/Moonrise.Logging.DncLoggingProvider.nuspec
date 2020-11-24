@@ -3,18 +3,18 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
 	<metadata>
 		<id>Moonrise.Logging.DncLoggingProvider</id>
-		<version>4.2020.1124.20170</version>
+		<version>4.2020.1124.20432</version>
 		<copyright>Moonrise Media Ltd.</copyright>
 		<authors>Will Hopkins</authors>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<license type="file">License.txt</license>
 		<description>
-			A logging provider that uses the DNC Microsoft Extensions Logging
+			A Moonrise logging provider that uses the DNC Microsoft Extensions Logging
 		</description>
-		<summary>A logging provider that uses the DNC Microsoft Extensions Logging </summary>
+		<summary>A Moonrise logging provider that uses the DNC Microsoft Extensions Logging</summary>
 		<language>en-GB</language>
 		<dependencies>
-			<dependency id="Moonrise.LoggingUtils.NetStd"  version="4.2020.1124.20170"/>
+			<dependency id="Moonrise.LoggingUtils.NetStd"  version="4.2020.1124.20432"/>
 			<dependency id="Microsoft.Extensions.Logging.Abstractions" version ="1.1.2"/>
 		</dependencies>
 		<icon>images\Logo.png</icon>
