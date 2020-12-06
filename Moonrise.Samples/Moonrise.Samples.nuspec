@@ -23,11 +23,9 @@
 			<file src="ContentFiles\Moonrise.Samples.Program.cs"/>
 			<file src="ContentFiles\Moonrise.Samples.appSettings.json"/>
 			<file src="ContentFiles\Moonrise.chm"/>
+			<file src="ContentFiles\EncryptAppSettings.exe"/>
 			<file src="readme.txt"/>
 			<file src="License.txt"/>
-			<!--<file src="ContentFiles\Moonrise.Samples.Program.cs" target="Moonrise\Moonrise.Samples.Program.cs"  buildAction="Content" copyToOutput="true"/>
-	  <file src="ContentFiles\Moonrise.Samples.appSettings.json" target="Moonrise\Moonrise.Samples.appSettings.json"  buildAction="Content" copyToOutput="true"/>
-	  <file src="ContentFiles\Moonrise.chm" target="Moonrise\Moonrise.chm" buildAction="Content" copyToOutput="true"/>-->
 			<file src="*\**" target ="\" exclude="obj\**\*.*"/>
 			<file src="*\**" target ="\" exclude="bin\**\*.*"/>
 		</contentFiles>
@@ -37,6 +35,7 @@
 		<file src="ContentFiles\Moonrise.Samples.Program.cs"/>
 		<file src="ContentFiles\Moonrise.Samples.appSettings.json"/>
 		<file src="ContentFiles\Moonrise.chm"/>
+		<file src="ContentFiles\EncryptAppSettings.exe"/>
 		<file src="readme.txt"/>
 		<file src="License.txt"/>
 		<file scr="*\**" target="\" exclude="obj\**\*.*"/>
