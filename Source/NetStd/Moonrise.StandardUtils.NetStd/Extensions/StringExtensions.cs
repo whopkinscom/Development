@@ -27,7 +27,7 @@ using System.Text.RegularExpressions;
 namespace Moonrise.Utils.Standard.Extensions
 {
     /// <summary>
-    ///     Options to apply then using the ocerloaded IndexOf/LastIndexOf that can ignore whitespace in the target string
+    ///     Options to apply then using the overloaded IndexOf/LastIndexOf that can ignore whitespace in the target string
     /// </summary>
     public enum IndexOfOptions
     {
@@ -603,7 +603,7 @@ namespace Moonrise.Utils.Standard.Extensions
         ///     delimiter, within the one value.
         /// </param>
         /// <param name="trimData">Should the qualifiers be trimmed?</param>
-        /// <returns></returns>
+        /// <returns>The array of split strings</returns>
         public static string[] SplitRow(this string record, string delimiter = ",", string qualifier = "\"", bool trimData = false)
         {
             // In-Line for example, but I implemented as string extender in production code

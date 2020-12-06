@@ -42,7 +42,7 @@ namespace Moonrise.Utils.Standard.Extensions
 #pragma warning restore 1591
 
         /// <summary>
-        ///     Trims a DateTimeOffset to a whole number of seconds
+        ///     Trims a DateTimeOffset to a whole number of units
         /// </summary>
         /// <param name="dto">The DateTimeOffset value to truncate</param>
         /// <param name="trim">The part of the DTO to trim off</param>

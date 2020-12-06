@@ -25,7 +25,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
-using Moonrise.Utils.Standard.Extensions;
+//using Moonrise.Utils.Standard.Extensions;
 using Newtonsoft.Json;
 
 namespace Moonrise.Utils.Standard.Config
@@ -373,7 +373,7 @@ namespace Moonrise.Utils.Standard.Config
         }
 
         /// <summary>
-        ///     Reads an application config element as the generic type - and can add it if it doesn't exist!
+        ///     Reads an application config element as the generic type
         /// </summary>
         /// <typeparam name="T">The type of the value</typeparam>
         /// <param name="key">The key.</param>
