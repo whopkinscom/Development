@@ -4,7 +4,7 @@ A collection of really useful little classes and extension methods that I've acc
 Settings will work with either JSON (by default) or XML configuration files. It is far less faff than using the "built-in" way, provides the ability to write out settings that haven't yet been created, works with both application and user settings **and** provides fully transparent machine or user level encryption. It uses an ISettingsProvider **if** you need to roll your own or test using mocked settings. It works using a *Thread Global Singleton* which means any (unlikely) changes to the provider are maintained on the thread that made the change. i.e. It is fully thread-safe. You don't need any of the Microsoft infrastructure to use this - though you can still use it side-by-side as it simply reads the config file - so it's great for all application types.
 ### Usage
 ```C#
-    internal MyConfigClass
+    internal class MyConfigClass
     {
         public int AnInt { get; set; } = 42;
         public LoggingLevel LoggingLevel { get; set; } = LoggingLevel.Debug;
@@ -27,7 +27,7 @@ What I do for my startup code is create a collated configuration class that uses
 ### User Settings
 Instead of Settings.Application just use Settings.User. The settings file will be located in the user's app data folder.
 ### Encryption
-Settings can make use an encryption provider to decrypt an encrypt settings, either in a group or individually. The supplied DpApiSettingsEncryptor makes use of the Data Protection API to encrypt or decrypt using the keys in either the User or Machine store. Since Settings can be written there is an option to write them as encrypted, these will then be passed through the encryption provider to encrypt. There is a command-line utility EncryptAppSettings.exe that is bundled in the Moonrise.Samples Nuget package - you'll need to dig into the package folder in your cache. Or you can simply roll your own. Encrypted data is written as Base64 between a start marker of "[{ENC]{" and an end marker of "]{ENC[{" - chosen for the **extreme** unlikelihood of those sets of characters occurring naturally in a settings file. If they might you are free to choose your own set, but then you'd need to rebuild EncryptAppSettings.exe!
+Settings can make use an encryption provider to decrypt an encrypt settings, either in a group or individually. The supplied DpApiSettingsEncryptor makes use of the Data Protection API to encrypt or decrypt using the keys in either the User or Machine store. Since Settings can be written there is an option to write them as encrypted, these will then be passed through the encryption provider to encrypt. There is a command-line utility EncryptAppSettings.exe that is bundled in the Moonrise.Samples Nuget package - you'll need to dig into the package folder in your cache. Or you can simply roll your own. Encrypted data is written as Base64 between a start marker of **"[{ENC]{"** and an end marker of **"]{ENC[{"** - chosen for the **extreme** unlikelihood of those sets of characters occurring naturally in a settings file. If they might you are free to choose your own set, but then you'd need to rebuild EncryptAppSettings.exe!
 
 Using the DpApiSettingsEncryptor (as used by the afore-mentioned .exe) means you either encrypt using User or Machine level stores. User level means the encrypted settings can only be read by processes running under that user account but can be done so on any machine. Machine level means the encrypted settings can only be read on the machine that did the encryption.
 ## DateTime Providers
@@ -101,6 +101,8 @@ Provides scoped, nestable, thread global values.
 
 *Global* because it's sort of acting like a global variable!
 
+*Singleton* because you access the value via a static property on the class.
+
 Another way of thinking about this class is that it is a smuggler. It can smuggle values (including numbers of budgies) way down into call heirarchies without you needing to retrofit paramters to pass to each call. You know the way you can use class variables for temporary working purposes without them being true properties/attributes of that class (from the design rather than language persepective here)? Well, a ScopedNestableThreadGlobalSingleton<T> is really the same thing, but for a thread. Kinda!
 
 Usage:
@@ -123,3 +125,4 @@ Then anywhere, even deep, within YOUR CODE you can get the current nested, threa
    SUT.CurrentValue()
    ...
 ```
+all thread safe and properly scoped!
