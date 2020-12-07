@@ -385,7 +385,7 @@
         <member name="M:Moonrise.Logging.Logger.Initialise(Moonrise.Logging.Logger.Config,Moonrise.Logging.ILoggingProvider,Moonrise.Logging.IAuditProvider)">
             <summary>A one-shot initialisation using the specified configuration.</summary>
             <param name="config">The configuration.</param>
-            <param name="loggingProvider">The logging provider.</param>
+            <param name="logProvider">The logging provider.</param>
             <param name="auditProvider">
                 The audit provider, defaults to NULL - which means an calls to <see cref="M:Moonrise.Logging.Logger.Audit(System.String,System.Object,Moonrise.Logging.LogTag,Moonrise.Logging.LoggingLevel,System.String)" /> will be
                 logged as an Audit message.

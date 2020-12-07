@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
 	<metadata>
 		<id>Moonrise.Samples</id>
-		<version>4.2020.1124.20432</version>
+		<version>4.2020.1207.10060</version>
 		<copyright>Moonrise Media Ltd.</copyright>
 		<authors>Will Hopkins</authors>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -14,9 +14,11 @@
 		<summary>Samples of how to use the Moonrise packages</summary>
 		<language>en-GB</language>
 		<dependencies>
-			<dependency id="Moonrise.LoggingUtils.NetStd" version="4.2020.1124.20432"/>
-			<dependency id="Moonrise.StandardUtils.NetStd" version="4.2020.1124.20432"/>
-			<dependency id="Moonrise.TestUtils.NetStd" version="4.2020.1124.20432"/>
+			<group targetFramework=".NETStandard2.1">
+				<dependency id="Moonrise.LoggingUtils.NetStd" version="4.2020.1207.10060"/>
+				<dependency id="Moonrise.StandardUtils.NetStd" version="4.2020.1207.10060"/>
+				<dependency id="Moonrise.TestUtils.NetStd" version="4.2020.1207.10060"/>
+			</group>
 		</dependencies>
 		<contentFiles>
 			<file src="*\**" target ="\" exclude="**\*.*"/>
@@ -30,6 +32,7 @@
 			<file src="*\**" target ="\" exclude="bin\**\*.*"/>
 		</contentFiles>
 		<icon>images\Logo.png</icon>
+		<repository type="git" url="https://github.com/whopkinscom/Development/tree/master/Moonrise.Samples" />
 	</metadata>
 	<files>
 		<file src="ContentFiles\Moonrise.Samples.Program.cs"/>

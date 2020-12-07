@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Moonrise.Microsoft.EncryptedJsonConfiguration</name>
+    </assembly>
+    <members>
+        <member name="T:Moonrise.Microsoft.Extensions.Configuration.EncryptedJsonConfiguration.EncryptedJsonConfigurationProvider">
+            <summary>
+                A potentially encrypted JSON based <see cref="!:Microsoft.Extensions.Configuration.FileConfigurationProvider" />.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Microsoft.Extensions.Configuration.EncryptedJsonConfiguration.EncryptedJsonConfigurationProvider.#ctor(Microsoft.Extensions.Configuration.Json.JsonConfigurationSource)">
+            <summary>
+                Initialises a <see cref="T:Moonrise.Microsoft.Extensions.Configuration.EncryptedJsonConfiguration.EncryptedJsonConfigurationProvider" />.
+            </summary>
+            <param name="source">The source for the provider</param>
+        </member>
+        <member name="M:Moonrise.Microsoft.Extensions.Configuration.EncryptedJsonConfiguration.EncryptedJsonConfigurationProvider.Load(System.IO.Stream)">
+            <summary>
+                Loads the JSON data from a stream, decoding any encrypted settings before handing it on to its base implementation
+            </summary>
+            <param name="stream">The stream of JSON data that MIGHT contain encoded encrypted settings.</param>
+        </member>
+        <member name="T:Moonrise.Microsoft.Extensions.Configuration.EncryptedJsonConfiguration.EncyptedJsonConfigurationExtensions">
+            <summary>
+                Hosts an extension method for <see cref="T:Microsoft.Extensions.Configuration.IConfigurationBuilder" />.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Microsoft.Extensions.Configuration.EncryptedJsonConfiguration.EncyptedJsonConfigurationExtensions.AddEncyptedJsonFile(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.String,System.Boolean,System.Boolean)">
+            <summary>
+                Adds a potentially encypted JSON file as a configuration source.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="path">The path to the JSON file.</param>
+            <param name="optional">if set to <c>true</c> [optional].</param>
+            <param name="reloadOnChange">if set to <c>true</c> [reload on change].</param>
+            <returns>
+                <see cref="!:builder" />
+            </returns>
+            <exception cref="T:System.ArgumentNullException">builder</exception>
+            <exception cref="T:System.ArgumentException">File path must be a non-empty string.</exception>
+        </member>
+        <member name="T:Moonrise.Microsoft.Extensions.Configuration.EncryptedJsonConfiguration.EncyptedJsonConfigurationSource">
+            <summary>
+                Represents a potentially encrypted JSON file as an <see cref="T:Microsoft.Extensions.Configuration.IConfigurationSource" />.
+            </summary>
+            <seealso cref="!:Microsoft.Extensions.Configuration.Json.JsonConfigurationSource" />
+        </member>
+        <member name="M:Moonrise.Microsoft.Extensions.Configuration.EncryptedJsonConfiguration.EncyptedJsonConfigurationSource.Build(Microsoft.Extensions.Configuration.IConfigurationBuilder)">
+            <summary>
+                Builds the <see cref="T:Microsoft.Extensions.Configuration.Json.JsonConfigurationProvider" /> for this source.
+            </summary>
+            <param name="builder">The <see cref="T:Microsoft.Extensions.Configuration.IConfigurationBuilder" />.</param>
+            <returns>
+                A <see cref="T:Moonrise.Microsoft.Extensions.Configuration.EncryptedJsonConfiguration.EncryptedJsonConfigurationProvider" />
+            </returns>
+        </member>
+    </members>
+</doc>

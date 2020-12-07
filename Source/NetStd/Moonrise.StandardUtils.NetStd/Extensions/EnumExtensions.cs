@@ -258,6 +258,22 @@ namespace Moonrise.Utils.Standard.Extensions
             return (T)(object)result;
         }
 
+        /// <summary>
+        ///     Returns an enum value from a string.
+        ///     <para>
+        ///         The string matches either the enum "name" or if there is a description attribute for a member then the
+        ///         description.
+        ///         The name takes precedence over the description - in case a description is given to a member and there is
+        ///         another
+        ///         member whose name is the same as that description!
+        ///         Usage: EnumType eVar = EnumExtensions.FromString{EnumType}("string_representation");
+        ///     </para>
+        /// </summary>
+        /// <param name="candidateValue">The candidiate value</param>
+        /// <param name="unfoundValue">The value to use if the value cannot be found as an enum</param>
+        /// <param name="typeT">The Enum type</param>
+        /// <param name="useUnfound">if set to <c>true</c> [use unfound].</param>
+        /// <returns></returns>
         public static Enum FromString(string candidateValue,
                                         Enum unfoundValue,
                                         Type typeT,

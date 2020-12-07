@@ -1,0 +1,1 @@
+EncryptAppSettings.exe -f appsettings.json -sf settingsInput -d

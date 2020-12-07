@@ -455,7 +455,7 @@ namespace Moonrise.Logging
 
         /// <summary>A one-shot initialisation using the specified configuration.</summary>
         /// <param name="config">The configuration.</param>
-        /// <param name="loggingProvider">The logging provider.</param>
+        /// <param name="logProvider">The logging provider.</param>
         /// <param name="auditProvider">
         ///     The audit provider, defaults to NULL - which means an calls to <see cref="Audit" /> will be
         ///     logged as an Audit message.

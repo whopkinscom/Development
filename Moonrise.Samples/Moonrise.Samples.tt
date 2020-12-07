@@ -15,9 +15,11 @@
 		<summary>Samples of how to use the Moonrise packages</summary>
 		<language>en-GB</language>
 		<dependencies>
-			<dependency id="Moonrise.LoggingUtils.NetStd" version="<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>"/>
-			<dependency id="Moonrise.StandardUtils.NetStd" version="<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>"/>
-			<dependency id="Moonrise.TestUtils.NetStd" version="<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>"/>
+			<group targetFramework=".NETStandard2.1">
+				<dependency id="Moonrise.LoggingUtils.NetStd" version="<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>"/>
+				<dependency id="Moonrise.StandardUtils.NetStd" version="<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>"/>
+				<dependency id="Moonrise.TestUtils.NetStd" version="<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>"/>
+			</group>
 		</dependencies>
 		<contentFiles>
 			<file src="*\**" target ="\" exclude="**\*.*"/>
@@ -31,6 +33,7 @@
 			<file src="*\**" target ="\" exclude="bin\**\*.*"/>
 		</contentFiles>
 		<icon>images\Logo.png</icon>
+		<repository type="git" url="https://github.com/whopkinscom/Development/tree/master/Moonrise.Samples" />
 	</metadata>
 	<files>
 		<file src="ContentFiles\Moonrise.Samples.Program.cs"/>

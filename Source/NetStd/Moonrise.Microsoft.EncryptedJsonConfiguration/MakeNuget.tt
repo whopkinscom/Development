@@ -1,0 +1,22 @@
+﻿<#@ output extension = ".cmd" encoding ="Windows-1252" #>
+@echo off
+REM Configuration: %1
+REM Project Directory: %2
+REM Project Name: %3
+
+set conf=%1
+set conf=%conf:"=%
+set projdir=%2
+set projdir=%projdir:"=%
+set projname=%3
+set projname=%projname:"=%
+
+IF NOT "%conf%" == "Release" GOTO FINISH
+	Echo Nugetting %projname%........
+	del /Q "%projdir%\..\..\..\GeneratedPackages\%projname%\*.*"
+	dotnet pack --no-build --configuration %conf% -o "%projdir%\..\..\..\GeneratedPackages\%projname%"  /p:NuspecFile="%projname%.nuspec" /p:PackageVersion=<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>
+    nuget sign "%projdir%\..\..\..\GeneratedPackages\%projname%\%projname%.<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>.nupkg" -Timestamper http://sha256timestamp.ws.symantec.com/sha256/timestamp -CertificatePath "C:\Users\Will\Documents\MMCS.pfx" -CertificatePassword <#= this.Password #>
+:FINISH
+
+<#@include file="..\..\Shared\Moonrise.Version\Properties\VersionNumber.t4" #>
+<#@include file="C:\Users\Will\Documents\Password.t4" #>

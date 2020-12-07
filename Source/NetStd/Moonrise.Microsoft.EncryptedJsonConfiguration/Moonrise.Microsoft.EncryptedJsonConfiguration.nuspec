@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+	  <id>Moonrise.Microsoft.EncryptedJsonConfiguration</id>
+	  <version>4.2020.1207.10060</version>
+	  <copyright>Moonrise Media Ltd.</copyright>
+	  <authors>Will Hopkins</authors>
+	  <requireLicenseAcceptance>false</requireLicenseAcceptance>
+	  <license type="file">License.txt</license>
+    <description>
+		Enables Moonrise.Utils.Standard.Config decryption to work transparently with the Microsoft way of doing settings. Simply .AddEncyptedJsonFile(...) to the IConfigurationBuilder.
+		Also see the package folder for a command-line app that uses Moonrise.Utils.Standard.Config en/decryption with examples.
+	</description>
+    <summary>Enables machine or user level decryption of settings in appsettings.Json.</summary>
+    <language>en-GB</language>
+    <dependencies>
+		<group targetFramework=".NETStandard2.1">
+			<dependency id="Microsoft.Extensions.Configuration" version ="5.0.0"/>
+			<dependency id="Microsoft.Extensions.Configuration.Json" version ="5.0.0"/>
+			<dependency id="Moonrise.StandardUtils.NetStd" version="4.2020.1207.10060"/>
+			<contentFiles>
+				<file src="*\**" target ="\" exclude="**\*.*"/>
+				<file src="EncryptAppSettings\EncryptAppSettings.exe"/>
+				<file src="EncryptAppSettings\settingsInput"/>
+				<file src="EncryptAppSettings\appsettings.json"/>
+				<file src="EncryptAppSettings\ExampleDecryptOfSingleSetting.cmd"/>
+				<file src="EncryptAppSettings\ExampleDecryptUsingSettingsInput.cmd"/>
+				<file src="EncryptAppSettings\ExampleEncryptOfSingleSetting.cmd"/>
+				<file src="EncryptAppSettings\ExampleEncryptUsingSettingsInput.cmd"/>
+				<file src="License.txt"/>
+				<file src="*\**" target ="\" exclude="obj\**\*.*"/>
+				<file src="*\**" target ="\" exclude="bin\**\*.*"/>
+			</contentFiles>
+		</group>
+  </dependencies>
+	  <icon>images\Logo.png</icon>
+	  <repository type="git" url="https://github.com/whopkinscom/Development/tree/master/Source/NetStd/Moonrise.Microsoft.EncryptedJsonConfiguration" />
+  </metadata>
+  <files>
+	<file src="EncryptAppSettings\EncryptAppSettings.exe" target="EncryptAppSettings\EncryptAppSettings.exe"/>
+	<file src="EncryptAppSettings\settingsInput" target="EncryptAppSettings\settingsInput"/>
+	<file src="EncryptAppSettings\appsettings.json" target="EncryptAppSettings\appsettings.json"/>
+	<file src="EncryptAppSettings\ExampleDecryptOfSingleSetting.cmd" target="EncryptAppSettings\ExampleDecryptOfSingleSetting.cmd"/>
+	<file src="EncryptAppSettings\ExampleDecryptUsingSettingsInput.cmd" target="EncryptAppSettings\ExampleDecryptUsingSettingsInput.cmd"/>
+	<file src="EncryptAppSettings\ExampleEncryptOfSingleSetting.cmd" target="EncryptAppSettings\ExampleEncryptOfSingleSetting.cmd"/>
+	<file src="EncryptAppSettings\ExampleEncryptUsingSettingsInput.cmd" target="EncryptAppSettings\ExampleEncryptUsingSettingsInput.cmd"/>
+    <file src=".\bin\Release\netstandard2.1\Moonrise.Microsoft.EncryptedJsonConfiguration.dll" target="lib\netstandard2.1\Moonrise.Microsoft.EncryptedJsonConfiguration.dll" />
+    <file src=".\bin\Release\netstandard2.1\Moonrise.Microsoft.EncryptedJsonConfiguration.xml" target="lib\netstandard2.1\Moonrise.Microsoft.EncryptedJsonConfiguration.xml" />
+    <file src=".\bin\Release\netstandard2.1\Moonrise.Microsoft.EncryptedJsonConfiguration.pdb" target="lib\netstandard2.1\Moonrise.Microsoft.EncryptedJsonConfiguration.pdb" />
+    <file src="License.txt"/>
+    <file src="Properties\Mm Button.png" target="images\Logo.png"/>
+  </files>
+</package>

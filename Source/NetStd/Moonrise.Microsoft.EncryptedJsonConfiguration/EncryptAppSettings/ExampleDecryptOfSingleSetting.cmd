@@ -1,0 +1,1 @@
+EncryptAppSettings.exe -f appsettings.json -s Logging:LogLevel,ContainerStartup:Logging:FileLogger:LogCycling -d

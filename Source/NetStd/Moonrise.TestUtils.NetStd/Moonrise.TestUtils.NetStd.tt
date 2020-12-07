@@ -16,13 +16,16 @@
     <summary>Utility classes I find useful with writing tests.</summary>
     <language>en-GB</language>
     <dependencies>
-      <!--<dependency id="Moq" />-->
-      <dependency id="Newtonsoft.Json" version ="10.0.2"/>
-      <dependency id="Microsoft.CSharp" version ="4.5.0"/>
-      <dependency id="System.ComponentModel.Annotations" version ="4.5.0"/>
-      <dependency id="System.Dynamic.Runtime" version ="4.3.0"/>
-	  <dependency id="Moonrise.StandardUtils.NetStd" version="<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>"/>
+		<group targetFramework=".NETStandard2.1">
+			<!--<dependency id="Moq" />-->
+			<dependency id="Newtonsoft.Json" version ="10.0.2"/>
+			<dependency id="Microsoft.CSharp" version ="4.5.0"/>
+			<dependency id="System.ComponentModel.Annotations" version ="4.5.0"/>
+			<dependency id="System.Dynamic.Runtime" version ="4.3.0"/>
+			<dependency id="Moonrise.StandardUtils.NetStd" version="<#= this.One #>.<#= this.Two #>.<#= this.Three #>.<#= this.Four #>"/>
+		</group>
   </dependencies>
+	  <repository type="git" url="https://github.com/whopkinscom/Development/tree/master/Source/NetStd/Moonrise.TestUtils.NetStd" />
 	  <icon>images\Logo.png</icon>
   </metadata>
   <files>
