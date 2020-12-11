@@ -86,6 +86,13 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonrise.Samples", "Moonrise.Samples\Moonrise.Samples.csproj", "{9A4517B9-F532-4DE1-9EAE-C40044C1DC0E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moonrise.Microsoft.EncryptedJsonConfiguration", "Source\NetStd\Moonrise.Microsoft.EncryptedJsonConfiguration\Moonrise.Microsoft.EncryptedJsonConfiguration.csproj", "{4D118DCB-8FAC-4C10-A311-72CCAACC6AF8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A56F42D0-ABA7-4FBC-95FA-4F6940DE68CF} = {A56F42D0-ABA7-4FBC-95FA-4F6940DE68CF}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EncryptAppSettings", "..\EncryptAppSettings\EncryptAppSettings\EncryptAppSettings.csproj", "{A56F42D0-ABA7-4FBC-95FA-4F6940DE68CF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nDesk.Options.Extensions", "..\EncryptAppSettings\nDesk.Options.Extensions\nDesk.Options.Extensions.csproj", "{8835C45C-8149-4C22-A29E-DFF44962068D}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -251,6 +258,22 @@ Global
 		{4D118DCB-8FAC-4C10-A311-72CCAACC6AF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D118DCB-8FAC-4C10-A311-72CCAACC6AF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D118DCB-8FAC-4C10-A311-72CCAACC6AF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A56F42D0-ABA7-4FBC-95FA-4F6940DE68CF}..Net Core - Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A56F42D0-ABA7-4FBC-95FA-4F6940DE68CF}..Net Core - Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A56F42D0-ABA7-4FBC-95FA-4F6940DE68CF}..Net Core - Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A56F42D0-ABA7-4FBC-95FA-4F6940DE68CF}..Net Core - Release|Any CPU.Build.0 = Release|Any CPU
+		{A56F42D0-ABA7-4FBC-95FA-4F6940DE68CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A56F42D0-ABA7-4FBC-95FA-4F6940DE68CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A56F42D0-ABA7-4FBC-95FA-4F6940DE68CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A56F42D0-ABA7-4FBC-95FA-4F6940DE68CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8835C45C-8149-4C22-A29E-DFF44962068D}..Net Core - Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8835C45C-8149-4C22-A29E-DFF44962068D}..Net Core - Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8835C45C-8149-4C22-A29E-DFF44962068D}..Net Core - Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8835C45C-8149-4C22-A29E-DFF44962068D}..Net Core - Release|Any CPU.Build.0 = Release|Any CPU
+		{8835C45C-8149-4C22-A29E-DFF44962068D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8835C45C-8149-4C22-A29E-DFF44962068D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8835C45C-8149-4C22-A29E-DFF44962068D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8835C45C-8149-4C22-A29E-DFF44962068D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -284,6 +307,8 @@ Global
 		{9A71581E-028B-4ED4-85C9-852C36CE3382} = {89BF98AD-56D4-4454-B1FE-1F7906713A59}
 		{9A4517B9-F532-4DE1-9EAE-C40044C1DC0E} = {89BF98AD-56D4-4454-B1FE-1F7906713A59}
 		{4D118DCB-8FAC-4C10-A311-72CCAACC6AF8} = {C1A55001-30E9-43C8-986A-D656618C5273}
+		{A56F42D0-ABA7-4FBC-95FA-4F6940DE68CF} = {89BF98AD-56D4-4454-B1FE-1F7906713A59}
+		{8835C45C-8149-4C22-A29E-DFF44962068D} = {89BF98AD-56D4-4454-B1FE-1F7906713A59}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2F4CEFF2-A9DF-48B9-B972-43DDB9A704BE}

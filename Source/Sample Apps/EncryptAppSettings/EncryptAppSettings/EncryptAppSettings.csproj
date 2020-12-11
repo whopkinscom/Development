@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Moonrise.StandardUtils.NetStd" Version="4.2020.1124.20432" />
+    <PackageReference Include="NDesk.Options.Core" Version="1.2.5" />
+    <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\nDesk.Options.Extensions\nDesk.Options.Extensions.csproj" />
+  </ItemGroup>
+
+</Project>

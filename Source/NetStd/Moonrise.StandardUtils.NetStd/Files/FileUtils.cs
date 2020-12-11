@@ -18,13 +18,8 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using Moonrise.Utils.Standard.Extensions;
-#if DotNetCore
-using Microsoft.Extensions.PlatformAbstractions;
-
-#else
 using System.Reflection;
-#endif
+using Moonrise.Utils.Standard.Extensions;
 
 namespace Moonrise.Utils.Standard.Files
 {
@@ -39,26 +34,17 @@ namespace Moonrise.Utils.Standard.Files
         /// <returns>As above!</returns>
         public static string ApplicationPath()
         {
-#if DotNetCore
-            string retVal = PlatformServices.Default.Application.ApplicationBasePath;
-#else
-            string retVal = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-#endif
+            string retVal = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             return retVal;
         }
 
         /// <summary>
-        ///     Gets the application name.
+        ///     Gets the application name - without the .exe.
         /// </summary>
         /// <returns>As above!</returns>
         public static string ApplicationName()
         {
-#if DotNetCore
-            string retVal = PlatformServices.Default.Application.ApplicationName;
-#else
-            string codeBase = Assembly.GetExecutingAssembly().CodeBase;
-            string retVal = Path.GetFileName(codeBase);
-#endif
+            string retVal = Assembly.GetEntryAssembly().GetName().Name;
             return retVal;
         }
 

@@ -1,0 +1,4 @@
+﻿The project properties Debug command-line arguments are set to encrypt an appsettings.json file using an input file to specify the settings to encrypt. 
+These files are in the root of the project and set to copy to the Output and so it will run with this set up. To decrypt the resultant file, you would need
+to add a -d to the command-line and copy the contents of the now encrypted appsettings.json in the bin\Debug or bin\Release folder (as appropriate) over 
+the top of the project root's appsettings.json.

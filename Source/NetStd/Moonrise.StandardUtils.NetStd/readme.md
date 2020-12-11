@@ -33,7 +33,7 @@ Using the `DpApiSettingsEncryptor` (as used by the afore-mentioned .exe) means y
 ## DateTime Providers
 An interfaced DateTime/Offset provider that supplies a `.Now` that you can control, particularly for testing.
 ## Reasoned Exceptions
-I **REALLY** like these. A ReasonedException<TEnumReason> is an exception that is only ever created with an enum "Reason". The enum is given a `[Description("description text")]` which becomes the text message for the exception and will often include {0} {1} {etc} placeholders so that when it comes to throw that exception, you pass the variables appropriately and you've got a well though out reason for throwing your exception. You also get a list of all the reasons this exception may be thrown, by virtue of the enums. If you then additionally use XML comments for the enum members that completely matches your `[Description("description text")]` you will get Intellisense at the point where the exception is thrown giving you the text. This pattern/approach means you have very tight control over the exceptions that you throw. You have defined reasons and controlled text so that you are not making up potentially different messages for the same reason, except of course for any specifics of the referenced variables in play.
+I **REALLY** like these. A ReasonedException<TEnumReason> is an exception that is only ever created with an enum "Reason". The enum is given a `[Description("description text")]` which becomes the text message for the exception and will often include {0} {1} {etc} placeholders so that when it comes to throw that exception, you pass the variables appropriately and you've got a well thought out reason for throwing your exception. You also get a list of all the reasons this exception may be thrown, by virtue of the enums. If you then additionally use XML comments for the enum members that completely matches your `[Description("description text")]` you will get Intellisense at the point where the exception is thrown giving you the text. This pattern/approach means you have very tight control over the exceptions that you throw. You have defined reasons and controlled text so that you are not making up potentially different messages for the same reason, except of course for any specifics of the referenced variables in play.
 ## Extensions
 A bunch of useful extension methods
 ### ClassExtensions
@@ -120,7 +120,7 @@ Wrap any significant "outer code" with
 Then anywhere, even deep, within YOUR CODE you can get the current nested, threaded global value via
 ```C#
    ...
-   SUT.CurrentValue()
+   SUT.CurrentValue
    ...
 ```
 all thread safe and properly scoped!

@@ -1638,7 +1638,7 @@
         </member>
         <member name="M:Moonrise.Utils.Standard.Files.FileUtils.ApplicationName">
             <summary>
-                Gets the application name.
+                Gets the application name - without the .exe.
             </summary>
             <returns>As above!</returns>
         </member>
@@ -1751,81 +1751,6 @@
                     An <see cref="T:Moonrise.Utils.Standard.IRequire" /> has no definition BEYOND indicating that the interface is from this pattern.
                 </para>
             </summary>
-        </member>
-        <member name="T:Moonrise.Utils.Standard.Misc.RestorableExtension">
-            <summary>
-                Class to define the extension method in.
-            </summary>
-        </member>
-        <member name="T:Moonrise.Utils.Standard.Misc.RestorableExtension.RestoreableValue`1">
-            <summary>
-                Grabs a property in it's constructor and resets it to the value it had when passed as it disposes.
-            </summary>
-            <typeparam name="T">Here to allow for the Func&lt;T&gt;</typeparam>
-            <seealso cref="T:System.IDisposable" />
-        </member>
-        <member name="F:Moonrise.Utils.Standard.Misc.RestorableExtension.RestoreableValue`1.instance">
-            <summary>
-                The instance whose value will be reset
-            </summary>
-        </member>
-        <member name="F:Moonrise.Utils.Standard.Misc.RestorableExtension.RestoreableValue`1.originalValue">
-            <summary>
-                The original VALUE of the property
-            </summary>
-        </member>
-        <member name="F:Moonrise.Utils.Standard.Misc.RestorableExtension.RestoreableValue`1.propInfo">
-            <summary>
-                The property information for the property that needs to be restoreable
-            </summary>
-        </member>
-        <member name="M:Moonrise.Utils.Standard.Misc.RestorableExtension.RestoreableValue`1.#ctor(System.Object,System.Linq.Expressions.Expression{System.Func{`0}},System.Boolean)">
-            <summary>
-                Initializes a new instance of the <see cref="T:Moonrise.Utils.Standard.Misc.RestorableExtension.RestoreableValue`1" /> class.
-                <para>
-                    Note: If you use this class YOU NEED TO NUGET "DeepCloner by Force"!
-                </para>
-            </summary>
-            <param name="_instance">The _instance whose property is being passed.</param>
-            <param name="property">The property to be restored on <see cref="M:Moonrise.Utils.Standard.Misc.RestorableExtension.RestoreableValue`1.Dispose" />.</param>
-            <param name="deepCopy">
-                Indicates if a deep copy is performed on the property - you usually will want this - though
-                there is only an effect on properties that are an object
-            </param>
-            <exception cref="T:System.ArgumentException">The property HAS to belong to the type</exception>
-        </member>
-        <member name="M:Moonrise.Utils.Standard.Misc.RestorableExtension.RestoreableValue`1.Dispose">
-            <summary>
-                Restores the instance's property value back to what it was
-            </summary>
-        </member>
-        <member name="M:Moonrise.Utils.Standard.Misc.RestorableExtension.RestoreableValue`1.SetOriginalProperty(System.Object)">
-            <summary>
-                Sets the original property.
-            </summary>
-            <param name="value">The value.</param>
-        </member>
-        <member name="M:Moonrise.Utils.Standard.Misc.RestorableExtension.Restoreable``1(System.Object,System.Linq.Expressions.Expression{System.Func{``0}},System.Boolean)">
-            <summary>
-                Restores a property to its original value when the using scope is exited.
-                <para>
-                    Usage:
-                </para>
-                <para>
-                    using (instance.Restorable(()=>instance.Property))
-                </para>
-                <para>
-                    Note: If you use this extension method then YOU NEED TO NUGET "DeepCloner"!
-                </para>
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="ext">The ext.</param>
-            <param name="property">The property.</param>
-            <param name="deepCopy">
-                Indicates if a deep copy is performed on the property - you usually will want this - though
-                there is only an effect on properties that are an object
-            </param>
-            <returns></returns>
         </member>
         <member name="T:Moonrise.Utils.Standard.Networking.NetworkUtils">
             <summary>
