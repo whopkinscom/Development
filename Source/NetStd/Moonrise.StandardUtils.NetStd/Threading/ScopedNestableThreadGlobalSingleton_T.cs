@@ -112,7 +112,7 @@ namespace Moonrise.Utils.Standard.Threading
                 return ThreadedCurrentGlobal.Value;
             }
 
-            private set
+            set
             {
                 ThreadedCurrentGlobal.Value = value;
             }

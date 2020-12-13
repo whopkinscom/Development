@@ -58,19 +58,13 @@ namespace Moonrise.Utils.Standard.Config
         ///     Decrypts the specified string.
         /// </summary>
         /// <param name="encryptedSettings">The encrypted setting.</param>
+        /// <param name="additionalEntropy">Additional entropy required to decrypt. Defaults to null</param>
         /// <returns>
         ///     The decrypted setting
         /// </returns>
-        public string Decrypt(byte[] encryptedSettings)
+        public string Decrypt(byte[] encryptedSettings, string additionalEntropy = null)
         {
-            try { }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-
-            byte[] decrypted = ProtectedData.Unprotect(encryptedSettings, null, scope);
+            byte[] decrypted = ProtectedData.Unprotect(encryptedSettings, additionalEntropy != null ? Encoding.ASCII.GetBytes(additionalEntropy) : null, scope);
             string retVal = Encoding.Unicode.GetString(decrypted);
 
             return retVal;
@@ -80,12 +74,13 @@ namespace Moonrise.Utils.Standard.Config
         ///     Encrypts the specified string.
         /// </summary>
         /// <param name="unencryptedSetting">The unencrypted setting.</param>
+        /// <param name="additionalEntropy">Additional entropy required to encrypt. Defaults to null</param>
         /// <returns>
         ///     The encrypted setting as
         /// </returns>
-        public byte[] Encrypt(string unencryptedSetting)
+        public byte[] Encrypt(string unencryptedSetting, string additionalEntropy = null)
         {
-            byte[] retVal = ProtectedData.Protect(Encoding.Unicode.GetBytes(unencryptedSetting), null, scope);
+            byte[] retVal = ProtectedData.Protect(Encoding.Unicode.GetBytes(unencryptedSetting), additionalEntropy != null ?Encoding.ASCII.GetBytes(additionalEntropy):null, scope);
             return retVal;
         }
     }

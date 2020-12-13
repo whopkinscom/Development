@@ -15,6 +15,9 @@
 //    limitations under the License.
 
 #endregion
+
+using System;
+
 namespace Moonrise.Utils.Standard.Config
 {
     /// <summary>
@@ -73,5 +76,17 @@ namespace Moonrise.Utils.Standard.Config
         /// <param name="objval">The value as an object - Use the most appropriate.</param>
         /// <param name="type">The type of setting.</param>
         void WriteSetting(string key, string value, object objval, SettingType type);
+
+        /// <summary>
+        /// Reads the complete settings file as a single string
+        /// </summary>
+        /// <returns>Wot I said</returns>
+        string ReadCompleteFile();
+
+        /// <summary>
+        /// Writes the complete settings file as a single string
+        /// </summary>
+        /// <param name="settings">The complete settings</param>
+        void WriteCompleteFile(string settings);
     }
 }

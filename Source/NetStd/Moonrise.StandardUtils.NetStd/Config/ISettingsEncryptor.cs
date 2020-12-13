@@ -28,14 +28,16 @@ namespace Moonrise.Utils.Standard.Config
         ///     Decrypts the specified string.
         /// </summary>
         /// <param name="encryptedSettings">The encrypted setting.</param>
+        /// <param name="additionalEntropy">Additional entropy required to decrypt. Defaults to null</param>
         /// <returns>The decrypted setting</returns>
-        string Decrypt(byte[] encryptedSettings);
+        string Decrypt(byte[] encryptedSettings, string additionalEntropy = null);
 
         /// <summary>
         ///     Encrypts the specified string.
         /// </summary>
         /// <param name="unencryptedSetting">The unencrypted setting.</param>
+        /// <param name="additionalEntropy">Additional entropy required to encrypt. Defaults to null</param>
         /// <returns>The encrypted setting as </returns>
-        byte[] Encrypt(string unencryptedSetting);
+        byte[] Encrypt(string unencryptedSetting, string additionalEntropy = null);
     }
 }

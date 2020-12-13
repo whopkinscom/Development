@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
 	  <id>Moonrise.Microsoft.EncryptedJsonConfiguration</id>
-	  <version>4.2020.1211.13060</version>
+	  <version>4.2020.1213.22305</version>
 	  <copyright>Moonrise Media Ltd.</copyright>
 	  <authors>Will Hopkins</authors>
 	  <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -17,7 +17,7 @@
 		<group targetFramework=".NETStandard2.1">
 			<dependency id="Microsoft.Extensions.Configuration" version ="5.0.0"/>
 			<dependency id="Microsoft.Extensions.Configuration.Json" version ="5.0.0"/>
-			<dependency id="Moonrise.StandardUtils.NetStd" version="4.2020.1211.13060"/>
+			<dependency id="Moonrise.StandardUtils.NetStd" version="4.2020.1213.22305"/>
 			<contentFiles>
 				<file src="*\**" target ="\" exclude="**\*.*"/>
 				<file src="EncryptAppSettings\EncryptAppSettings.exe"/>

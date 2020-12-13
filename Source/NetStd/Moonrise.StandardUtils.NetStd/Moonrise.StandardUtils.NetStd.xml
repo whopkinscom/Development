@@ -31,20 +31,22 @@
             Encrypts using the current machine data protection scope. Any user on the machine can decrypt but can only do so on the same machine that encrypted
             </summary>
         </member>
-        <member name="M:Moonrise.Utils.Standard.Config.DpApiSettingsEncryptor.Decrypt(System.Byte[])">
+        <member name="M:Moonrise.Utils.Standard.Config.DpApiSettingsEncryptor.Decrypt(System.Byte[],System.String)">
             <summary>
                 Decrypts the specified string.
             </summary>
             <param name="encryptedSettings">The encrypted setting.</param>
+            <param name="additionalEntropy">Additional entropy required to decrypt. Defaults to null</param>
             <returns>
                 The decrypted setting
             </returns>
         </member>
-        <member name="M:Moonrise.Utils.Standard.Config.DpApiSettingsEncryptor.Encrypt(System.String)">
+        <member name="M:Moonrise.Utils.Standard.Config.DpApiSettingsEncryptor.Encrypt(System.String,System.String)">
             <summary>
                 Encrypts the specified string.
             </summary>
             <param name="unencryptedSetting">The unencrypted setting.</param>
+            <param name="additionalEntropy">Additional entropy required to encrypt. Defaults to null</param>
             <returns>
                 The encrypted setting as
             </returns>
@@ -55,18 +57,20 @@
                 THIS WILL CHANGE AS IT MATURES!
             </summary>
         </member>
-        <member name="M:Moonrise.Utils.Standard.Config.ISettingsEncryptor.Decrypt(System.Byte[])">
+        <member name="M:Moonrise.Utils.Standard.Config.ISettingsEncryptor.Decrypt(System.Byte[],System.String)">
             <summary>
                 Decrypts the specified string.
             </summary>
             <param name="encryptedSettings">The encrypted setting.</param>
+            <param name="additionalEntropy">Additional entropy required to decrypt. Defaults to null</param>
             <returns>The decrypted setting</returns>
         </member>
-        <member name="M:Moonrise.Utils.Standard.Config.ISettingsEncryptor.Encrypt(System.String)">
+        <member name="M:Moonrise.Utils.Standard.Config.ISettingsEncryptor.Encrypt(System.String,System.String)">
             <summary>
                 Encrypts the specified string.
             </summary>
             <param name="unencryptedSetting">The unencrypted setting.</param>
+            <param name="additionalEntropy">Additional entropy required to encrypt. Defaults to null</param>
             <returns>The encrypted setting as </returns>
         </member>
         <member name="T:Moonrise.Utils.Standard.Config.SettingType">
@@ -124,6 +128,18 @@
             <param name="value">The value as a string - Use the most appropriate.</param>
             <param name="objval">The value as an object - Use the most appropriate.</param>
             <param name="type">The type of setting.</param>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.ISettingsProvider.ReadCompleteFile">
+            <summary>
+            Reads the complete settings file as a single string
+            </summary>
+            <returns>Wot I said</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.ISettingsProvider.WriteCompleteFile(System.String)">
+            <summary>
+            Writes the complete settings file as a single string
+            </summary>
+            <param name="settings">The complete settings</param>
         </member>
         <member name="T:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider">
             <summary>
@@ -408,6 +424,19 @@
                 The settings provider is stored as a per-thread singleton
             </summary>
         </member>
+        <member name="F:Moonrise.Utils.Standard.Config.Settings._reEncrypted">
+            <summary>
+            Determines if a settings file has been re-encrypted or not
+            </summary>
+            <remarks>
+            If it has, any encrypted write MUST pass the additional entropy
+            </remarks>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Config.Settings.ReEncryptedMarker">
+            <summary>
+            The marker used to indicate when a settings file has been re-encrypted
+            </summary>
+        </member>
         <member name="M:Moonrise.Utils.Standard.Config.Settings.#ctor(Moonrise.Utils.Standard.Config.SettingType)">
             <summary>
                 Prevents a default instance of the <see cref="T:Moonrise.Utils.Standard.Config.Settings" /> class from being created. You must instead use either
@@ -451,8 +480,8 @@
                 <seealso cref="P:Moonrise.Utils.Standard.Config.Settings.Application" /> or
                 <seealso cref="P:Moonrise.Utils.Standard.Config.Settings.User" /> settings
                 repository as appropriate. This is a convenient string
-                accessor, if you want to set or retrieve other types, you will need to use <see cref="M:Moonrise.Utils.Standard.Config.Settings.Read``2(System.String,``0,System.Linq.Expressions.Expression{System.Func{``1}},System.Boolean)" /> or
-                <see cref="M:Moonrise.Utils.Standard.Config.Settings.ReadEnum``1(System.String,``0@,System.Boolean,Moonrise.Utils.Standard.Config.Settings.WhatAttributeOfEnum)" />.
+                accessor, if you want to set or retrieve other types, you will need to use <see cref="M:Moonrise.Utils.Standard.Config.Settings.Read``2(System.String,``0,System.Linq.Expressions.Expression{System.Func{``1}},System.Boolean,System.String)" /> or
+                <see cref="M:Moonrise.Utils.Standard.Config.Settings.ReadEnum``1(System.String,``0@,System.Boolean,Moonrise.Utils.Standard.Config.Settings.WhatAttributeOfEnum,System.String)" />.
             </summary>
             <value>
                 The <see cref="T:System.String" />.
@@ -462,10 +491,14 @@
                 A string key.
             </returns>
         </member>
-        <member name="P:Moonrise.Utils.Standard.Config.Settings.Provider">
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.ReEncrypt">
             <summary>
-                The <see cref="T:Moonrise.Utils.Standard.Config.ISettingsProvider" /> being used by the <see cref="T:Moonrise.Utils.Standard.Config.Settings" />.
+            Re-encrypts the settings file using a generated entropy that must then be passed to any read of a possibly encrypted setting.
             </summary>
+            <remarks>
+            This prevents any code that has not explicitly been passed the entropy from being able to read encrypted settings.
+            </remarks>
+            <returns>The generated entropy that has re-encrypted the encrypted settings</returns>
         </member>
         <member name="P:Moonrise.Utils.Standard.Config.Settings.SettingsEncryptor">
             <summary>
@@ -484,12 +517,13 @@
                 <seealso cref="M:Moonrise.Utils.Standard.Config.Settings.ReplaceSettingsProvider(Moonrise.Utils.Standard.Config.ISettingsProvider)" />
             </remarks>
         </member>
-        <member name="M:Moonrise.Utils.Standard.Config.Settings.Decrypt(System.String,Moonrise.Utils.Standard.Config.ISettingsEncryptor)">
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.Decrypt(System.String,Moonrise.Utils.Standard.Config.ISettingsEncryptor,System.String)">
             <summary>
                 Decodes and then decrypts the supplied string
             </summary>
             <param name="readVal">The encoded, encrypted string</param>
-            <param name="settingsEncryptor">The encryptor (well actually decryptor) to use</param>
+            <param name="settingsEncryptor">The encryptor (well actually decryptor in this context) to use</param>
+            <param name="additionalEntropy">Additional entropy required to decrypt. Defaults to null</param>
             <returns>The decoded, decrypted string</returns>
         </member>
         <member name="M:Moonrise.Utils.Standard.Config.Settings.Flush">
@@ -497,7 +531,7 @@
                 Flushes this instance.
             </summary>
         </member>
-        <member name="M:Moonrise.Utils.Standard.Config.Settings.GetConnectionString(System.String,System.String)">
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.GetConnectionString(System.String,System.String,System.String)">
             <summary>
                 Gets the connection string.
             </summary>
@@ -506,11 +540,12 @@
                 The connection string container name in the settings file if you need to use a
                 different setting.
             </param>
+            <param name="additionalEntropy">Additional entropy required to decrypt. Defaults to null</param>
             <returns>
                 The connection string, or null if it doesn't exist
             </returns>
         </member>
-        <member name="M:Moonrise.Utils.Standard.Config.Settings.Read``2(System.String,``0,System.Linq.Expressions.Expression{System.Func{``1}},System.Boolean)">
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.Read``2(System.String,``0,System.Linq.Expressions.Expression{System.Func{``1}},System.Boolean,System.String)">
             <summary>
                 Reads the specified key into a supplied property.
                 <para>
@@ -543,9 +578,10 @@
             <param name="instance">The instance.</param>
             <param name="property">The property.</param>
             <param name="addIfNotExists">Determines if the setting should be added if it doesn't exist.</param>
+            <param name="additionalEntropy">Additional entropy required to decrypt. Defaults to null</param>
             <returns>True if the value to be read was found</returns>
         </member>
-        <member name="M:Moonrise.Utils.Standard.Config.Settings.Read``1(System.String,``0@)">
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.Read``1(System.String,``0@,System.String)">
             <summary>
                 Reads an application config element as the generic type
             </summary>
@@ -555,6 +591,7 @@
                 in - the default value to use if key doesn't exist, and also the value to use if consequently to be
                 written, out - the value in config
             </param>
+            <param name="additionalEntropy">Additional entropy required to decrypt. Defaults to null</param>
             <returns>True if the value to be read was found</returns>
             <exception cref="T:System.ArgumentOutOfRangeException">Cannot use this function with a + typeof(T).Name</exception>
             <exception cref="T:System.IO.InvalidDataException">
@@ -567,7 +604,7 @@
                 Invalid [Guid] value for + key
             </exception>
         </member>
-        <member name="M:Moonrise.Utils.Standard.Config.Settings.Read``1(System.String,``0@,System.Boolean)">
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.Read``1(System.String,``0@,System.Boolean,System.String)">
             <summary>
                 Reads an application config element as the generic type - and can add it if it doesn't exist!
             </summary>
@@ -598,6 +635,7 @@
                 written, out - the value in config
             </param>
             <param name="addIfNotExists">If true adds the key to the config if it doesn't already exist</param>
+            <param name="additionalEntropy">Additional entropy required to decrypt. Defaults to null</param>
             <returns>True if the value to be read was found</returns>
             <exception cref="T:System.ArgumentOutOfRangeException">Cannot use this function with a + typeof(T).Name</exception>
             <exception cref="T:System.IO.InvalidDataException">
@@ -610,7 +648,7 @@
                 Invalid [Guid] value for + key
             </exception>
         </member>
-        <member name="M:Moonrise.Utils.Standard.Config.Settings.ReadEnum``2(System.String,``0,System.Linq.Expressions.Expression{System.Func{``1}},System.Boolean,Moonrise.Utils.Standard.Config.Settings.WhatAttributeOfEnum)">
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.ReadEnum``2(System.String,``0,System.Linq.Expressions.Expression{System.Func{``1}},System.Boolean,Moonrise.Utils.Standard.Config.Settings.WhatAttributeOfEnum,System.String)">
             <summary>
                 Reads the specified key into a supplied property as an enum.
                 Usage: Settings.Application.Read("LoggingFile", SettingsConfig, ()=>SettingsConfig.LogFilename)
@@ -625,9 +663,10 @@
                 If the value is to be added, <see cref="T:Moonrise.Utils.Standard.Config.Settings.WhatAttributeOfEnum" /> indicates how that enum will be
                 written.
             </param>
+            <param name="additionalEntropy">Additional entropy required to decrypt. Defaults to null</param>
             <returns>True if the value to be read was found</returns>
         </member>
-        <member name="M:Moonrise.Utils.Standard.Config.Settings.ReadEnum``1(System.String,``0@,System.Boolean,Moonrise.Utils.Standard.Config.Settings.WhatAttributeOfEnum)">
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.ReadEnum``1(System.String,``0@,System.Boolean,Moonrise.Utils.Standard.Config.Settings.WhatAttributeOfEnum,System.String)">
             <summary>
                 Reads a typed enum from the config file. The enum will be parsed from a string into the enum and can be represented
                 in many ways, as per <see cref="T:Moonrise.Utils.Standard.Config.Settings.WhatAttributeOfEnum" />.
@@ -643,6 +682,7 @@
                 If the value is to be added, <see cref="T:Moonrise.Utils.Standard.Config.Settings.WhatAttributeOfEnum" /> indicates how that enum will be
                 written.
             </param>
+            <param name="additionalEntropy">Additional entropy required to decrypt. Defaults to null</param>
             <returns>True if the value to be read was found</returns>
             <exception cref="T:System.ArgumentException">If <typeparamref name="T" /> is not an Enum</exception>
         </member>
@@ -657,7 +697,7 @@
             </summary>
             <param name="newOne">The new one.</param>
         </member>
-        <member name="M:Moonrise.Utils.Standard.Config.Settings.Write``1(System.String,``0,System.Boolean)">
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.Write``1(System.String,``0,System.Boolean,System.String)">
             <summary>
                 Writes the specified key and value to the indicated settings via the current <see cref="T:Moonrise.Utils.Standard.Config.ISettingsProvider" />. DO
                 NOT USE THIS TO STORE SETTINGS IN THE APPLICATION SETTINGS AT RUNTIME> THIS IS VERY BAD PRACTICE! Fine for user
@@ -670,21 +710,24 @@
             <param name="key">The key.</param>
             <param name="value">The value.</param>
             <param name="encrypt">If true, the value should be written encrypted</param>
+            <param name="additionalEntropy">Additional entropy required to decrypt. Defaults to null</param>
         </member>
-        <member name="M:Moonrise.Utils.Standard.Config.Settings.Encrypt(System.String)">
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.Encrypt(System.String,System.String)">
             <summary>
                 Encrypts and then encodes the supplied string
             </summary>
             <param name="writeThis">The clear string</param>
+            <param name="additionalEntropy">Additional entropy required to encrypt. Defaults to null</param>
             <returns>The encoded, encrypted string</returns>
         </member>
-        <member name="M:Moonrise.Utils.Standard.Config.Settings.ReadCommon(System.String,Moonrise.Utils.Standard.Config.SettingType)">
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.ReadCommon(System.String,Moonrise.Utils.Standard.Config.SettingType,System.String)">
             <summary>
                 Common setting read method. Decrypts any encrypted settings
             </summary>
             <param name="key">The key for the setting to read</param>
             <param name="type">The type of the setting</param>
-            <returns>A setting ready for further processing</returns>
+            <param name="additionalEntropy">Additional entropy required to decrypt. Defaults to null</param>
+            <returns>A setting ready for further processing - or null if the setting could be not found</returns>
         </member>
         <member name="T:Moonrise.Utils.Standard.Config.SettingsExceptionReason">
             <summary>
@@ -710,6 +753,16 @@
         <member name="F:Moonrise.Utils.Standard.Config.SettingsExceptionReason.InvalidData">
             <summary>
                 The setting [{0}] contained invalid data.
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Config.SettingsExceptionReason.AddtionalEntropyRequired">
+            <summary>
+            When writing an encrypted value for key [{0}] to a re-encrypted settings file, you MUST pass the additional entropy.
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Config.SettingsExceptionReason.InvalidAdditionalEntropy">
+            <summary>
+            The additional entropy data for reading a re-encrypted setting was invalid.
             </summary>
         </member>
         <member name="T:Moonrise.Utils.Standard.Config.SettingsException">

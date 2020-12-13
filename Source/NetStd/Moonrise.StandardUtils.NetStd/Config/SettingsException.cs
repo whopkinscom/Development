@@ -54,7 +54,19 @@ namespace Moonrise.Utils.Standard.Config
         ///     The setting [{0}] contained invalid data.
         /// </summary>
         [Description("The setting [{0}] contained invalid data.")]
-        InvalidData
+        InvalidData,
+
+        /// <summary>
+        /// When writing an encrypted value for key [{0}] to a re-encrypted settings file, you MUST pass the additional entropy.
+        /// </summary>
+        [Description("When writing an encrypted value for key [{0}] to a re-encrypted settings file, you MUST pass the additional entropy.")]
+        AddtionalEntropyRequired,
+
+        /// <summary>
+        /// The additional entropy data for reading a re-encrypted setting was invalid.
+        /// </summary>
+        [Description("The additional entropy data for reading a re-encrypted setting was invalid.")]
+        InvalidAdditionalEntropy
     }
 
     /// <summary>

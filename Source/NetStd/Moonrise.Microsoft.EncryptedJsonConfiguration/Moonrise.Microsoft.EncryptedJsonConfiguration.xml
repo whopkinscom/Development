@@ -6,7 +6,30 @@
     <members>
         <member name="T:Moonrise.Microsoft.Extensions.Configuration.EncryptedJsonConfiguration.EncryptedJsonConfigurationProvider">
             <summary>
-                A potentially encrypted JSON based <see cref="!:Microsoft.Extensions.Configuration.FileConfigurationProvider" />.
+                A potentially encrypted JSON based <see cref="T:Microsoft.Extensions.Configuration.FileConfigurationProvider" />.
+            </summary>
+        </member>
+        <member name="T:Moonrise.Microsoft.Extensions.Configuration.EncryptedJsonConfiguration.EncryptedJsonConfigurationProvider.AdditionalEntropy">
+            <summary>
+            If you have re-encrypted a settings file via <see cref="M:Moonrise.Utils.Standard.Config.Settings.ReEncrypt"/> to make its encryption unique to a particular application and you want
+            that application to also be able to use the <see cref="T:Microsoft.Extensions.Configuration.IConfiguration"/> access, then you must use <see cref="T:Moonrise.Microsoft.Extensions.Configuration.EncryptedJsonConfiguration.EncryptedJsonConfigurationProvider.AdditionalEntropy"/> to pass/smuggle that
+            value down to enable it to decrypt. You must do this prior to every call against the <see cref="T:Microsoft.Extensions.Configuration.IConfiguration"/>. As EACH individual read will reset the
+            additional entropy value to null.
+            </summary>
+            <remarks>
+            Do so as follows;
+            <code>
+            using (new EncryptedJsonConfigurationProvider.AdditionalEntropy(value you're using))
+            {<para>
+            ...</para><para>
+            _configuration.Read....</para><para>
+            }</para>
+            </code>
+            </remarks>
+        </member>
+        <member name="M:Moonrise.Microsoft.Extensions.Configuration.EncryptedJsonConfiguration.EncryptedJsonConfigurationProvider.AdditionalEntropy.Reset">
+            <summary>
+            Resets the current threaded value to null.
             </summary>
         </member>
         <member name="M:Moonrise.Microsoft.Extensions.Configuration.EncryptedJsonConfiguration.EncryptedJsonConfigurationProvider.#ctor(Microsoft.Extensions.Configuration.Json.JsonConfigurationSource)">

@@ -293,6 +293,16 @@ namespace Moonrise.Utils.Standard.Config
             }
         }
 
+        public string ReadCompleteFile()
+        {
+            return FileUtils.ReadFile(ApplicationSettingsFilename);
+        }
+
+        public void WriteCompleteFile(string settings)
+        {
+            File.WriteAllText(ApplicationSettingsFilename, settings);
+        }
+
         /// <summary>
         ///     Reads the application setting.
         /// </summary>
