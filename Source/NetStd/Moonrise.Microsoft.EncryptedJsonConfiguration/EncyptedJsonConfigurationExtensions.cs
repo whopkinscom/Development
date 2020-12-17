@@ -20,7 +20,7 @@ namespace Moonrise.Microsoft.Extensions.Configuration.EncryptedJsonConfiguration
         /// </returns>
         /// <exception cref="ArgumentNullException">builder</exception>
         /// <exception cref="ArgumentException">File path must be a non-empty string.</exception>
-        public static IConfigurationBuilder AddEncyptedJsonFile(this IConfigurationBuilder builder,
+        public static IConfigurationBuilder AddEncryptedJsonFile(this IConfigurationBuilder builder,
                                                                 string path,
                                                                 bool optional,
                                                                 bool reloadOnChange)

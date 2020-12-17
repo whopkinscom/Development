@@ -183,14 +183,16 @@ namespace Moonrise.Utils.Standard.Config
         /// <remarks>
         /// This prevents any code that has not explicitly been passed the entropy from being able to read encrypted settings.
         /// </remarks>
+        /// <param name="additionalEntropy">Optional entropy that can be supplied. If null (default) then entropy will be created from a hashed stack trace.</param>
         /// <returns>The generated entropy that has re-encrypted the encrypted settings</returns>
-        public string ReEncrypt()
+        public string ReEncrypt(string additionalEntropy = null)
         {
-            string additionalEntropy;
-
-            // First create the entropy from the call stack
-            string stackTrace = GetStackTrace();
-            additionalEntropy = HashUtils.GetMd5Hash(new MD5CryptoServiceProvider(), stackTrace);
+            if (string.IsNullOrEmpty(additionalEntropy))
+            {
+                // First create the entropy from the call stack
+                string stackTrace = GetStackTrace();
+                additionalEntropy = HashUtils.GetMd5Hash(new MD5CryptoServiceProvider(), stackTrace);
+            }
 
             // Next we check if the settings file has already been re-crypted.
             DateTimeOffset previouslyRecryptedAt = DateTimeOffset.Now;
