@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
 	  <id>Moonrise.LoggingUtils.NetStd</id>
-	  <version>4.2020.1213.22305</version>
+	  <version>4.2020.1217.8545</version>
 	  <copyright>Moonrise Media Ltd.</copyright>
 	  <authors>Will Hopkins</authors>
 	  <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -19,7 +19,6 @@
 		  <group targetFramework=".NETStandard2.1">
 			  <dependency id="Newtonsoft.Json" version ="11.0.2"/>
 			  <dependency id="System.Console" version ="4.3.0"/>
-			  <dependency id="System.Diagnostics.Process" version ="4.3.0"/>
 			  <dependency id="System.Diagnostics.StackTrace" version ="4.3.0"/>
 			  <dependency id="System.Threading.Thread" version ="4.3.0"/>
 		  </group>

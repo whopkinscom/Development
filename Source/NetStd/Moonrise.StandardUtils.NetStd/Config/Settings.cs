@@ -201,12 +201,12 @@ namespace Moonrise.Utils.Standard.Config
                 Write(ReEncryptedMarker, previouslyRecryptedAt, true);
 
                 // Now we need to re-encrypt any encrypted settings in the settings file.
-                string settings = SettingsProvider.ReadCompleteFile();
+                string settings = SettingsProvider.ReadCompleteFile(_type);
 
                 if (settings.Contains(EncryptionOpeningIdentifier))
                 {
                     settings = ReEncrypt(settings);
-                    SettingsProvider.WriteCompleteFile(settings);
+                    SettingsProvider.WriteCompleteFile(settings, _type);
 
                     // We now need the provider to re-read their re-encrypted file
                     RefreshAnyCaches();

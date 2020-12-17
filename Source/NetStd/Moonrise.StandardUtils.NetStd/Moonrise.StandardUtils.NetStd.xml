@@ -129,17 +129,19 @@
             <param name="objval">The value as an object - Use the most appropriate.</param>
             <param name="type">The type of setting.</param>
         </member>
-        <member name="M:Moonrise.Utils.Standard.Config.ISettingsProvider.ReadCompleteFile">
+        <member name="M:Moonrise.Utils.Standard.Config.ISettingsProvider.ReadCompleteFile(Moonrise.Utils.Standard.Config.SettingType)">
             <summary>
             Reads the complete settings file as a single string
             </summary>
+            <param name="type">The type of setting.</param>
             <returns>Wot I said</returns>
         </member>
-        <member name="M:Moonrise.Utils.Standard.Config.ISettingsProvider.WriteCompleteFile(System.String)">
+        <member name="M:Moonrise.Utils.Standard.Config.ISettingsProvider.WriteCompleteFile(System.String,Moonrise.Utils.Standard.Config.SettingType)">
             <summary>
             Writes the complete settings file as a single string
             </summary>
             <param name="settings">The complete settings</param>
+            <param name="type">The type of setting.</param>
         </member>
         <member name="T:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider">
             <summary>
@@ -148,57 +150,10 @@
                 settings section.
             </summary>
         </member>
-        <member name="T:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Config">
+        <member name="F:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.DotMarker">
             <summary>
-                The configuration required
+                Replaces any dots in a key due to JTokens treating them as hierarchy separators
             </summary>
-        </member>
-        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Config.ApplicationSettingsFilename">
-            <summary>
-                The name of the settings filename, defaults to the DotNotCore default settings filename
-            </summary>
-        </member>
-        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Config.ApplicationSettingsFolder">
-            <summary>
-                The folder the settings file is in, use null (the default) for the same folder as the application
-            </summary>
-        </member>
-        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Config.ApplicationSettingsSection">
-            <summary>
-                Specifies a section in the config file where the application settings will be taken from, defaults to that as used
-                by DotNetCore but you don't have to have one if you're not sharing the settings with DotNetCore infrastructure
-                settings
-            </summary>
-        </member>
-        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Config.ConfigurationOverrideEnvVar">
-            <summary>
-                The environment variable, if used, that contains the name of the settings override post-fix, defaults to that used
-                by DotNetCore
-            </summary>
-        </member>
-        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Config.UserSettingsFilename">
-            <summary>
-                The name of the user settings file - this will be stored in the roaming or normal user profile location.
-            </summary>
-        </member>
-        <member name="T:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.ISettingsEncryptor">
-            <summary>
-                Defines encryption/decryption that will be applied to sections before writing and after reading.
-            </summary>
-        </member>
-        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.ISettingsEncryptor.Decrypt(System.String)">
-            <summary>
-                Decrypts the specified jsoned data.
-            </summary>
-            <param name="jsonedData">The jsoned data.</param>
-            <returns>The decrypted data</returns>
-        </member>
-        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.ISettingsEncryptor.Encrypt(System.String)">
-            <summary>
-                Encrypts the specified string.
-            </summary>
-            <param name="jsonedData">The jsoned dictionary.</param>
-            <returns>The encrypted string</returns>
         </member>
         <member name="F:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.ConfigurationOverride">
             <summary>
@@ -252,12 +207,6 @@
                 The application settings section name.
             </summary>
         </member>
-        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.CacheRead">
-            <summary>
-                Only used by the <see cref="T:Moonrise.Utils.Standard.Config.Settings" /> class, but indicates if this provider has
-                read its cache yet.
-            </summary>
-        </member>
         <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Configuration">
             <summary>
                 The configuration for this provider
@@ -271,6 +220,12 @@
         <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.UserSettingsFilename">
             <summary>
                 The user settings filename.
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.CacheRead">
+            <summary>
+                Only used by the <see cref="T:Moonrise.Utils.Standard.Config.Settings" /> class, but indicates if this provider has
+                read its cache yet.
             </summary>
         </member>
         <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Clone">
@@ -307,6 +262,20 @@
             <param name="key">The key.</param>
             <param name="value">The value as a string - Use the most appropriate.</param>
             <param name="objval">The value as an object - Use the most appropriate.</param>
+            <param name="type">The type of setting.</param>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.ReadCompleteFile(Moonrise.Utils.Standard.Config.SettingType)">
+            <summary>
+                Reads the complete settings file as a single string
+            </summary>
+            <param name="type">The type of setting.</param>
+            <returns>Wot I said</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.WriteCompleteFile(System.String,Moonrise.Utils.Standard.Config.SettingType)">
+            <summary>
+                Writes the complete settings file as a single string
+            </summary>
+            <param name="settings">The complete settings</param>
             <param name="type">The type of setting.</param>
         </member>
         <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.ReadApplicationSetting(System.String)">
@@ -358,6 +327,58 @@
             <summary>
                 Writes the user setting file into the roaming user path
             </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Config">
+            <summary>
+                The configuration required
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Config.ApplicationSettingsFilename">
+            <summary>
+                The name of the settings filename, defaults to the DotNotCore default settings filename
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Config.ApplicationSettingsFolder">
+            <summary>
+                The folder the settings file is in, use null (the default) for the same folder as the application
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Config.ApplicationSettingsSection">
+            <summary>
+                Specifies a section in the config file where the application settings will be taken from, defaults to that as used
+                by DotNetCore but you don't have to have one if you're not sharing the settings with DotNetCore infrastructure
+                settings
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Config.ConfigurationOverrideEnvVar">
+            <summary>
+                The environment variable, if used, that contains the name of the settings override post-fix, defaults to that used
+                by DotNetCore
+            </summary>
+        </member>
+        <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.Config.UserSettingsFilename">
+            <summary>
+                The name of the user settings file - this will be stored in the roaming or normal user profile location.
+            </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.ISettingsEncryptor">
+            <summary>
+                Defines encryption/decryption that will be applied to sections before writing and after reading.
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.ISettingsEncryptor.Decrypt(System.String)">
+            <summary>
+                Decrypts the specified jsoned data.
+            </summary>
+            <param name="jsonedData">The jsoned data.</param>
+            <returns>The decrypted data</returns>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.ISettingsEncryptor.Encrypt(System.String)">
+            <summary>
+                Encrypts the specified string.
+            </summary>
+            <param name="jsonedData">The jsoned dictionary.</param>
+            <returns>The encrypted string</returns>
         </member>
         <member name="T:Moonrise.Utils.Standard.Config.SampleEncryptor">
             <summary>

@@ -80,13 +80,15 @@ namespace Moonrise.Utils.Standard.Config
         /// <summary>
         /// Reads the complete settings file as a single string
         /// </summary>
+        /// <param name="type">The type of setting.</param>
         /// <returns>Wot I said</returns>
-        string ReadCompleteFile();
+        string ReadCompleteFile(SettingType settingType);
 
         /// <summary>
         /// Writes the complete settings file as a single string
         /// </summary>
         /// <param name="settings">The complete settings</param>
-        void WriteCompleteFile(string settings);
+        /// <param name="type">The type of setting.</param>
+        void WriteCompleteFile(string settings, SettingType settingType);
     }
 }

@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
 	  <id>Moonrise.StandardUtils.NetStd</id>
-	  <version>4.2020.1213.22305</version>
+	  <version>4.2020.1217.8545</version>
 	  <copyright>Moonrise Media Ltd.</copyright>
 	  <authors>Will Hopkins</authors>
 	  <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -17,13 +17,12 @@
       Exceptions.ReasonedExceptionT: Base class for my exception pattern that accompanies an exception with an enum reason where the description attribute provides both the (formattable) message and intellisense. This leads to a centralised list of all possible exception reasons and messages.
     </description>
     <summary>General utilities I've found useful as I go about my day-to-day work.</summary>
-	  <releaseNotes>Removed any sub-dependencies on .Net Std 1.6.1. Also removed Restorable{T} as it was a gimmick class anyway!</releaseNotes>
+	  <releaseNotes>Fixed a bug where overridden sections that used a '.' in the key name clashed with JToken path handling and crashed!</releaseNotes>
     <language>en-GB</language>
     <dependencies>
 		<group targetFramework=".NETStandard2.1">
 			<dependency id="Newtonsoft.Json" version ="11.0.2"/>
 			<dependency id="System.ComponentModel.Annotations" version ="4.5.0"/>
-			<dependency id="System.Diagnostics.Process" version ="4.3.0"/>
 			<dependency id="System.Runtime.Extensions" version ="4.3.0"/>
 			<dependency id="System.Security.Cryptography.ProtectedData" version ="4.5.0"/>
 			<dependency id="System.Threading.Tasks.Parallel" version ="4.3.0"/>
