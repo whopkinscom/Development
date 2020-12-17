@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
 	  <id>Moonrise.TestUtils.NetStd</id>
-	  <version>4.2020.1217.8545</version>
+	  <version>4.2020.1217.12261</version>
 	  <copyright>Moonrise Media Ltd.</copyright>
 	  <authors>Will Hopkins</authors>
 	  <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -21,7 +21,7 @@
 			<dependency id="Microsoft.CSharp" version ="4.5.0"/>
 			<dependency id="System.ComponentModel.Annotations" version ="4.5.0"/>
 			<dependency id="System.Dynamic.Runtime" version ="4.3.0"/>
-			<dependency id="Moonrise.StandardUtils.NetStd" version="4.2020.1217.8545"/>
+			<dependency id="Moonrise.StandardUtils.NetStd" version="4.2020.1217.12261"/>
 		</group>
   </dependencies>
 	  <repository type="git" url="https://github.com/whopkinscom/Development/tree/master/Source/NetStd/Moonrise.TestUtils.NetStd" />

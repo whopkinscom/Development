@@ -217,6 +217,11 @@
                 Set this if you need to encrypt/decrypt settings.
             </summary>
         </member>
+        <member name="F:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.__userSettingsFilename">
+            <summary>
+                Backing store for the user settings filename.
+            </summary>
+        </member>
         <member name="P:Moonrise.Utils.Standard.Config.JsonConfigSettingsProvider.UserSettingsFilename">
             <summary>
                 The user settings filename.

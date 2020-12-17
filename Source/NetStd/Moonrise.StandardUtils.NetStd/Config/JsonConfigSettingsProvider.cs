@@ -141,9 +141,24 @@ namespace Moonrise.Utils.Standard.Config
         public ISettingsEncryptor SettingsEncryptor { get; set; }
 
         /// <summary>
+        ///     Backing store for the user settings filename.
+        /// </summary>
+        private string __userSettingsFilename;
+
+        /// <summary>
         ///     The user settings filename.
         /// </summary>
-        public string UserSettingsFilename { get; set; }
+        public string UserSettingsFilename
+        {
+            get
+            {
+                return __userSettingsFilename;
+            }
+            set
+            {
+                __userSettingsFilename = $"{FileUtils.RoamingUserApplicationPath()}/{value}";
+            }
+        }
 
         /// <summary>
         ///     Only used by the <see cref="T:Moonrise.Utils.Standard.Config.Settings" /> class, but indicates if this provider has
@@ -308,9 +323,13 @@ namespace Moonrise.Utils.Standard.Config
                 }
                 catch (Exception e)
                 {
-                    throw new SettingsException(e, SettingsExceptionReason.InvalidKey, key);
+                    return retVal;
+//                    throw new SettingsException(e, SettingsExceptionReason.InvalidKey, key);
                 }
-            else if (_applicationSettings.TryGetValue(key, out setting)) retVal = setting.ToString();
+            else if (_applicationSettings.TryGetValue(key, out setting))
+            {
+                retVal = setting.ToString();
+            }
 
             return retVal;
         }
@@ -539,35 +558,48 @@ namespace Moonrise.Utils.Standard.Config
 
             if (key.Contains(":"))
             {
-                // We've got a composite key
-                string[] keys = key.Split(':');
-                setting = _userSettings;
+                try
+                {
+                    // We've got a composite key
+                    string[] keys = key.Split(':');
+                    setting = _userSettings;
 
-                int level = 0;
+                    int level = 0;
 
-                foreach (string subkey in keys)
-                    if (level++ == 0)
-                    {
-                        setting = ((IDictionary<string, object>) setting)[subkey];
-                    }
-                    else
-                    {
-                        if (subkey.Contains("["))
+                    foreach (string subkey in keys)
+                        if (level++ == 0)
                         {
-                            int start = 0;
-                            string indexStr = subkey.Extract(ref start, "[", "]");
-                            string subKey = subkey.Substring(0, subkey.IndexOf("[", StringComparison.CurrentCulture));
-                            int index = int.Parse(indexStr);
-                            setting = ((JObject) setting)[subKey];
-                            setting = ((JArray) setting)[index];
+                            setting = ((IDictionary<string, object>) setting)[subkey];
                         }
                         else
                         {
-                            setting = ((JObject) setting)[subkey];
+                            if (subkey.Contains("["))
+                            {
+                                int start = 0;
+                                string indexStr = subkey.Extract(ref start, "[", "]");
+                                string subKey = subkey.Substring(0,
+                                    subkey.IndexOf("[", StringComparison.CurrentCulture));
+                                int index = int.Parse(indexStr);
+                                setting = ((JObject) setting)[subKey];
+                                setting = ((JArray) setting)[index];
+                            }
+                            else
+                            {
+                                setting = ((JObject) setting)[subkey];
+                            }
                         }
-                    }
 
-                retVal = setting.ToString();
+                    retVal = setting.ToString();
+                }
+                catch (KeyNotFoundException)
+                {
+                    return retVal;
+                }
+                catch (Exception e)
+                {
+                    return retVal;
+                    //                    throw new SettingsException(e, SettingsExceptionReason.InvalidKey, key);
+                }
             }
             else if (_userSettings.TryGetValue(key, out setting))
             {
@@ -586,7 +618,7 @@ namespace Moonrise.Utils.Standard.Config
 
             if (!string.IsNullOrWhiteSpace(UserSettingsFilename))
             {
-                string jsonedDict = FileUtils.ReadFile(FileUtils.RoamingUserApplicationPath(), UserSettingsFilename);
+                string jsonedDict = FileUtils.ReadFile(UserSettingsFilename);
 
                 if (!string.IsNullOrEmpty(jsonedDict))
                 {
@@ -830,7 +862,7 @@ namespace Moonrise.Utils.Standard.Config
         /// </summary>
         private void WriteUserSettingFile()
         {
-            if (_userSettings.Count > 1)
+            if (_userSettings.Count > 0)
             {
                 string jsonedDict = JsonConvert.SerializeObject(_userSettings);
 
