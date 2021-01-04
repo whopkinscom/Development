@@ -1,13 +1,13 @@
 ﻿#region Apache-v2.0
 
 //    Copyright 2017 Will Hopkins - Moonrise Media Ltd.
-// 
+//
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
 //    You may obtain a copy of the License at
-// 
+//
 //        http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 //    Unless required by applicable law or agreed to in writing, software
 //    distributed under the License is distributed on an "AS IS" BASIS,
 //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,6 +23,7 @@ using System.Linq;
 using System.Text;
 using Moonrise.Utils.Standard.Extensions;
 using Moonrise.Utils.Standard.Files;
+using Moonrise.Utils.Standard.Misc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -81,17 +82,17 @@ namespace Moonrise.Utils.Standard.Config
             string applicationSettingsSection = "",
             string userSettingsFilename = "UserSettings.json",
             string configurationOverrideEnvVar = "ASPNETCORE_ENVIRONMENT") : this(new Config
-        {
-            ApplicationSettingsFilename =
+            {
+                ApplicationSettingsFilename =
                 applicationSettingsFilename,
-            ApplicationSettingsFolder =
+                ApplicationSettingsFolder =
                 applicationSettingsFolder,
-            ApplicationSettingsSection =
+                ApplicationSettingsSection =
                 applicationSettingsSection,
-            ConfigurationOverrideEnvVar =
+                ConfigurationOverrideEnvVar =
                 configurationOverrideEnvVar,
-            UserSettingsFilename = userSettingsFilename
-        })
+                UserSettingsFilename = userSettingsFilename
+            })
         {
         }
 
@@ -292,7 +293,7 @@ namespace Moonrise.Utils.Standard.Config
                     foreach (string subkey in keys)
                         if (level++ == 0)
                         {
-                            setting = ((IDictionary<string, object>) setting)[subkey];
+                            setting = ((IDictionary<string, object>)setting)[subkey];
                         }
                         else
                         {
@@ -303,17 +304,17 @@ namespace Moonrise.Utils.Standard.Config
                                 string subKey = subkey.Substring(0,
                                     subkey.IndexOf("[", StringComparison.CurrentCulture));
                                 int index = int.Parse(indexStr);
-                                setting = ((JObject) setting)[subKey];
-                                setting = ((JArray) setting)[index];
+                                setting = ((JObject)setting)[subKey];
+                                setting = ((JArray)setting)[index];
                             }
                             else
                             {
-                                setting = ((JObject) setting)[subkey];
+                                setting = ((JObject)setting)[subkey];
                             }
                         }
 
-                    if (setting is JValue && ((JValue) setting).Value is bool)
-                        retVal = ((JValue) setting).Value.ToString().ToLower();
+                    if (setting is JValue && ((JValue)setting).Value is bool)
+                        retVal = ((JValue)setting).Value.ToString().ToLower();
                     else
                         retVal = setting.ToString();
                 }
@@ -321,10 +322,9 @@ namespace Moonrise.Utils.Standard.Config
                 {
                     return retVal;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return retVal;
-//                    throw new SettingsException(e, SettingsExceptionReason.InvalidKey, key);
                 }
             else if (_applicationSettings.TryGetValue(key, out setting))
             {
@@ -409,7 +409,7 @@ namespace Moonrise.Utils.Standard.Config
                     if (keyValuePair.Value.GetType().IsAssignableFrom(typeof(JObject)))
                     {
                         // Look to iterate through the various JObject structures to replace/add anything else
-                        JObject highest = (JObject) keyValuePair.Value;
+                        JObject highest = (JObject)keyValuePair.Value;
 
                         ReplaceDots(highest);
                     }
@@ -435,7 +435,8 @@ namespace Moonrise.Utils.Standard.Config
 
                                 if (child.Type == JTokenType.Object ||
                                     child.Type == JTokenType.Property)
-                                    ReplaceDots(child);
+                                    using (Recursion.Guard())
+                                        ReplaceDots(child);
                             }
 
                             foreach (JProperty prop in props)
@@ -462,8 +463,8 @@ namespace Moonrise.Utils.Standard.Config
                     if (keyValuePair.Value.GetType().IsAssignableFrom(typeof(JObject)))
                     {
                         // Look to iterate through the various JObject structures to replace/add anything else
-                        JObject original = (JObject) _applicationSettings[keyValuePair.Key];
-                        JObject replacement = (JObject) keyValuePair.Value;
+                        JObject original = (JObject)_applicationSettings[keyValuePair.Key];
+                        JObject replacement = (JObject)keyValuePair.Value;
 
                         ReplaceOveriddenSetting(original, replacement);
                     }
@@ -498,9 +499,10 @@ namespace Moonrise.Utils.Standard.Config
                                 JToken originalItem = originalChild.SelectToken(replacementPath);
 
                                 if (originalItem == null)
-                                    ((JContainer) originalChild).Add(replacingChild);
+                                    ((JContainer)originalChild).Add(replacingChild);
                                 else
-                                    ReplaceEachChild(originalItem.Parent, replacingChild);
+                                    using (Recursion.Guard())
+                                        ReplaceEachChild(originalItem.Parent, replacingChild);
                             }
                         }
                         else if (replacementChild.Type == JTokenType.Array)
@@ -512,9 +514,10 @@ namespace Moonrise.Utils.Standard.Config
                                 JToken originalItem = originalChild.SelectToken(replacementPath);
 
                                 if (originalItem == null)
-                                    ((JContainer) originalChild).Add(replacingChild);
+                                    ((JContainer)originalChild).Add(replacingChild);
                                 else
-                                    ReplaceEachChild(originalItem.Parent, replacingChild);
+                                    using (Recursion.Guard())
+                                        ReplaceEachChild(originalItem.Parent, replacingChild);
                             }
                         }
                         else if (replacementChild.Type == JTokenType.Property)
@@ -523,17 +526,18 @@ namespace Moonrise.Utils.Standard.Config
                             {
                                 foreach (JToken replacingValue in replacementChild.Children())
                                 {
-                                    JToken originalValue = ((JProperty) originalChild).Value;
+                                    JToken originalValue = ((JProperty)originalChild).Value;
 
                                     if (replacingValue.HasValues)
-                                        ReplaceEachChild(originalValue, replacingValue);
+                                        using (Recursion.Guard())
+                                            ReplaceEachChild(originalValue, replacingValue);
                                     else
-                                        ((JProperty) originalChild).Value = replacingValue;
+                                        ((JProperty)originalChild).Value = replacingValue;
                                 }
                             }
                             else
                             {
-                                JProperty parent = (JProperty) originalChild.Parent;
+                                JProperty parent = (JProperty)originalChild.Parent;
                                 parent.Value = replacementChild;
                             }
                         }
@@ -569,7 +573,7 @@ namespace Moonrise.Utils.Standard.Config
                     foreach (string subkey in keys)
                         if (level++ == 0)
                         {
-                            setting = ((IDictionary<string, object>) setting)[subkey];
+                            setting = ((IDictionary<string, object>)setting)[subkey];
                         }
                         else
                         {
@@ -580,12 +584,12 @@ namespace Moonrise.Utils.Standard.Config
                                 string subKey = subkey.Substring(0,
                                     subkey.IndexOf("[", StringComparison.CurrentCulture));
                                 int index = int.Parse(indexStr);
-                                setting = ((JObject) setting)[subKey];
-                                setting = ((JArray) setting)[index];
+                                setting = ((JObject)setting)[subKey];
+                                setting = ((JArray)setting)[index];
                             }
                             else
                             {
-                                setting = ((JObject) setting)[subkey];
+                                setting = ((JObject)setting)[subkey];
                             }
                         }
 
@@ -595,10 +599,9 @@ namespace Moonrise.Utils.Standard.Config
                 {
                     return retVal;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return retVal;
-                    //                    throw new SettingsException(e, SettingsExceptionReason.InvalidKey, key);
                 }
             }
             else if (_userSettings.TryGetValue(key, out setting))
@@ -652,16 +655,16 @@ namespace Moonrise.Utils.Standard.Config
                         if (level++ == 0)
                         {
                             if (level == keys.Length)
-                                ((IDictionary<string, object>) setting)[subkey] = value;
+                                ((IDictionary<string, object>)setting)[subkey] = value;
                             else
                                 try
                                 {
-                                    setting = ((IDictionary<string, object>) setting)[subkey];
+                                    setting = ((IDictionary<string, object>)setting)[subkey];
                                 }
                                 catch (KeyNotFoundException excep)
                                 {
-                                    ((IDictionary<string, object>) setting)[subkey] = new JObject();
-                                    setting = ((IDictionary<string, object>) setting)[subkey];
+                                    ((IDictionary<string, object>)setting)[subkey] = new JObject();
+                                    setting = ((IDictionary<string, object>)setting)[subkey];
                                 }
                         }
                         else
@@ -675,13 +678,13 @@ namespace Moonrise.Utils.Standard.Config
                                     string subKey = subkey.Substring(0,
                                         subkey.IndexOf("[", StringComparison.CurrentCulture));
                                     int index = int.Parse(indexStr);
-                                    setting = ((JObject) setting)[subKey];
-                                    setting = ((JArray) setting)[index];
-                                    ((JValue) setting).Value = value;
+                                    setting = ((JObject)setting)[subKey];
+                                    setting = ((JArray)setting)[index];
+                                    ((JValue)setting).Value = value;
                                 }
                                 else
                                 {
-                                    ((JObject) setting)[subkey] = JToken.FromObject(value);
+                                    ((JObject)setting)[subkey] = JToken.FromObject(value);
                                 }
                             }
                             else
@@ -693,27 +696,27 @@ namespace Moonrise.Utils.Standard.Config
                                     string subKey = subkey.Substring(0,
                                         subkey.IndexOf("[", StringComparison.CurrentCulture));
                                     int index = int.Parse(indexStr);
-                                    setting = ((JObject) setting)[subKey];
-                                    setting = ((JArray) setting)[index];
+                                    setting = ((JObject)setting)[subKey];
+                                    setting = ((JArray)setting)[index];
                                 }
                                 else
                                 {
                                     try
                                     {
                                         object settingObj = setting;
-                                        setting = ((JObject) setting)[subkey];
+                                        setting = ((JObject)setting)[subkey];
 
                                         if (setting == null)
                                         {
                                             setting = new JObject();
-                                            ((JObject) settingObj)[subkey] = (JObject) setting;
+                                            ((JObject)settingObj)[subkey] = (JObject)setting;
                                         }
                                     }
                                     catch (KeyNotFoundException excep)
                                     {
                                         object settingObj = setting;
                                         setting = new JObject();
-                                        ((JObject) settingObj)[subkey] = (JObject) setting;
+                                        ((JObject)settingObj)[subkey] = (JObject)setting;
                                     }
                                 }
                             }
@@ -807,9 +810,9 @@ namespace Moonrise.Utils.Standard.Config
                     if (level++ == 0)
                     {
                         if (level == keys.Length)
-                            ((IDictionary<string, object>) setting)[subkey] = value;
+                            ((IDictionary<string, object>)setting)[subkey] = value;
                         else
-                            setting = ((IDictionary<string, object>) setting)[subkey];
+                            setting = ((IDictionary<string, object>)setting)[subkey];
                     }
                     else
                     {
@@ -822,12 +825,12 @@ namespace Moonrise.Utils.Standard.Config
                                 string subKey = subkey.Substring(0,
                                     subkey.IndexOf("[", StringComparison.CurrentCulture));
                                 int index = int.Parse(indexStr);
-                                setting = ((JObject) setting)[subKey];
-                                setting = ((JArray) setting)[index];
+                                setting = ((JObject)setting)[subKey];
+                                setting = ((JArray)setting)[index];
                             }
                             else
                             {
-                                ((JObject) setting)[subkey] = new JObject(value);
+                                ((JObject)setting)[subkey] = new JObject(value);
                             }
                         }
                         else
@@ -839,12 +842,12 @@ namespace Moonrise.Utils.Standard.Config
                                 string subKey = subkey.Substring(0,
                                     subkey.IndexOf("[", StringComparison.CurrentCulture));
                                 int index = int.Parse(indexStr);
-                                setting = ((JObject) setting)[subKey];
-                                setting = ((JArray) setting)[index];
+                                setting = ((JObject)setting)[subKey];
+                                setting = ((JArray)setting)[index];
                             }
                             else
                             {
-                                setting = ((JObject) setting)[subkey];
+                                setting = ((JObject)setting)[subkey];
                             }
                         }
                     }
@@ -945,7 +948,7 @@ namespace Moonrise.Utils.Standard.Config
             string retVal;
             StringBuilder builder = new StringBuilder();
 
-            foreach (char character in jsonedData) builder.Append((char) (Convert.ToUInt16(character) - 1));
+            foreach (char character in jsonedData) builder.Append((char)(Convert.ToUInt16(character) - 1));
 
             retVal = builder.ToString();
             return retVal;
@@ -961,7 +964,7 @@ namespace Moonrise.Utils.Standard.Config
             string retVal;
             StringBuilder builder = new StringBuilder();
 
-            foreach (char character in jsonedData) builder.Append((char) (Convert.ToUInt16(character) + 1));
+            foreach (char character in jsonedData) builder.Append((char)(Convert.ToUInt16(character) + 1));
 
             retVal = builder.ToString();
             return retVal;

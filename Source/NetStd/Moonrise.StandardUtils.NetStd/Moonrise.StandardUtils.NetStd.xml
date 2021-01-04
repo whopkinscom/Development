@@ -517,13 +517,14 @@
                 A string key.
             </returns>
         </member>
-        <member name="M:Moonrise.Utils.Standard.Config.Settings.ReEncrypt">
+        <member name="M:Moonrise.Utils.Standard.Config.Settings.ReEncrypt(System.String)">
             <summary>
             Re-encrypts the settings file using a generated entropy that must then be passed to any read of a possibly encrypted setting.
             </summary>
             <remarks>
             This prevents any code that has not explicitly been passed the entropy from being able to read encrypted settings.
             </remarks>
+            <param name="additionalEntropy">Optional entropy that can be supplied. If null (default) then entropy will be created from a hashed stack trace.</param>
             <returns>The generated entropy that has re-encrypted the encrypted settings</returns>
         </member>
         <member name="P:Moonrise.Utils.Standard.Config.Settings.SettingsEncryptor">
@@ -1830,6 +1831,49 @@
                     An <see cref="T:Moonrise.Utils.Standard.IRequire" /> has no definition BEYOND indicating that the interface is from this pattern.
                 </para>
             </summary>
+        </member>
+        <member name="T:Moonrise.Utils.Standard.Misc.Recursion">
+            <summary>
+            Allows for guarded recursion
+            </summary>
+        </member>
+        <member name="F:Moonrise.Utils.Standard.Misc.Recursion.currentDepth">
+            <summary>
+            A one-per-thread recursion count
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Misc.Recursion.#ctor">
+            <summary>
+            Creating a <see cref="T:Moonrise.Utils.Standard.Misc.Recursion"/> increases the recursion count by one
+            </summary>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Misc.Recursion.Dispose">
+            <summary>
+            Disposing a <see cref="T:Moonrise.Utils.Standard.Misc.Recursion"/> decreases the recursion count by one
+            </summary>
+            <remarks>
+            As long as the using pattern is deployed the count will always get reset to zero, either by an exception or returns falling down the stack.
+            </remarks>
+        </member>
+        <member name="M:Moonrise.Utils.Standard.Misc.Recursion.Guard(System.Int32,System.String)">
+            <summary>
+            Guards against a recursive call eating up the stack.
+            </summary>
+            <remarks>
+            Use the using pattern just prior to making a recursive call. Don't even use the brackets.
+            <example>
+            <code>
+            void Doit() {<para>
+            ...</para><para>
+            using (Recursion.Guard())</para><para>
+            Doit();</para><para>
+            ...</para><para>
+            }</para>
+            </code></example>
+            </remarks>
+            <param name="maximumLevel">The maximum depth you do not expect to exceed - defaults to 50. It's pretty rare to go much deeper than this but you know your algorithm!</param>
+            <param name="caller">The name of the method making the guarded call.</param>
+            <returns>An <see cref="T:System.IDisposable"/> <see cref="T:Moonrise.Utils.Standard.Misc.Recursion"/> reference that will manage the recursion counter</returns>
         </member>
         <member name="T:Moonrise.Utils.Standard.Networking.NetworkUtils">
             <summary>

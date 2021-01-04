@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
 	<metadata>
 		<id>Moonrise.Samples</id>
-		<version>4.2020.1217.12261</version>
+		<version>4.2021.104.17165</version>
 		<copyright>Moonrise Media Ltd.</copyright>
 		<authors>Will Hopkins</authors>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -15,9 +15,9 @@
 		<language>en-GB</language>
 		<dependencies>
 			<group targetFramework=".NETStandard2.1">
-				<dependency id="Moonrise.LoggingUtils.NetStd" version="4.2020.1217.12261"/>
-				<dependency id="Moonrise.StandardUtils.NetStd" version="4.2020.1217.12261"/>
-				<dependency id="Moonrise.TestUtils.NetStd" version="4.2020.1217.12261"/>
+				<dependency id="Moonrise.LoggingUtils.NetStd" version="4.2021.104.17165"/>
+				<dependency id="Moonrise.StandardUtils.NetStd" version="4.2021.104.17165"/>
+				<dependency id="Moonrise.TestUtils.NetStd" version="4.2021.104.17165"/>
 			</group>
 		</dependencies>
 		<contentFiles>

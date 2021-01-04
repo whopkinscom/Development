@@ -11,7 +11,7 @@
         </member>
         <member name="T:Moonrise.Microsoft.Extensions.Configuration.EncryptedJsonConfiguration.EncryptedJsonConfigurationProvider.AdditionalEntropy">
             <summary>
-            If you have re-encrypted a settings file via <see cref="M:Moonrise.Utils.Standard.Config.Settings.ReEncrypt"/> to make its encryption unique to a particular application and you want
+            If you have re-encrypted a settings file via <see cref="!:Settings.ReEncrypt()"/> to make its encryption unique to a particular application and you want
             that application to also be able to use the <see cref="T:Microsoft.Extensions.Configuration.IConfiguration"/> access, then you must use <see cref="T:Moonrise.Microsoft.Extensions.Configuration.EncryptedJsonConfiguration.EncryptedJsonConfigurationProvider.AdditionalEntropy"/> to pass/smuggle that
             value down to enable it to decrypt. You must do this prior to every call against the <see cref="T:Microsoft.Extensions.Configuration.IConfiguration"/>. As EACH individual read will reset the
             additional entropy value to null.
@@ -49,7 +49,7 @@
                 Hosts an extension method for <see cref="T:Microsoft.Extensions.Configuration.IConfigurationBuilder" />.
             </summary>
         </member>
-        <member name="M:Moonrise.Microsoft.Extensions.Configuration.EncryptedJsonConfiguration.EncyptedJsonConfigurationExtensions.AddEncyptedJsonFile(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.String,System.Boolean,System.Boolean)">
+        <member name="M:Moonrise.Microsoft.Extensions.Configuration.EncryptedJsonConfiguration.EncyptedJsonConfigurationExtensions.AddEncryptedJsonFile(Microsoft.Extensions.Configuration.IConfigurationBuilder,System.String,System.Boolean,System.Boolean)">
             <summary>
                 Adds a potentially encypted JSON file as a configuration source.
             </summary>
