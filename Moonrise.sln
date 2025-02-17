@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30621.155
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34414.90
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{3A05B895-8DCE-4C16-A836-D7A88B6EC079}"
 EndProject
@@ -95,11 +95,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nDesk.Options.Extensions", "..\EncryptAppSettings\nDesk.Options.Extensions\nDesk.Options.Extensions.csproj", "{8835C45C-8149-4C22-A29E-DFF44962068D}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Source\Shared\LoggingUtils\LoggingUtils.projitems*{209efac3-18a3-461f-8e33-3a7b5d7ff224}*SharedItemsImports = 13
-		Source\Shared\TestUtils\TestUtils.projitems*{30e80acd-6f06-4a9f-b3df-114859f799d7}*SharedItemsImports = 13
-		Source\Shared\StandardUtils\StandardUtils.projitems*{8e4fbd9e-f685-4417-9d47-30aaf7ef7ae8}*SharedItemsImports = 13
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		.Net Core - Debug|Any CPU = .Net Core - Debug|Any CPU
 		.Net Core - Release|Any CPU = .Net Core - Release|Any CPU
@@ -312,5 +307,10 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2F4CEFF2-A9DF-48B9-B972-43DDB9A704BE}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Source\Shared\LoggingUtils\LoggingUtils.projitems*{209efac3-18a3-461f-8e33-3a7b5d7ff224}*SharedItemsImports = 13
+		Source\Shared\TestUtils\TestUtils.projitems*{30e80acd-6f06-4a9f-b3df-114859f799d7}*SharedItemsImports = 13
+		Source\Shared\StandardUtils\StandardUtils.projitems*{8e4fbd9e-f685-4417-9d47-30aaf7ef7ae8}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

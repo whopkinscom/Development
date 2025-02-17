@@ -2,7 +2,7 @@
 <#@ output extension=".t4" #>
 <#
 	// Set the Major version here - it'll get used for both the assembly & nuget versions, the rest being date generated
-	int one = 4;
+	int one = 5;
 	int two = DateTime.Now.Year;
 	int three = DateTime.Now.Month * 100 + DateTime.Now.Day;
 	int four = (DateTime.Now.Hour * 10000 + DateTime.Now.Minute * 100 + DateTime.Now.TimeOfDay.Seconds)/10;

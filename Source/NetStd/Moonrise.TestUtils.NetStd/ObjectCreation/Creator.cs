@@ -1144,7 +1144,14 @@ namespace Moonrise.Utils.Test.ObjectCreation
         /// <returns>A random value!</returns>
         public T GetRandomEnum<T>()
         {
-            return (T)GetRandomEnum(typeof(T));
+            T retVal = default;
+
+            if (!GetOneShotItemsSource(ref retVal))
+            {
+                retVal = (T)GetRandomEnum(typeof(T));
+            }
+
+            return retVal;
         }
 
         /// <summary>
@@ -1157,22 +1164,30 @@ namespace Moonrise.Utils.Test.ObjectCreation
         /// <returns>A passable, but wierd, filepath</returns>
         public string GetRandomFilePath(int numFolders = 5, int folderNameLength = 10, int fileNameLength = 20, int extensionLength = 3)
         {
-            // Start of with the drive letter
-            string retVal = GetRandomString(StringSources.UppercaseAlphaCharacters, 1, 1, true) + ":\\";
-
-            numFolders = GetRandomInt(0, numFolders);
-
-            // Add some folders
-            for (int i = 0; i < numFolders; i++)
+            string retVal = default;
+            
+            if (!GetOneShotItemsSource(ref retVal))
             {
-                retVal += GetRandomString(StringSources.AlphaNumericCharactersWithSpaces, 1, folderNameLength, true).Trim() + "\\";
+
+                // Start of with the drive letter
+                retVal = GetRandomString(StringSources.UppercaseAlphaCharacters, 1, 1, true) + ":\\";
+
+                numFolders = GetRandomInt(0, numFolders);
+
+                // Add some folders
+                for (int i = 0; i < numFolders; i++)
+                {
+                    retVal += GetRandomString(StringSources.AlphaNumericCharactersWithSpaces, 1, folderNameLength, true)
+                        .Trim() + "\\";
+                }
+
+                // A filename
+                retVal += GetRandomString(StringSources.AlphaNumericCharactersWithSpaces, 1, fileNameLength, true)
+                    .Trim() + ".";
+
+                // And an extension
+                retVal += GetRandomString(StringSources.LowercaseAlphaCharacters, 1, extensionLength, true);
             }
-
-            // A filename
-            retVal += GetRandomString(StringSources.AlphaNumericCharactersWithSpaces, 1, fileNameLength, true).Trim() + ".";
-
-            // And an extension
-            retVal += GetRandomString(StringSources.LowercaseAlphaCharacters, 1, extensionLength, true);
 
             return retVal;
         }
@@ -1227,19 +1242,26 @@ namespace Moonrise.Utils.Test.ObjectCreation
         /// </returns>
         public Guid GetRandomGuid(int seed = int.MinValue)
         {
-            if (seed != int.MinValue)
+            Guid retVal = Guid.Empty;
+
+            if (!GetOneShotItemsSource(ref retVal))
             {
-                _random = new Random(seed);
+                if (seed != int.MinValue)
+                {
+                    _random = new Random(seed);
+                }
+
+                byte[] initialiser = new byte[16];
+
+                for (int i = 0; i < 16; i++)
+                {
+                    initialiser[i] = GetRandomByte();
+                }
+
+                retVal = new Guid(initialiser);
             }
 
-            byte[] initialiser = new byte[16];
-
-            for (int i = 0; i < 16; i++)
-            {
-                initialiser[i] = GetRandomByte();
-            }
-
-            return new Guid(initialiser);
+            return retVal;
         }
 
         /// <summary>

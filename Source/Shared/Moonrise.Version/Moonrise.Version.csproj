@@ -1,53 +1,53 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-	  <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-	  <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+		<GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Properties\VersionNumberGeneration.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Properties\VersionNumberGeneration.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Remove="Properties\VersionNumberGeneration.tt" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="Properties\VersionNumberGeneration.tt" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="C:\Users\Will\Documents\Password.t4" Link="Password.t4">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>VersionNumber.tt</DependentUpon>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="C:\Users\Will\Documents\Password.t4" Link="Password.t4">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>VersionNumber.tt</DependentUpon>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="Properties\AutoVersion.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>AutoVersion.cs</LastGenOutput>
-    </None>
-    <None Update="Properties\VersionNumber.t4">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>VersionNumber.tt</DependentUpon>
-    </None>
-    <None Update="Properties\VersionNumber.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>VersionNumber.t4</LastGenOutput>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="Properties\AutoVersion.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>AutoVersion.cs</LastGenOutput>
+		</None>
+		<None Update="Properties\VersionNumber.t4">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>VersionNumber.tt</DependentUpon>
+		</None>
+		<None Update="Properties\VersionNumber.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>VersionNumber.t4</LastGenOutput>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-  </ItemGroup>
+	<ItemGroup>
+		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Properties\AutoVersion.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>AutoVersion.tt</DependentUpon>
-    </Compile>
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Update="Properties\AutoVersion.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>AutoVersion.tt</DependentUpon>
+		</Compile>
+	</ItemGroup>
 
 </Project>

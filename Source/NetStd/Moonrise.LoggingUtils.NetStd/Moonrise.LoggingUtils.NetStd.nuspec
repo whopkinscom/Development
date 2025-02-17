@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
 	  <id>Moonrise.LoggingUtils.NetStd</id>
-	  <version>4.2021.104.17052</version>
+	  <version>4.2024.228.9433</version>
 	  <copyright>Moonrise Media Ltd.</copyright>
 	  <authors>Will Hopkins</authors>
 	  <requireLicenseAcceptance>false</requireLicenseAcceptance>

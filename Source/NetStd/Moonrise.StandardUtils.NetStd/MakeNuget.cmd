@@ -13,7 +13,7 @@ set projname=%projname:"=%
 IF NOT "%conf%" == "Release" GOTO FINISH
 	Echo Nugetting %projname%........
 	del /Q "%projdir%\..\..\..\GeneratedPackages\%projname%\*.*"
-	dotnet pack --no-build --configuration %conf% -o "%projdir%\..\..\..\GeneratedPackages\%projname%"  /p:NuspecFile="%projname%.nuspec" /p:PackageVersion=4.2021.104.17052
-    nuget sign "%projdir%\..\..\..\GeneratedPackages\%projname%\%projname%.4.2021.104.17052.nupkg" -Timestamper http://sha256timestamp.ws.symantec.com/sha256/timestamp -CertificatePath "C:\Users\Will\Documents\MMCS.pfx" -CertificatePassword  Password
+	dotnet pack --no-build --configuration %conf% -o "%projdir%\..\..\..\GeneratedPackages\%projname%"  /p:NuspecFile="%projname%.nuspec" /p:PackageVersion=4.2024.228.9433
+    nuget sign "%projdir%\..\..\..\GeneratedPackages\%projname%\%projname%.4.2024.228.9433.nupkg" -Timestamper http://sha256timestamp.ws.symantec.com/sha256/timestamp -CertificatePath "C:\Users\Will\Documents\MMCS.pfx" -CertificatePassword  Password
 :FINISH
 
