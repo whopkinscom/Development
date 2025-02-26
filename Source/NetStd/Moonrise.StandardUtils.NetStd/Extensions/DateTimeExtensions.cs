@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Moonrise.Utils.Standard.DatesTimes;
@@ -33,7 +34,7 @@ namespace Moonrise.Utils.Standard.Extensions
         Hours,
         Days,
         Months,
-        Years
+        Years,
     }
 #pragma warning restore 1591
 
@@ -58,8 +59,8 @@ namespace Moonrise.Utils.Standard.Extensions
             }
 
             return string.Format("{0:dd/MM/yyyy HH:mm:ss} {1}",
-                                 dateTime.ToLocalTime(false),
-                                 TimeZoneInfo.Local.IsDaylightSavingTime(dateTime) ? "BST" : "GMT");
+                dateTime.ToLocalTime(false),
+                TimeZoneInfo.Local.IsDaylightSavingTime(dateTime) ? "BST" : "GMT");
         }
 
         /// <summary>
@@ -102,7 +103,7 @@ namespace Moonrise.Utils.Standard.Extensions
                     break;
             }
 
-            retVal = (dateTime >= noLessThan) && (dateTime <= current);
+            retVal = dateTime >= noLessThan && dateTime <= current;
 
             return retVal;
         }

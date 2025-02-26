@@ -16,8 +16,6 @@
 
 #endregion
 
-using System;
-
 namespace Moonrise.Utils.Standard.Config
 {
     /// <summary>
@@ -33,7 +31,7 @@ namespace Moonrise.Utils.Standard.Config
         /// <summary>
         ///     The user setting is specific to a user
         /// </summary>
-        User
+        User,
     }
 
     /// <summary>
@@ -47,10 +45,17 @@ namespace Moonrise.Utils.Standard.Config
         bool CacheRead { get; set; }
 
         /// <summary>
-        /// Flushes the setting file, writing it out
+        ///     Flushes the setting file, writing it out
         /// </summary>
         /// <param name="type">The type of the setting file to flush</param>
         void Flush(SettingType type);
+
+        /// <summary>
+        ///     Reads the complete settings file as a single string
+        /// </summary>
+        /// <param name="type">The type of setting.</param>
+        /// <returns>Wot I said</returns>
+        string ReadCompleteFile(SettingType settingType);
 
         /// <summary>
         ///     Reads an application or user setting.
@@ -69,26 +74,23 @@ namespace Moonrise.Utils.Standard.Config
         void RefreshAnyCaches(SettingType type);
 
         /// <summary>
+        ///     Writes the complete settings file as a single string
+        /// </summary>
+        /// <param name="settings">The complete settings</param>
+        /// <param name="type">The type of setting.</param>
+        void WriteCompleteFile(string settings, SettingType settingType);
+
+        /// <summary>
         ///     Writes the application setting.
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="value">The value as a string - Use the most appropriate.</param>
         /// <param name="objval">The value as an object - Use the most appropriate.</param>
         /// <param name="type">The type of setting.</param>
-        void WriteSetting(string key, string value, object objval, SettingType type);
-
-        /// <summary>
-        /// Reads the complete settings file as a single string
-        /// </summary>
-        /// <param name="type">The type of setting.</param>
-        /// <returns>Wot I said</returns>
-        string ReadCompleteFile(SettingType settingType);
-
-        /// <summary>
-        /// Writes the complete settings file as a single string
-        /// </summary>
-        /// <param name="settings">The complete settings</param>
-        /// <param name="type">The type of setting.</param>
-        void WriteCompleteFile(string settings, SettingType settingType);
+        void WriteSetting(
+            string key,
+            string value,
+            object objval,
+            SettingType type);
     }
 }

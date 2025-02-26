@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 namespace Moonrise.Logging
 {
     /// <summary>
@@ -23,10 +24,12 @@ namespace Moonrise.Logging
     public enum LoggingLevel
     {
         /// <summary>
-        ///     Use trace messages for intricate detail that you only really need when digging REALLY deep into a problem.<para>
-        ///     But try NOT to use this too much.</para>
-        /// <remarks>
-        /// </remarks>
+        ///     Use trace messages for intricate detail that you only really need when digging REALLY deep into a problem.
+        ///     <para>
+        ///         But try NOT to use this too much.
+        ///     </para>
+        ///     <remarks>
+        ///     </remarks>
         /// </summary>
         Trace = 0,
 
@@ -63,7 +66,7 @@ namespace Moonrise.Logging
         /// <summary>
         ///     A special type of logging, audits can be extracted separately.
         /// </summary>
-        Audit = 10
+        Audit = 10,
     }
 
     /// <summary>
@@ -77,17 +80,22 @@ namespace Moonrise.Logging
         /// </summary>
         ILoggingProvider NextLogger { get; set; }
 
+        /// <summary>
+        ///     Flush any buffers currently in use.
+        /// </summary>
+        void FlushBuffers();
+
         /// <summary>Logs the appropriate level of message.</summary>
         /// <param name="level">The level.</param>
         /// <param name="context">The context - if <see cref="Logger.UseContext" /> is false, this will be empty.</param>
-        /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId"/> is false, this will be empty.</param>
+        /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId" /> is false, this will be empty.</param>
         /// <param name="logTag">The log tag.</param>
         /// <param name="msg">The message.</param>
-        void LogThis(LoggingLevel level, string context, string threadId, LogTag logTag, string msg);
-
-        /// <summary>
-        /// Flush any buffers currently in use.
-        /// </summary>
-        void FlushBuffers();
+        void LogThis(
+            LoggingLevel level,
+            string context,
+            string threadId,
+            LogTag logTag,
+            string msg);
     }
 }

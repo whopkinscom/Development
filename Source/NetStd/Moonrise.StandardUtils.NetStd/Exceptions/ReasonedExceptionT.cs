@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Moonrise.Utils.Standard.Extensions;
@@ -67,6 +68,17 @@ namespace Moonrise.Utils.Standard.Exceptions
         where TReason : struct, IConvertible // i.e. what you need is an Enum!
     {
         /// <summary>
+        ///     Gets the numeric error code for the reason of the exception.
+        /// </summary>
+        /// <value>The code.</value>
+        public int ErrorCode => (int)(object)ReasonCode;
+
+        /// <summary>
+        ///     Gets or sets the reason for the exception as one of the defined enum values.
+        /// </summary>
+        public TReason ReasonCode { get; protected set; }
+
+        /// <summary>
         ///     Initialises a new instance of the ReasonedException class.
         /// </summary>
         /// <param name="reason">The reason for the exception.</param>
@@ -75,10 +87,8 @@ namespace Moonrise.Utils.Standard.Exceptions
         ///     should be passed here.
         /// </param>
         public ReasonedException(TReason reason, params object[] args)
-            : base(string.Format(((Enum)(object)reason).Description(), args))
-        {
+            : base(string.Format(((Enum)(object)reason).Description(), args)) =>
             ReasonCode = reason;
-        }
 
         /// <summary>
         ///     Initialises a new instance of the ReasonedException class but can take an inner exception.
@@ -90,26 +100,7 @@ namespace Moonrise.Utils.Standard.Exceptions
         ///     should be passed here.
         /// </param>
         public ReasonedException(Exception innerException, TReason reason, params object[] args)
-            : base(string.Format(((Enum)(object)reason).Description(), args), innerException)
-        {
+            : base(string.Format(((Enum)(object)reason).Description(), args), innerException) =>
             ReasonCode = reason;
-        }
-
-        /// <summary>
-        ///     Gets the numeric error code for the reason of the exception.
-        /// </summary>
-        /// <value>The code.</value>
-        public int ErrorCode
-        {
-            get
-            {
-                return (int)(object)ReasonCode;
-            }
-        }
-
-        /// <summary>
-        ///     Gets or sets the reason for the exception as one of the defined enum values.
-        /// </summary>
-        public TReason ReasonCode { get; protected set; }
     }
 }

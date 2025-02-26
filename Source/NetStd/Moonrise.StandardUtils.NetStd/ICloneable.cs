@@ -15,15 +15,16 @@
 //    limitations under the License.
 
 #endregion
+
 namespace Moonrise.Utils.Standard
 {
     /// <summary>
-    /// DNC (.Net Core) doesn't have an ICloneable interface!
+    ///     DNC (.Net Core) doesn't have an ICloneable interface!
     /// </summary>
     public interface ICloneable
     {
         /// <summary>
-        /// Clones this instance.
+        ///     Clones this instance.
         /// </summary>
         /// <returns>A new instance with the same contents values as itself</returns>
         object Clone();

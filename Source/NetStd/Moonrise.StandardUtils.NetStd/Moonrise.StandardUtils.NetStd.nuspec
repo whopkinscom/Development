@@ -1,43 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
-  <metadata>
-	  <id>Moonrise.StandardUtils.NetStd</id>
-	  <version>4.2024.228.9433</version>
-	  <copyright>Moonrise Media Ltd.</copyright>
-	  <authors>Will Hopkins</authors>
-	  <requireLicenseAcceptance>false</requireLicenseAcceptance>
-	  <license type="file">License.txt</license>
-    <description>
-      General utilities I've found useful as I go about my day-to-day work. Particular highlights include;
-      Extensions.EnumExtensions : "Modifiable" description attributes with parsing from descriptions to associated enum value.
-      Extensions.DateTimeExtensions : Neat little &lt;DateTime var&gt;.Within to find if the DT was within the last X seconds/days/etc
-      Extensions.StringExtensions: To &amp; from Comma Separated Lists and extract text from within specified "marker strings", i.e. ad-hoc parsing.
-      Config.Settings: Typed reading from and writing default values to a .json settings file.
-      Exceptions.ReasonedExceptionT: Base class for my exception pattern that accompanies an exception with an enum reason where the description attribute provides both the (formattable) message and intellisense. This leads to a centralised list of all possible exception reasons and messages.
-    </description>
-    <summary>General utilities I've found useful as I go about my day-to-day work.</summary>
-	  <releaseNotes>Added Misc.Recursion
-		  Used Recursion.Guard around the recursive calls that occur in the settings code.
-	  </releaseNotes>
-    <language>en-GB</language>
-    <dependencies>
-		<group targetFramework=".NETStandard2.1">
-			<dependency id="Newtonsoft.Json" version ="11.0.2"/>
-			<dependency id="System.ComponentModel.Annotations" version ="4.5.0"/>
-			<dependency id="System.Runtime.Extensions" version ="4.3.0"/>
-			<dependency id="System.Security.Cryptography.ProtectedData" version ="4.5.0"/>
-			<dependency id="System.Threading.Tasks.Parallel" version ="4.3.0"/>
-		</group>
-    </dependencies>
-	  <icon>images\Logo.png</icon>
-	  <repository type="git" url="https://github.com/whopkinscom/Development/tree/master/Source/NetStd/Moonrise.StandardUtils.NetStd" />
-  </metadata>
-  <files>
-    <file src=".\bin\Release\netstandard2.1\Moonrise.StandardUtils.NetStd.dll" target="lib\netstandard2.1\Moonrise.StandardUtils.NetStd.dll" />
-    <file src=".\bin\Release\netstandard2.1\Moonrise.StandardUtils.NetStd.xml" target="lib\netstandard2.1\Moonrise.StandardUtils.NetStd.xml" />
-    <file src=".\bin\Release\netstandard2.1\Moonrise.StandardUtils.NetStd.pdb" target="lib\netstandard2.1\Moonrise.StandardUtils.NetStd.pdb" />
-    <file src="License.txt"/>
-    <file src="Properties\Mm Button.png" target="images\Logo.png"/>
-  </files>
+	<metadata>
+		<id>Moonrise.StandardUtils.NetStd</id>
+		<version>4.2024.228.9433</version>
+		<copyright>Moonrise Media Ltd.</copyright>
+		<authors>Will Hopkins</authors>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<license type="file">License.txt</license>
+		<description>
+			General utilities I've found useful as I go about my day-to-day work. Particular highlights include;
+			Extensions.EnumExtensions : "Modifiable" description attributes with parsing from descriptions to associated enum value.
+			Extensions.DateTimeExtensions : Neat little &lt;DateTime var&gt;.Within to find if the DT was within the last X seconds/days/etc
+			Extensions.StringExtensions: To &amp; from Comma Separated Lists and extract text from within specified "marker strings", i.e. ad-hoc parsing.
+			Config.Settings: Typed reading from and writing default values to a .json settings file.
+			Exceptions.ReasonedExceptionT: Base class for my exception pattern that accompanies an exception with an enum reason where the description attribute provides both the (formattable) message and intellisense. This leads to a centralised list of all possible exception reasons and messages.
+		</description>
+		<summary>General utilities I've found useful as I go about my day-to-day work.</summary>
+		<releaseNotes>
+			Added Misc.Recursion
+			Used Recursion.Guard around the recursive calls that occur in the settings code.
+		</releaseNotes>
+		<language>en-GB</language>
+		<dependencies>
+			<group targetFramework=".NETStandard2.1">
+				<dependency id="Newtonsoft.Json" version="11.0.2" />
+				<dependency id="System.ComponentModel.Annotations" version="4.5.0" />
+				<dependency id="System.Runtime.Extensions" version="4.3.0" />
+				<dependency id="System.Security.Cryptography.ProtectedData" version="4.5.0" />
+				<dependency id="System.Threading.Tasks.Parallel" version="4.3.0" />
+			</group>
+		</dependencies>
+		<icon>images\Logo.png</icon>
+		<repository type="git"
+		            url="https://github.com/whopkinscom/Development/tree/master/Source/NetStd/Moonrise.StandardUtils.NetStd" />
+	</metadata>
+	<files>
+		<file src=".\bin\Release\netstandard2.1\Moonrise.StandardUtils.NetStd.dll"
+		      target="lib\netstandard2.1\Moonrise.StandardUtils.NetStd.dll" />
+		<file src=".\bin\Release\netstandard2.1\Moonrise.StandardUtils.NetStd.xml"
+		      target="lib\netstandard2.1\Moonrise.StandardUtils.NetStd.xml" />
+		<file src=".\bin\Release\netstandard2.1\Moonrise.StandardUtils.NetStd.pdb"
+		      target="lib\netstandard2.1\Moonrise.StandardUtils.NetStd.pdb" />
+		<file src="License.txt" />
+		<file src="Properties\Mm Button.png" target="images\Logo.png" />
+	</files>
 </package>

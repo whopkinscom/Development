@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -32,12 +33,6 @@ namespace Moonrise.Utils.Standard.Validation
     public class ValidateChildAttribute : ValidationAttribute
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ValidatedByParentAttribute" /> class.
-        /// </summary>
-        /// <param name="message">The additional message to display if ANY of the class members have validation that fails.</param>
-        public ValidateChildAttribute(string message) : base(message) { }
-
-        /// <summary>
         ///     Indicates if the message from the child's <see cref="ValidatedByParentAttribute" /> should be appended to the end
         ///     of this attribute's
         ///     <see cref="ValidationAttribute.ErrorMessage" />. Defaults to true.
@@ -48,6 +43,13 @@ namespace Moonrise.Utils.Standard.Validation
         ///     The name of the member/field to highlight on invalidity.
         /// </summary>
         public string MemberToHighlight { get; set; }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ValidatedByParentAttribute" /> class.
+        /// </summary>
+        /// <param name="message">The additional message to display if ANY of the class members have validation that fails.</param>
+        public ValidateChildAttribute(string message)
+            : base(message) { }
 
         /// <summary>
         ///     Returns true if ... is valid.
@@ -62,7 +64,7 @@ namespace Moonrise.Utils.Standard.Validation
             ValidationResult retVal = ValidationResult.Success;
 
             // Just check this attribute hasn't been assigned to the wrong type of property type.
-            if ((value == null) || value.GetType().GetTypeInfo().IsPrimitive)
+            if (value == null || value.GetType().GetTypeInfo().IsPrimitive)
             {
                 return retVal;
             }
@@ -75,6 +77,7 @@ namespace Moonrise.Utils.Standard.Validation
                 foreach (ValidationAttribute validationAttribute in propertyInfo.GetCustomAttributes<ValidationAttribute>(true))
                 {
                     object propertyValue = propertyInfo.GetValue(value);
+
                     ValidationResult attributeValidationResult =
                         validationAttribute.GetValidationResult(propertyValue, validationContext);
 
@@ -125,7 +128,7 @@ namespace Moonrise.Utils.Standard.Validation
                 $"{ErrorMessageString}{(AppendChildMessage && !string.IsNullOrWhiteSpace(childMessage) ? $" - {childMessage}" : string.Empty)}",
                 new List<string>
                 {
-                    memberToHighlight
+                    memberToHighlight,
                 });
 
             return retVal;

@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -109,10 +110,8 @@ namespace Moonrise.Utils.Standard.Extensions
         /// <returns>The resultant enum</returns>
         [CLSCompliant(false)] // This is because IConvertible is non-CLSCompliant
         public static T FromString<T>(string candidateValue)
-            where T : IConvertible
-        {
-            return FromString(candidateValue, (T)(object)0, false);
-        }
+            where T : IConvertible =>
+            FromString(candidateValue, (T)(object)0, false);
 
         /// <summary>
         ///     Returns an enum value from a string.
@@ -130,133 +129,11 @@ namespace Moonrise.Utils.Standard.Extensions
         /// <param name="unfoundValue">The value to use if the value cannot be found as an enum</param>
         /// <returns>The resultant enum</returns>
         [CLSCompliant(false)] // This is because IConvertible is non-CLSCompliant
-        public static T FromString<T>(string candidateValue,
-                                      T unfoundValue)
-            where T : IConvertible
-        {
-            return FromString(candidateValue, unfoundValue, true);
-        }
-
-        /// <summary>
-        ///     Determines if an enum value is in a range of possible enum values.
-        /// </summary>
-        /// <typeparam name="T">This is the enum type</typeparam>
-        /// <param name="val">The value that may or may not be in the list</param>
-        /// <param name="values">
-        ///     A comma separated list (i.e. a variable parameter list - NOT a comma separated string!) of the
-        ///     possible enum values
-        /// </param>
-        /// <returns>true if in the list, or false if not!</returns>
-        public static bool In<T>(this T val,
-                                 params T[] values)
-            where T : struct
-        {
-            return values.Contains(val);
-        }
-
-        /// <summary>
-        ///     Modifies the Description attributed to an enum value
-        /// </summary>
-        /// <param name="enumValue">Value who's description is to be changed</param>
-        /// <param name="newDescription">New description</param>
-        public static void ModifyDescription(this Enum enumValue,
-                                             string newDescription)
-        {
-            Type enumType = enumValue.GetType();
-            Dictionary<Enum, string> desc;
-
-            if (!UpdatedDescriptions.TryGetValue(enumType, out desc))
-            {
-                desc = new Dictionary<Enum, string>();
-                UpdatedDescriptions[enumType] = desc;
-            }
-
-            desc[enumValue] = newDescription;
-        }
-
-        /// <summary>
-        ///     Enum extension method to get the original, attributed, description of an enum.
-        ///     <para>
-        ///         The description is as specified - in this order - by the DescriptionAttribute, or the DisplayAttribute.Name, 
-        ///         or the DisplayAttribute.Description, or the string value if no description.
-        ///     </para>
-        /// </summary>
-        /// <param name="enumValue">The enum value.</param>
-        /// <returns>The description of the enum value.</returns>
-        public static string OriginalDescription(this Enum enumValue)
-        {
-            string retVal = string.Empty;
-            Type enumType = enumValue.GetType();
-
-            FieldInfo fi = enumType.GetField(enumValue.ToString());
-
-            if (fi != null)
-            {
-                DescriptionAttribute[] descriptionAttributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
-
-                if ((descriptionAttributes != null) && (descriptionAttributes.Length > 0))
-                {
-                    retVal = descriptionAttributes[0].Description;
-                }
-                else
-                {
-                    DisplayAttribute[] displayAttributes = (DisplayAttribute[])fi.GetCustomAttributes(typeof(DisplayAttribute), false);
-
-                    if ((displayAttributes != null) && (displayAttributes.Length > 0))
-                    {
-                        retVal = displayAttributes[0].Description;
-
-                        if (string.IsNullOrEmpty(retVal))
-                        {
-                            retVal = displayAttributes[0].Name;
-                        }
-                    }
-                }
-            }
-
-            if (string.IsNullOrEmpty(retVal))
-            {
-                // Automatically apply spaces where there is mixed case going on within the enum name.
-                retVal = enumValue.ToString().ToSentence();
-            }
-
-            return retVal;
-        }
-
-        /// <summary>
-        ///     Converts an Enum type value to integer
-        /// </summary>
-        /// <param name="enumValue">Enum value to convert</param>
-        /// <returns>Integer value</returns>
-        public static int ToInt(this Enum enumValue)
-        {
-            int retVal = Convert.ToInt32(enumValue);
-            return retVal;
-        }
-
-        /// <summary>
-        ///     Private version to simply deal better with supplying unfound values since a default parameter value for a generic
-        ///     enum is not possible to set to a known unique value to indicate that the parameter wasn't passed! (I tried
-        ///     <see cref="Int32.MinValue" /> for example - no dice).
-        /// </summary>
-        /// <typeparam name="T">Will always be an enum</typeparam>
-        /// <param name="candidateValue">The candidate value.</param>
-        /// <param name="unfoundValue">The unfound value.</param>
-        /// <param name="useUnfound">if set to <c>true</c> [use unfound].</param>
-        /// <returns>The enum converted from the string</returns>
-        /// <exception cref="ArgumentException">FromString{T} must only be used on Enums</exception>
-        [SuppressMessage("StyleCop.CSharp.LayoutRules", "SA1503:CurlyBracketsMustNotBeOmitted", Justification = "I excuse exceptions and returns!")]
-        private static T FromString<T>(string candidateValue,
-                                       T unfoundValue,
-                                       bool useUnfound)
-            where T : IConvertible
-        {
-            Type typeT = typeof(T);
-
-            Enum result = FromString(candidateValue, (Enum)(object)unfoundValue, typeT, useUnfound);
-
-            return (T)(object)result;
-        }
+        public static T FromString<T>(
+            string candidateValue,
+            T unfoundValue)
+            where T : IConvertible =>
+            FromString(candidateValue, unfoundValue, true);
 
         /// <summary>
         ///     Returns an enum value from a string.
@@ -274,11 +151,12 @@ namespace Moonrise.Utils.Standard.Extensions
         /// <param name="typeT">The Enum type</param>
         /// <param name="useUnfound">if set to <c>true</c> [use unfound].</param>
         /// <returns></returns>
-        public static Enum FromString(string candidateValue,
-                                        Enum unfoundValue,
-                                        Type typeT,
-                                        bool useUnfound)
-        { 
+        public static Enum FromString(
+            string candidateValue,
+            Enum unfoundValue,
+            Type typeT,
+            bool useUnfound)
+        {
             bool found = false;
             object result = default(Enum);
 
@@ -300,11 +178,11 @@ namespace Moonrise.Utils.Standard.Extensions
 
                 foreach (FieldInfo fi in fis)
                 {
-                    DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(
-                        typeof(DescriptionAttribute),
+                    DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute),
                         false);
 
-                    if ((attributes != null) && (attributes.Length > 0) &&
+                    if (attributes != null &&
+                        attributes.Length > 0 &&
                         attributes[0].Description.Equals(candidateValue, StringComparison.OrdinalIgnoreCase))
                     {
                         result = fi.GetValue(null);
@@ -319,11 +197,10 @@ namespace Moonrise.Utils.Standard.Extensions
                 {
                     foreach (FieldInfo fi in fis)
                     {
-                        DisplayAttribute[] attributes = (DisplayAttribute[])fi.GetCustomAttributes(
-                            typeof(DisplayAttribute),
+                        DisplayAttribute[] attributes = (DisplayAttribute[])fi.GetCustomAttributes(typeof(DisplayAttribute),
                             false);
 
-                        if ((attributes != null) && (attributes.Length > 0))
+                        if (attributes != null && attributes.Length > 0)
                         {
                             if (attributes[0].Name.Equals(candidateValue, StringComparison.OrdinalIgnoreCase) ||
                                 attributes[0].Description.Equals(candidateValue, StringComparison.OrdinalIgnoreCase))
@@ -372,7 +249,6 @@ namespace Moonrise.Utils.Standard.Extensions
                 // OK, everything is exhausted, so do we rethrow the argument exception or return the unfound value?
                 if (!found)
                 {
-
                     if (useUnfound)
                     {
                         result = unfoundValue;
@@ -385,6 +261,131 @@ namespace Moonrise.Utils.Standard.Extensions
             }
 
             return (Enum)result;
+        }
+
+        /// <summary>
+        ///     Determines if an enum value is in a range of possible enum values.
+        /// </summary>
+        /// <typeparam name="T">This is the enum type</typeparam>
+        /// <param name="val">The value that may or may not be in the list</param>
+        /// <param name="values">
+        ///     A comma separated list (i.e. a variable parameter list - NOT a comma separated string!) of the
+        ///     possible enum values
+        /// </param>
+        /// <returns>true if in the list, or false if not!</returns>
+        public static bool In<T>(
+            this T val,
+            params T[] values)
+            where T : struct =>
+            values.Contains(val);
+
+        /// <summary>
+        ///     Modifies the Description attributed to an enum value
+        /// </summary>
+        /// <param name="enumValue">Value who's description is to be changed</param>
+        /// <param name="newDescription">New description</param>
+        public static void ModifyDescription(
+            this Enum enumValue,
+            string newDescription)
+        {
+            Type enumType = enumValue.GetType();
+            Dictionary<Enum, string> desc;
+
+            if (!UpdatedDescriptions.TryGetValue(enumType, out desc))
+            {
+                desc = new Dictionary<Enum, string>();
+                UpdatedDescriptions[enumType] = desc;
+            }
+
+            desc[enumValue] = newDescription;
+        }
+
+        /// <summary>
+        ///     Enum extension method to get the original, attributed, description of an enum.
+        ///     <para>
+        ///         The description is as specified - in this order - by the DescriptionAttribute, or the DisplayAttribute.Name,
+        ///         or the DisplayAttribute.Description, or the string value if no description.
+        ///     </para>
+        /// </summary>
+        /// <param name="enumValue">The enum value.</param>
+        /// <returns>The description of the enum value.</returns>
+        public static string OriginalDescription(this Enum enumValue)
+        {
+            string retVal = string.Empty;
+            Type enumType = enumValue.GetType();
+
+            FieldInfo fi = enumType.GetField(enumValue.ToString());
+
+            if (fi != null)
+            {
+                DescriptionAttribute[] descriptionAttributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+
+                if (descriptionAttributes != null && descriptionAttributes.Length > 0)
+                {
+                    retVal = descriptionAttributes[0].Description;
+                }
+                else
+                {
+                    DisplayAttribute[] displayAttributes = (DisplayAttribute[])fi.GetCustomAttributes(typeof(DisplayAttribute), false);
+
+                    if (displayAttributes != null && displayAttributes.Length > 0)
+                    {
+                        retVal = displayAttributes[0].Description;
+
+                        if (string.IsNullOrEmpty(retVal))
+                        {
+                            retVal = displayAttributes[0].Name;
+                        }
+                    }
+                }
+            }
+
+            if (string.IsNullOrEmpty(retVal))
+            {
+                // Automatically apply spaces where there is mixed case going on within the enum name.
+                retVal = enumValue.ToString().ToSentence();
+            }
+
+            return retVal;
+        }
+
+        /// <summary>
+        ///     Converts an Enum type value to integer
+        /// </summary>
+        /// <param name="enumValue">Enum value to convert</param>
+        /// <returns>Integer value</returns>
+        public static int ToInt(this Enum enumValue)
+        {
+            int retVal = Convert.ToInt32(enumValue);
+            return retVal;
+        }
+
+        /// <summary>
+        ///     Private version to simply deal better with supplying unfound values since a default parameter value for a generic
+        ///     enum is not possible to set to a known unique value to indicate that the parameter wasn't passed! (I tried
+        ///     <see cref="Int32.MinValue" /> for example - no dice).
+        /// </summary>
+        /// <typeparam name="T">Will always be an enum</typeparam>
+        /// <param name="candidateValue">The candidate value.</param>
+        /// <param name="unfoundValue">The unfound value.</param>
+        /// <param name="useUnfound">if set to <c>true</c> [use unfound].</param>
+        /// <returns>The enum converted from the string</returns>
+        /// <exception cref="ArgumentException">FromString{T} must only be used on Enums</exception>
+        [SuppressMessage("StyleCop.CSharp.LayoutRules", "SA1503:CurlyBracketsMustNotBeOmitted", Justification = "I excuse exceptions and returns!")]
+        private static T FromString<T>(
+            string candidateValue,
+            T unfoundValue,
+            bool useUnfound)
+            where T : IConvertible
+        {
+            Type typeT = typeof(T);
+
+            Enum result = FromString(candidateValue,
+                (Enum)(object)unfoundValue,
+                typeT,
+                useUnfound);
+
+            return (T)(object)result;
         }
     }
 }

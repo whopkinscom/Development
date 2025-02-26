@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 using System.Net;
 using System.Net.Sockets;
 
@@ -42,7 +43,7 @@ namespace Moonrise.Utils.Standard.Networking
             bool retVal = true;
 
             // 3 or more colons indicates a likely ipV6 address!
-            if (allowPort && addr.Contains(":") && (addr.Split(':').Length < 3))
+            if (allowPort && addr.Contains(":") && addr.Split(':').Length < 3)
             {
                 int colonPos = addr.LastIndexOf(":");
 
@@ -73,8 +74,7 @@ namespace Moonrise.Utils.Standard.Networking
 
                 if (IPAddress.TryParse(addr, out ip))
                 {
-                    if ((ip.AddressFamily == AddressFamily.InterNetworkV6)
-                        || (ip.AddressFamily == AddressFamily.InterNetwork))
+                    if (ip.AddressFamily == AddressFamily.InterNetworkV6 || ip.AddressFamily == AddressFamily.InterNetwork)
                     {
                         retVal = true;
                     }

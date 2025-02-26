@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 using System;
 using System.Threading;
 
@@ -73,21 +74,12 @@ namespace Moonrise.Utils.Standard.DatesTimes
                 return Providers.Value;
             }
 
-            set
-            {
-                Providers.Value = value;
-            }
+            set => Providers.Value = value;
         }
 
         /// <summary>
         ///     Gets the normal now.
         /// </summary>
-        DateTimeOffset IDateTimeOffsetProvider.Now
-        {
-            get
-            {
-                return DateTimeOffset.Now;
-            }
-        }
+        DateTimeOffset IDateTimeOffsetProvider.Now => DateTimeOffset.Now;
     }
 }

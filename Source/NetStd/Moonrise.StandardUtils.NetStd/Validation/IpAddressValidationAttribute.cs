@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 using System;
 using System.ComponentModel.DataAnnotations;
 using Moonrise.Utils.Standard.Networking;
@@ -35,22 +36,11 @@ namespace Moonrise.Utils.Standard.Validation
         private bool _includePort;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="IpAddressValidationAttribute" /> class.
-        /// </summary>
-        public IpAddressValidationAttribute()
-        {
-            IncludePort = false;
-        }
-
-        /// <summary>
         ///     Determines if the port number should be included, e.g. ....:nnn. Defaults to False.
         /// </summary>
         public bool IncludePort
         {
-            get
-            {
-                return _includePort;
-            }
+            get => _includePort;
 
             set
             {
@@ -58,6 +48,11 @@ namespace Moonrise.Utils.Standard.Validation
                 ErrorMessage = "Value must be in the format nnn.nnn.nnn.nnn" + (_includePort ? ":nnnn" : string.Empty);
             }
         }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="IpAddressValidationAttribute" /> class.
+        /// </summary>
+        public IpAddressValidationAttribute() => IncludePort = false;
 
         /// <summary>
         ///     Validates the specified value with respect to the current validation attribute.

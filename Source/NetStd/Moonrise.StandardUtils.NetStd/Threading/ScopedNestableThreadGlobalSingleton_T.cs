@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 using System;
 using System.Reflection;
 using System.Threading;
@@ -75,10 +76,30 @@ namespace Moonrise.Utils.Standard.Threading
             new ThreadLocal<ScopedNestableThreadGlobalSingleton<T>>(() => null);
 
         /// <summary>
-        ///     Prevents a default instance of the <see cref="ScopedNestableThreadGlobalSingleton{T}" /> class from being created.
-        ///     However we do need to be create one to initially populate the <see cref="ThreadLocal{T}" />
+        ///     Gets the current Nestable Thread Global Singleton value. If not already set this will be the default for generic
+        ///     type.
         /// </summary>
-        private ScopedNestableThreadGlobalSingleton() { }
+        public static T CurrentValue => Current != null ? Current.Value : default(T);
+
+        /// <summary>
+        ///     Gets the current <see cref="ScopedNestableThreadGlobalSingleton{T}" />
+        /// </summary>
+        protected static ScopedNestableThreadGlobalSingleton<T> Current
+        {
+            get => ThreadedCurrentGlobal.Value;
+
+            set => ThreadedCurrentGlobal.Value = value;
+        }
+
+        /// <summary>
+        ///     The previous NestableThreadGlobalSingleton. This allows us to nest scopes, should we so desire.
+        /// </summary>
+        protected ScopedNestableThreadGlobalSingleton<T> Previous { get; }
+
+        /// <summary>
+        ///     The nested global threaded value
+        /// </summary>
+        protected T Value { get; set; }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ScopedNestableThreadGlobalSingleton{T}" /> class.
@@ -92,41 +113,10 @@ namespace Moonrise.Utils.Standard.Threading
         }
 
         /// <summary>
-        ///     Gets the current Nestable Thread Global Singleton value. If not already set this will be the default for generic type.
+        ///     Prevents a default instance of the <see cref="ScopedNestableThreadGlobalSingleton{T}" /> class from being created.
+        ///     However we do need to be create one to initially populate the <see cref="ThreadLocal{T}" />
         /// </summary>
-        public static T CurrentValue
-        {
-            get
-            {
-                return Current != null ? Current.Value : default(T);
-            }
-        }
-
-        /// <summary>
-        ///     Gets the current <see cref="ScopedNestableThreadGlobalSingleton{T}" />
-        /// </summary>
-        protected static ScopedNestableThreadGlobalSingleton<T> Current
-        {
-            get
-            {
-                return ThreadedCurrentGlobal.Value;
-            }
-
-            set
-            {
-                ThreadedCurrentGlobal.Value = value;
-            }
-        }
-
-        /// <summary>
-        ///     The previous NestableThreadGlobalSingleton. This allows us to nest scopes, should we so desire.
-        /// </summary>
-        protected ScopedNestableThreadGlobalSingleton<T> Previous { get; }
-
-        /// <summary>
-        ///     The nested global threaded value
-        /// </summary>
-        protected T Value { get; set; }
+        private ScopedNestableThreadGlobalSingleton() { }
 
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

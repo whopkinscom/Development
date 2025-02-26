@@ -10,26 +10,6 @@ namespace Moonrise.Utils.Standard.CSV
     public class CsvParseException : Exception
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="CsvParseException" /> class.
-        /// </summary>
-        public CsvParseException() { }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="CsvParseException" /> class.
-        /// </summary>
-        /// <param name="rowNo">The row no.</param>
-        /// <param name="rowContent">Content of the row.</param>
-        /// <param name="columnName">Name of the column.</param>
-        /// <param name="exception">The exception.</param>
-        public CsvParseException(int rowNo, string rowContent, string columnName, Exception exception)
-        {
-            RowNo = rowNo;
-            RowContent = rowContent;
-            ColumnName = columnName;
-            Exception = exception;
-        }
-
-        /// <summary>
         ///     Collated exceptions. See <seealso cref="CsvParser{TTarget,TOverlay}.CollateExceptions" />
         /// </summary>
         public List<CsvParseException> CollatedExceptions { get; private set; }
@@ -53,6 +33,30 @@ namespace Moonrise.Utils.Standard.CSV
         ///     The row number the exception occurred processing.
         /// </summary>
         public int RowNo { get; }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="CsvParseException" /> class.
+        /// </summary>
+        public CsvParseException() { }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="CsvParseException" /> class.
+        /// </summary>
+        /// <param name="rowNo">The row no.</param>
+        /// <param name="rowContent">Content of the row.</param>
+        /// <param name="columnName">Name of the column.</param>
+        /// <param name="exception">The exception.</param>
+        public CsvParseException(
+            int rowNo,
+            string rowContent,
+            string columnName,
+            Exception exception)
+        {
+            RowNo = rowNo;
+            RowContent = rowContent;
+            ColumnName = columnName;
+            Exception = exception;
+        }
 
         /// <summary>
         ///     Adds the specified parse exception.

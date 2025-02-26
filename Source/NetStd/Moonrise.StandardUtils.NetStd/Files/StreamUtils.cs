@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 using System.IO;
 
 namespace Moonrise.Utils.Standard.Files

@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -61,7 +62,8 @@ namespace Moonrise.Utils.Standard.Validation
         ///     The message to display IF the failed validation in <see cref="IValidatableObject.Validate" />
         ///     returns a null or empty string in IT'S message.
         /// </param>
-        public IValidatableAttribute(string message) : base(message) { }
+        public IValidatableAttribute(string message)
+            : base(message) { }
 
         /// <summary>
         ///     Returns true if ... is valid.
@@ -78,11 +80,10 @@ namespace Moonrise.Utils.Standard.Validation
             if (validationContext.ObjectType.GetTypeInfo().ImplementedInterfaces.Contains(typeof(IValidatableObject)))
             {
                 retVal = ((IValidatableObject)validationContext.ObjectInstance)
-                    .Validate(validationContext)
-                    .FirstOrDefault(
-                        vr => vr.MemberNames.Contains(validationContext.MemberName ?? validationContext.DisplayName));
+                         .Validate(validationContext)
+                         .FirstOrDefault(vr => vr.MemberNames.Contains(validationContext.MemberName ?? validationContext.DisplayName));
 
-                if ((retVal != null) && string.IsNullOrEmpty(retVal.ErrorMessage))
+                if (retVal != null && string.IsNullOrEmpty(retVal.ErrorMessage))
                 {
                     retVal.ErrorMessage = ErrorMessageString;
                 }

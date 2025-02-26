@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 namespace Moonrise.Utils.Standard.Config
 
 {

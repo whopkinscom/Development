@@ -15,10 +15,11 @@
 //    limitations under the License.
 
 #endregion
-using System.Collections.Generic;
-using Moonrise.Logging.Util;
+
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Moonrise.Logging.Util;
 
 namespace Moonrise.Logging
 {
@@ -50,13 +51,40 @@ namespace Moonrise.Logging
             ///     Initializes a new instance of the <see cref="Scoped" /> class.
             /// </summary>
             /// <param name="value">The value which will be the current NestedThreadGlobal value.</param>
-            public Scoped(LogTag value) : base(value) { }
+            public Scoped(LogTag value)
+                : base(value) { }
         }
 
         /// <summary>
         ///     Prevents infinte looping if a tag directly or indirectly is nested beneath itself.
         /// </summary>
         private bool beenChecked;
+
+        /// <summary>
+        ///     The log tag name.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        ///     The parent tag indicating the tag is nested
+        /// </summary>
+        protected LogTag Parent { get; set; }
+
+        /// <summary>
+        ///     The scoped parent tag indicating the tag is nested in scope
+        /// </summary>
+        protected LogTag ScopeParent { get; set; }
+
+        /// <summary>
+        ///     The active log tags
+        /// </summary>
+        internal static List<string> ActiveLogTags { get; set; } = new List<string>();
+
+        /// <summary>
+        ///     The encountered log tags. We build up a "list" of log tags that have attempted to be used, regardless of whether
+        ///     they're active or not.
+        /// </summary>
+        internal static List<LogTag> EncounteredLogTags { get; set; } = new List<LogTag>();
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LogTag" /> class.
@@ -115,32 +143,6 @@ namespace Moonrise.Logging
 
             Parent = parentLogTag;
         }
-
-        /// <summary>
-        ///     The parent tag indicating the tag is nested
-        /// </summary>
-        protected LogTag Parent { get; set; }
-
-        /// <summary>
-        ///     The scoped parent tag indicating the tag is nested in scope
-        /// </summary>
-        protected LogTag ScopeParent { get; set; }
-
-        /// <summary>
-        ///     The active log tags
-        /// </summary>
-        internal static List<string> ActiveLogTags { get; set; } = new List<string>();
-
-        /// <summary>
-        ///     The encountered log tags. We build up a "list" of log tags that have attempted to be used, regardless of whether
-        ///     they're active or not.
-        /// </summary>
-        internal static List<LogTag> EncounteredLogTags { get; set; } = new List<LogTag>();
-
-        /// <summary>
-        ///     The log tag name.
-        /// </summary>
-        public string Name { get; set; }
 
         /// <summary>
         ///     Activates the log tag by adding it to the list of those already active.
@@ -208,6 +210,30 @@ namespace Moonrise.Logging
         }
 
         /// <summary>
+        ///     Wraps the action in a Logger.Context and logs any exceptions before passing them on.
+        ///     <para>
+        ///         Usage: MyLogTag.Do(()=>{code;});
+        ///     </para>
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="caller">The caller.</param>
+        public void Do(Action action, [CallerMemberName] string caller = "")
+        {
+            try
+            {
+                using (Logger.Context(this, caller))
+                {
+                    action();
+                }
+            }
+            catch (Exception excep)
+            {
+                Logger.Error(excep, $"Exception in {caller}(...)");
+                throw;
+            }
+        }
+
+        /// <summary>
         ///     Determines whether the specified log tag is either null or active.
         /// </summary>
         /// <returns>
@@ -218,12 +244,12 @@ namespace Moonrise.Logging
             beenChecked = true;
             bool retVal = ActiveLogTags.Contains(Name);
 
-            if (!retVal && (Parent != null) && !Parent.beenChecked)
+            if (!retVal && Parent != null && !Parent.beenChecked)
             {
                 retVal = Parent.IsActive();
             }
 
-            if (!retVal && (ScopeParent != null) && !ScopeParent.beenChecked)
+            if (!retVal && ScopeParent != null && !ScopeParent.beenChecked)
             {
                 retVal = ScopeParent.IsActive();
             }
@@ -253,36 +279,11 @@ namespace Moonrise.Logging
         }
 
         /// <summary>
-        ///    Wraps the action in a Logger.Context and logs any exceptions before passing them on.<para>
-        ///    Usage: MyLogTag.Do(()=>{code;});</para>
-        /// </summary>
-        /// <param name="action">The action.</param>
-        /// <param name="caller">The caller.</param>
-        public void Do(Action action, [CallerMemberName] string caller = "")
-        {
-            try
-            {
-                using (Logger.Context(this, caller))
-                {
-                    action();
-                }
-            }
-            catch (Exception excep)
-            {
-                Logger.Error(excep, $"Exception in {caller}(...)");
-                throw;
-            }
-        }
-
-        /// <summary>
         ///     Returns a <see cref="System.String" /> that represents this instance.
         /// </summary>
         /// <returns>
         ///     A <see cref="System.String" /> that represents this instance.
         /// </returns>
-        public override string ToString()
-        {
-            return Name;
-        }
+        public override string ToString() => Name;
     }
 }

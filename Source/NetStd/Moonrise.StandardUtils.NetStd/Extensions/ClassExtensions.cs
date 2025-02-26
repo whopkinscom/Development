@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
@@ -36,8 +37,9 @@ namespace Moonrise.Utils.Standard.Extensions
         /// <param name="model">The class type being extended - typically a model class</param>
         /// <param name="propertyExpression">The property type whose display name we want</param>
         /// <returns>The display name or null</returns>
-        public static string DisplayName<TClass, TProperty>(this TClass model,
-                                                            Expression<Func<TClass, TProperty>> propertyExpression)
+        public static string DisplayName<TClass, TProperty>(
+            this TClass model,
+            Expression<Func<TClass, TProperty>> propertyExpression)
             where TClass : class
         {
             Type type = typeof(TClass);
@@ -50,20 +52,6 @@ namespace Moonrise.Utils.Standard.Extensions
         }
 
         /// <summary>
-        ///     Gives the caller's class qualified method name.
-        ///     <para>
-        ///         Usage: this.MethodName()
-        ///     </para>
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="caller">The caller.</param>
-        /// <returns>The class qualifed method name</returns>
-        public static string MethodName(this object instance, [CallerMemberName] string caller = null)
-        {
-            return $"{instance.GetType().Name}.{caller}";
-        }
-
-        /// <summary>
         ///     Gives the caller's fully qualified method name.
         ///     <para>
         ///         Usage: this.FQMethodName()
@@ -72,9 +60,17 @@ namespace Moonrise.Utils.Standard.Extensions
         /// <param name="instance">The instance.</param>
         /// <param name="caller">The caller.</param>
         /// <returns>The fully qualifed method name</returns>
-        public static string FQMethodName(this object instance, [CallerMemberName] string caller = null)
-        {
-            return $"{instance.GetType().FullName}.{caller}";
-        }
+        public static string FQMethodName(this object instance, [CallerMemberName] string caller = null) => $"{instance.GetType().FullName}.{caller}";
+
+        /// <summary>
+        ///     Gives the caller's class qualified method name.
+        ///     <para>
+        ///         Usage: this.MethodName()
+        ///     </para>
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <param name="caller">The caller.</param>
+        /// <returns>The class qualifed method name</returns>
+        public static string MethodName(this object instance, [CallerMemberName] string caller = null) => $"{instance.GetType().Name}.{caller}";
     }
 }

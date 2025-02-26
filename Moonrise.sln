@@ -311,6 +311,9 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Source\Shared\LoggingUtils\LoggingUtils.projitems*{209efac3-18a3-461f-8e33-3a7b5d7ff224}*SharedItemsImports = 13
 		Source\Shared\TestUtils\TestUtils.projitems*{30e80acd-6f06-4a9f-b3df-114859f799d7}*SharedItemsImports = 13
+		Source\Shared\TestUtils\TestUtils.projitems*{3ec74587-8fb8-4654-832c-4428a09c5821}*SharedItemsImports = 4
+		Source\Shared\StandardUtils\StandardUtils.projitems*{70017d40-a780-4e2f-8f51-c456d38ce000}*SharedItemsImports = 4
+		Source\Shared\LoggingUtils\LoggingUtils.projitems*{83797704-5bf5-403b-b14d-a7dd6885aed7}*SharedItemsImports = 4
 		Source\Shared\StandardUtils\StandardUtils.projitems*{8e4fbd9e-f685-4417-9d47-30aaf7ef7ae8}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

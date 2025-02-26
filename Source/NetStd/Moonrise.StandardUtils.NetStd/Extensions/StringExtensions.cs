@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -46,7 +47,7 @@ namespace Moonrise.Utils.Standard.Extensions
         ///     Ignore whitespace in the target. So looking for "fox" would match "she was a f o\nxy lady" but not "Fo\r\n\txy
         ///     lady"
         /// </summary>
-        IgnoreWhitespace
+        IgnoreWhitespace,
     }
 
     /// <summary>
@@ -61,10 +62,7 @@ namespace Moonrise.Utils.Standard.Extensions
         /// <param name="list">A list of the generic type</param>
         /// <param name="separator">The separator character(s)</param>
         /// <returns>A string with each element separated by, well whatever you pass.</returns>
-        public static string CSL<T>(this IEnumerable<T> list, string separator)
-        {
-            return list.CSL(separator, null, null);
-        }
+        public static string CSL<T>(this IEnumerable<T> list, string separator) => list.CSL(separator, null, null);
 
         /// <summary>
         ///     Creates a Comma Separated List string. Well anything separated list really.
@@ -75,7 +73,11 @@ namespace Moonrise.Utils.Standard.Extensions
         /// <param name="surroundLeft">The string to surround the individual element in on the left</param>
         /// <param name="surroundRight">The string to surround the individual element in on the right</param>
         /// <returns>A string with each element separated by, well whatever you pass.</returns>
-        public static string CSL<T>(this IEnumerable<T> list, string separator, string surroundLeft, string surroundRight)
+        public static string CSL<T>(
+            this IEnumerable<T> list,
+            string separator,
+            string surroundLeft,
+            string surroundRight)
         {
             StringBuilder joined = new StringBuilder();
 
@@ -125,7 +127,7 @@ namespace Moonrise.Utils.Standard.Extensions
             DescriptionAttribute[] attributes =
                 (DescriptionAttribute[])objectType.GetTypeInfo().GetCustomAttributes(typeof(DescriptionAttribute), false);
 
-            if ((attributes != null) && (attributes.Length > 0))
+            if (attributes != null && attributes.Length > 0)
             {
                 retVal = attributes[0].Description;
             }
@@ -148,10 +150,19 @@ namespace Moonrise.Utils.Standard.Extensions
         ///     The extracted, trimmed string.
         /// </returns>
         /// <exception cref="DataMisalignedException">Marker was not found</exception>
-        public static string Extract(this string fromWhat, string startMarker, string endMarker = null, bool trim = true)
+        public static string Extract(
+            this string fromWhat,
+            string startMarker,
+            string endMarker = null,
+            bool trim = true)
         {
             int start = 0;
-            return fromWhat.Extract(ref start, startMarker, 1, endMarker, trim);
+
+            return fromWhat.Extract(ref start,
+                startMarker,
+                1,
+                endMarker,
+                trim);
         }
 
         /// <summary>
@@ -166,10 +177,17 @@ namespace Moonrise.Utils.Standard.Extensions
         ///     The extracted, trimmed string.
         /// </returns>
         /// <exception cref="DataMisalignedException">Marker was not found</exception>
-        public static string Extract(this string fromWhat, ref int start, string startMarker, string endMarker, bool trim = true)
-        {
-            return fromWhat.Extract(ref start, startMarker, 1, endMarker, trim);
-        }
+        public static string Extract(
+            this string fromWhat,
+            ref int start,
+            string startMarker,
+            string endMarker,
+            bool trim = true) =>
+            fromWhat.Extract(ref start,
+                startMarker,
+                1,
+                endMarker,
+                trim);
 
         /// <summary>
         ///     Extracts a string using a start point, then a number of start markers and end marker.
@@ -182,12 +200,13 @@ namespace Moonrise.Utils.Standard.Extensions
         /// <param name="trim">if set to <c>true</c> DOES trim the returned string.</param>
         /// <returns>The extracted, trimmed string.</returns>
         /// <exception cref="DataMisalignedException">Marker was not found</exception>
-        public static string Extract(this string fromWhat,
-                                     ref int start,
-                                     string startMarker,
-                                     int howMany,
-                                     string endMarker,
-                                     bool trim = true)
+        public static string Extract(
+            this string fromWhat,
+            ref int start,
+            string startMarker,
+            int howMany,
+            string endMarker,
+            bool trim = true)
         {
             fromWhat.FindStart(ref start, startMarker, howMany);
             return fromWhat.Extract(ref start, endMarker);
@@ -202,7 +221,11 @@ namespace Moonrise.Utils.Standard.Extensions
         /// <param name="trim">if set to <c>true</c> DOES trim the returned string.</param>
         /// <returns>The extracted, trimmed string.</returns>
         /// <exception cref="DataMisalignedException">Marker was not found</exception>
-        public static string Extract(this string fromWhat, ref int start, string endMarker, bool trim = true)
+        public static string Extract(
+            this string fromWhat,
+            ref int start,
+            string endMarker,
+            bool trim = true)
         {
             string retVal;
             int end = fromWhat.FindEnd(start, endMarker);
@@ -270,7 +293,11 @@ namespace Moonrise.Utils.Standard.Extensions
         /// <param name="startMarker">What to look for</param>
         /// <param name="howMany">How many markers to get past</param>
         /// <exception cref="DataMisalignedException">Marker was not found</exception>
-        public static void FindStart(this string inWhat, ref int start, string startMarker, int howMany)
+        public static void FindStart(
+            this string inWhat,
+            ref int start,
+            string startMarker,
+            int howMany)
         {
             for (int i = 0; i < howMany; i++)
             {
@@ -334,7 +361,7 @@ namespace Moonrise.Utils.Standard.Extensions
                     {
                         string got = inWhat.Substring(previousPos + 1, currentPos - previousPos).Trim();
 
-                        if ((got.Length == 0) && char.IsWhiteSpace(findChar))
+                        if (got.Length == 0 && char.IsWhiteSpace(findChar))
                         {
                             // Whitespace within the findThis is a special case!
                             got = new string(findChar, 1);
@@ -363,13 +390,9 @@ namespace Moonrise.Utils.Standard.Extensions
         /// </summary>
         /// <param name="email">String to check</param>
         /// <returns>true or false</returns>
-        public static bool IsValidEmail(this string email)
-        {
-            return
-                new Regex(
-                    @"^\s*[\w\-\+_']+(\.[\w\-\+_']+)*\@[a-z0-9]([\w\.-]*[a-z0-9])?\.[a-z][a-z\.]*[a-z]$",
-                    RegexOptions.IgnoreCase).IsMatch(email);
-        }
+        public static bool IsValidEmail(this string email) =>
+            new Regex(@"^\s*[\w\-\+_']+(\.[\w\-\+_']+)*\@[a-z0-9]([\w\.-]*[a-z0-9])?\.[a-z][a-z\.]*[a-z]$",
+                RegexOptions.IgnoreCase).IsMatch(email);
 
         /// <summary>
         ///     Determines if a string contains something that at least looks like a phone number
@@ -381,7 +404,7 @@ namespace Moonrise.Utils.Standard.Extensions
         public static bool IsValidPhone(this string phone)
         {
             Regex reg = new Regex(@"[0-9 \(\)\+\-extdirectal]+", RegexOptions.IgnoreCase);
-            return reg.IsMatch(phone) && (phone.Length > 10);
+            return reg.IsMatch(phone) && phone.Length > 10;
         }
 
         /// <summary>
@@ -441,7 +464,7 @@ namespace Moonrise.Utils.Standard.Extensions
                     {
                         string got = inWhat.Substring(currentPos, previousPos - currentPos).Trim();
 
-                        if ((got.Length == 0) && char.IsWhiteSpace(findChar))
+                        if (got.Length == 0 && char.IsWhiteSpace(findChar))
                         {
                             // Whitespace within the findThis is a special case!
                             got = new string(findChar, 1);
@@ -473,10 +496,7 @@ namespace Moonrise.Utils.Standard.Extensions
         /// <param name="source">The source.</param>
         /// <param name="count">The count of characters to return.</param>
         /// <returns>Left part of the string</returns>
-        public static string Left(this string source, int count)
-        {
-            return count > source.Length ? source : source.Substring(0, count);
-        }
+        public static string Left(this string source, int count) => count > source.Length ? source : source.Substring(0, count);
 
         /// <summary>
         ///     Returns up to <paramref name="count" /> characters from the inner of a string. Does NOT throw
@@ -486,10 +506,8 @@ namespace Moonrise.Utils.Standard.Extensions
         /// <param name="start">The start of the "middle".</param>
         /// <param name="count">The count of characters to return.</param>
         /// <returns>Middle part of the string</returns>
-        public static string Mid(this string source, int start, int count)
-        {
-            return count + start > source.Length ? source.Substring(start, source.Length - start) : source.Substring(start, count);
-        }
+        public static string Mid(this string source, int start, int count) =>
+            count + start > source.Length ? source.Substring(start, source.Length - start) : source.Substring(start, count);
 
         /// <summary>
         ///     Pluralises word based on count
@@ -503,6 +521,7 @@ namespace Moonrise.Utils.Standard.Extensions
         public static string Pluralise(this string item, int count, bool includeCount = true)
         {
             string plural = item + 's';
+
             if (Regex.IsMatch(item, "[^aeiou]y$", RegexOptions.IgnoreCase))
             {
                 plural = item.Substring(0, item.Length - 1) + "ies";
@@ -521,9 +540,14 @@ namespace Moonrise.Utils.Standard.Extensions
         /// <returns>
         ///     Pluralised word prefixed with count
         /// </returns>
-        public static string Pluralise(this string item, int count, string plural, bool includeCount = true)
+        public static string Pluralise(
+            this string item,
+            int count,
+            string plural,
+            bool includeCount = true)
         {
             string pluralisedString = count == 1 ? item : plural;
+
             if (includeCount)
             {
                 pluralisedString = count + " " + pluralisedString;
@@ -542,10 +566,18 @@ namespace Moonrise.Utils.Standard.Extensions
         /// <returns>
         ///     The replaced string
         /// </returns>
-        public static string ReplaceBetween(this string source, string startFrom, string endWith, string putThisInstead)
+        public static string ReplaceBetween(
+            this string source,
+            string startFrom,
+            string endWith,
+            string putThisInstead)
         {
             int startPos = 0;
-            return source.ReplaceBetween(ref startPos, startFrom, endWith, putThisInstead);
+
+            return source.ReplaceBetween(ref startPos,
+                startFrom,
+                endWith,
+                putThisInstead);
         }
 
         /// <summary>
@@ -557,7 +589,12 @@ namespace Moonrise.Utils.Standard.Extensions
         /// <param name="endWith">The string that marks the end of the replacement boundary.</param>
         /// <param name="putThisInstead">The string to place BETWEEN the two boundaries.</param>
         /// <returns>The replaced string</returns>
-        public static string ReplaceBetween(this string source, ref int startPos, string startFrom, string endWith, string putThisInstead)
+        public static string ReplaceBetween(
+            this string source,
+            ref int startPos,
+            string startFrom,
+            string endWith,
+            string putThisInstead)
         {
             string retVal;
 
@@ -584,10 +621,7 @@ namespace Moonrise.Utils.Standard.Extensions
         /// <param name="source">The source.</param>
         /// <param name="count">The count of characters to return.</param>
         /// <returns>Right part of the string</returns>
-        public static string Right(this string source, int count)
-        {
-            return count > source.Length ? source : source.Substring(source.Length - count, count);
-        }
+        public static string Right(this string source, int count) => count > source.Length ? source : source.Substring(source.Length - count, count);
 
         /// <summary>
         ///     Splits a string as though it were a row typically found in a CSV formatted file.
@@ -604,7 +638,11 @@ namespace Moonrise.Utils.Standard.Extensions
         /// </param>
         /// <param name="trimData">Should the qualifiers be trimmed?</param>
         /// <returns>The array of split strings</returns>
-        public static string[] SplitRow(this string record, string delimiter = ",", string qualifier = "\"", bool trimData = false)
+        public static string[] SplitRow(
+            this string record,
+            string delimiter = ",",
+            string qualifier = "\"",
+            bool trimData = false)
         {
             // In-Line for example, but I implemented as string extender in production code
             Func<string, int, int> IndexOfNextNonWhiteSpaceChar =
@@ -663,7 +701,7 @@ namespace Moonrise.Utils.Standard.Extensions
                         if (row[idx] == qualifier[0])
                         {
                             // Qualifier is closing qualifier...
-                            if (inQualifier && (row[IndexOfNextNonWhiteSpaceChar(row, idx + 1)] == delimiter[0]))
+                            if (inQualifier && row[IndexOfNextNonWhiteSpaceChar(row, idx + 1)] == delimiter[0])
                             {
                                 inQualifier = false;
                             }
@@ -743,7 +781,7 @@ namespace Moonrise.Utils.Standard.Extensions
         /// <returns></returns>
         public static string ToSentence(this string instance)
         {
-            return new string(instance.SelectMany((c, i) => (i > 0) && char.IsUpper(c) ? new[] {' ', c} : new[] {c}).ToArray());
+            return new string(instance.SelectMany((c, i) => i > 0 && char.IsUpper(c) ? new[] { ' ', c } : new[] { c }).ToArray());
         }
 
         /// <summary>
@@ -781,10 +819,7 @@ namespace Moonrise.Utils.Standard.Extensions
         /// <param name="instance">The string being trimmed</param>
         /// <param name="what">What to trim off the start and end</param>
         /// <returns>The trimmed string</returns>
-        public static string Trim(this string instance, string what)
-        {
-            return instance.TrimStart(what).TrimEnd(what);
-        }
+        public static string Trim(this string instance, string what) => instance.TrimStart(what).TrimEnd(what);
 
         /// <summary>
         ///     Removes a single instance of a specified string from the end of a string.

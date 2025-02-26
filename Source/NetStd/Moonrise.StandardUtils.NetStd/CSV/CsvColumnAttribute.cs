@@ -10,15 +10,6 @@ namespace Moonrise.Utils.Standard.CSV
     public class CsvColumnAttribute : Attribute
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="CsvColumnAttribute" /> class. i.e. default takes the header name.
-        /// </summary>
-        /// <param name="columnName">Name of the column.</param>
-        public CsvColumnAttribute(string columnName)
-        {
-            ColumnName = columnName;
-        }
-
-        /// <summary>
         ///     The header name for a CSV column
         /// </summary>
         public string ColumnName { get; }
@@ -27,5 +18,11 @@ namespace Moonrise.Utils.Standard.CSV
         ///     A custom converter.
         /// </summary>
         public Type Converter { get; set; } = null;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="CsvColumnAttribute" /> class. i.e. default takes the header name.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        public CsvColumnAttribute(string columnName) => ColumnName = columnName;
     }
 }

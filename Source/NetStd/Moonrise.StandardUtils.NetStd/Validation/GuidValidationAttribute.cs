@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -31,10 +32,7 @@ namespace Moonrise.Utils.Standard.Validation
         /// <summary>
         ///     Initializes a new instance of the <see cref="GuidValidationAttribute" /> class.
         /// </summary>
-        public GuidValidationAttribute()
-        {
-            ErrorMessage = "Needs to be a valid Guid";
-        }
+        public GuidValidationAttribute() => ErrorMessage = "Needs to be a valid Guid";
 
         /// <summary>
         ///     Validates the specified value with respect to the current validation attribute.

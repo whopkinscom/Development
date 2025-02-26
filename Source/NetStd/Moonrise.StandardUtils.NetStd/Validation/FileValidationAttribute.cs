@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
@@ -35,28 +36,22 @@ namespace Moonrise.Utils.Standard.Validation
         private bool _exists;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="FileValidationAttribute" /> class.
-        /// </summary>
-        public FileValidationAttribute()
-        {
-            Exists = true;
-        }
-
-        /// <summary>
         ///     Determines if the file exists
         /// </summary>
         public bool Exists
         {
-            get
-            {
-                return _exists;
-            }
+            get => _exists;
             set
             {
                 _exists = value;
                 ErrorMessage = _exists ? "The file must exist" : "The file must not already exist";
             }
         }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="FileValidationAttribute" /> class.
+        /// </summary>
+        public FileValidationAttribute() => Exists = true;
 
         /// <summary>
         ///     Validates the specified value with respect to the current validation attribute.

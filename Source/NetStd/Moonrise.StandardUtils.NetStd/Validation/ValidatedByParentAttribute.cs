@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 using System;
 
 namespace Moonrise.Utils.Standard.Validation
@@ -36,20 +37,6 @@ namespace Moonrise.Utils.Standard.Validation
     public class ValidatedByParentAttribute : Attribute
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ValidatedByParentAttribute" /> class.
-        /// </summary>
-        /// <param name="errorMessage">The error message.</param>
-        public ValidatedByParentAttribute(string errorMessage)
-        {
-            ErrorMessage = errorMessage;
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ValidatedByParentAttribute" /> class.
-        /// </summary>
-        public ValidatedByParentAttribute() { }
-
-        /// <summary>
         ///     The error message. The use of this will be determined by
         ///     <seealso cref="ValidateChildAttribute.AppendChildMessage" />.
         /// </summary>
@@ -60,5 +47,16 @@ namespace Moonrise.Utils.Standard.Validation
         ///     used where the attributed member does not have a visible element to highlight but another member does.
         /// </summary>
         public string MemberToHighlight { get; set; }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ValidatedByParentAttribute" /> class.
+        /// </summary>
+        /// <param name="errorMessage">The error message.</param>
+        public ValidatedByParentAttribute(string errorMessage) => ErrorMessage = errorMessage;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ValidatedByParentAttribute" /> class.
+        /// </summary>
+        public ValidatedByParentAttribute() { }
     }
 }

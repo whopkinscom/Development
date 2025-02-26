@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,18 +31,6 @@ namespace Moonrise.Utils.Standard.Validation
                     AttributeTargets.Field)]
     public class ListContentValidationAttribute : ValidationAttribute
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ListContentValidationAttribute" /> class.
-        /// </summary>
-        /// <param name="errorMessageAccessor">The function that enables access to validation resources.</param>
-        public ListContentValidationAttribute(Func<string> errorMessageAccessor) : base(errorMessageAccessor) { }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ListContentValidationAttribute" /> class.
-        /// </summary>
-        /// <param name="errorMessage">The error message to associate with a validation control.</param>
-        public ListContentValidationAttribute(string errorMessage) : base(errorMessage) { }
-
         /// <summary>
         ///     Determines if null elements are allowed in the "list"
         /// </summary>
@@ -62,6 +51,20 @@ namespace Moonrise.Utils.Standard.Validation
         ///     The minimum number of elements expected
         /// </summary>
         public int MinElements { get; set; } = int.MaxValue;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ListContentValidationAttribute" /> class.
+        /// </summary>
+        /// <param name="errorMessageAccessor">The function that enables access to validation resources.</param>
+        public ListContentValidationAttribute(Func<string> errorMessageAccessor)
+            : base(errorMessageAccessor) { }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ListContentValidationAttribute" /> class.
+        /// </summary>
+        /// <param name="errorMessage">The error message to associate with a validation control.</param>
+        public ListContentValidationAttribute(string errorMessage)
+            : base(errorMessage) { }
 
         /// <summary>Validates the specified value with respect to the current validation attribute.</summary>
         /// <returns>An instance of the <see cref="T:System.ComponentModel.DataAnnotations.ValidationResult" /> class. </returns>
@@ -100,7 +103,7 @@ namespace Moonrise.Utils.Standard.Validation
 
             string errorMessage = string.Empty;
 
-            if ((MinElements != int.MaxValue) && (i < MinElements))
+            if (MinElements != int.MaxValue && i < MinElements)
             {
                 if (string.IsNullOrEmpty(errorMessage))
                 {
@@ -110,13 +113,14 @@ namespace Moonrise.Utils.Standard.Validation
                 if (AppendFurtherErrorDetails)
                 {
                     errorMessage += "\r\n\t";
+
                     errorMessage += string.Format("{0} had less than the required minimum of {1} elements.",
-                                                  validationContext.DisplayName,
-                                                  MinElements);
+                        validationContext.DisplayName,
+                        MinElements);
                 }
             }
 
-            if ((MaxElements != int.MinValue) && (i > MaxElements))
+            if (MaxElements != int.MinValue && i > MaxElements)
             {
                 if (string.IsNullOrEmpty(errorMessage))
                 {
@@ -126,9 +130,10 @@ namespace Moonrise.Utils.Standard.Validation
                 if (AppendFurtherErrorDetails)
                 {
                     errorMessage += "\r\n\t";
+
                     errorMessage += string.Format("{0} had more than the required maximum of {1} elements.",
-                                                  validationContext.DisplayName,
-                                                  MaxElements);
+                        validationContext.DisplayName,
+                        MaxElements);
                 }
             }
 
@@ -142,8 +147,9 @@ namespace Moonrise.Utils.Standard.Validation
                 if (AppendFurtherErrorDetails)
                 {
                     errorMessage += "\r\n\t";
+
                     errorMessage += string.Format("{0}: The following elements were null;",
-                                                  validationContext.MemberName ?? validationContext.DisplayName);
+                        validationContext.MemberName ?? validationContext.DisplayName);
                 }
             }
 
@@ -158,10 +164,10 @@ namespace Moonrise.Utils.Standard.Validation
                 else
                 {
                     retVal = new ValidationResult(errorMessage,
-                                                  new List<string>
-                                                  {
-                                                      validationContext.MemberName ?? validationContext.DisplayName
-                                                  });
+                        new List<string>
+                        {
+                            validationContext.MemberName ?? validationContext.DisplayName,
+                        });
                 }
             }
 

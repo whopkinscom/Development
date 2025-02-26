@@ -37,6 +37,60 @@ namespace Moonrise.Utils.Standard.Config
     public class JsonConfigSettingsProvider : ISettingsProvider
     {
         /// <summary>
+        ///     The configuration required
+        /// </summary>
+        public class Config
+        {
+            /// <summary>
+            ///     The name of the settings filename, defaults to the DotNotCore default settings filename
+            /// </summary>
+            public string ApplicationSettingsFilename { get; set; } = "appSettings.json";
+
+            /// <summary>
+            ///     The folder the settings file is in, use null (the default) for the same folder as the application
+            /// </summary>
+            public string ApplicationSettingsFolder { get; set; }
+
+            /// <summary>
+            ///     Specifies a section in the config file where the application settings will be taken from, defaults to that as used
+            ///     by DotNetCore but you don't have to have one if you're not sharing the settings with DotNetCore infrastructure
+            ///     settings
+            /// </summary>
+            public string ApplicationSettingsSection { get; set; } = "";
+
+            /// <summary>
+            ///     The environment variable, if used, that contains the name of the settings override post-fix, defaults to that used
+            ///     by DotNetCore
+            /// </summary>
+            public string ConfigurationOverrideEnvVar { get; set; } = "ASPNETCORE_ENVIRONMENT";
+
+            /// <summary>
+            ///     The name of the user settings file - this will be stored in the roaming or normal user profile location.
+            /// </summary>
+            public string UserSettingsFilename { get; set; } = "UserSettings.json";
+        }
+
+        /// <summary>
+        ///     Defines encryption/decryption that will be applied to sections before writing and after reading.
+        /// </summary>
+        public interface ISettingsEncryptor
+        {
+            /// <summary>
+            ///     Decrypts the specified jsoned data.
+            /// </summary>
+            /// <param name="jsonedData">The jsoned data.</param>
+            /// <returns>The decrypted data</returns>
+            string Decrypt(string jsonedData);
+
+            /// <summary>
+            ///     Encrypts the specified string.
+            /// </summary>
+            /// <param name="jsonedData">The jsoned dictionary.</param>
+            /// <returns>The encrypted string</returns>
+            string Encrypt(string jsonedData);
+        }
+
+        /// <summary>
         ///     Replaces any dots in a key due to JTokens treating them as hierarchy separators
         /// </summary>
         public const string DotMarker = "`_`";
@@ -52,6 +106,11 @@ namespace Moonrise.Utils.Standard.Config
         private readonly string ConfigurationOverrideEnvVar;
 
         /// <summary>
+        ///     Backing store for the user settings filename.
+        /// </summary>
+        private string __userSettingsFilename;
+
+        /// <summary>
         ///     Cached application settings
         /// </summary>
         private Dictionary<string, object> _applicationSettings = new Dictionary<string, object>();
@@ -60,66 +119,6 @@ namespace Moonrise.Utils.Standard.Config
         ///     Cached user settings
         /// </summary>
         private Dictionary<string, object> _userSettings = new Dictionary<string, object>();
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="JsonConfigSettingsProvider" /> class.
-        /// </summary>
-        /// <param name="applicationSettingsFilename">The application settings filename.</param>
-        /// <param name="applicationSettingsFolder">
-        ///     The application settings folder. If null (default) then the
-        ///     <see cref="FileUtils.ApplicationPath" /> is used.
-        /// </param>
-        /// <param name="applicationSettingsSection">The application settings section name.</param>
-        /// <param name="userSettingsFilename">The user settings filename.</param>
-        /// <param name="configurationOverrideEnvVar">
-        ///     The configuration override environment variable - Indicates the name of the
-        ///     env var that holds the deployed environment allowing for configuration overrides.
-        /// </param>
-        [Obsolete("Please use the constructor that takes the Config class. This one WILL get removed")]
-        public JsonConfigSettingsProvider(
-            string applicationSettingsFilename,
-            string applicationSettingsFolder,
-            string applicationSettingsSection = "",
-            string userSettingsFilename = "UserSettings.json",
-            string configurationOverrideEnvVar = "ASPNETCORE_ENVIRONMENT") : this(new Config
-            {
-                ApplicationSettingsFilename =
-                applicationSettingsFilename,
-                ApplicationSettingsFolder =
-                applicationSettingsFolder,
-                ApplicationSettingsSection =
-                applicationSettingsSection,
-                ConfigurationOverrideEnvVar =
-                configurationOverrideEnvVar,
-                UserSettingsFilename = userSettingsFilename
-            })
-        {
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="JsonConfigSettingsProvider" /> class.
-        /// </summary>
-        /// <param name="configuration">The configuration to use</param>
-        public JsonConfigSettingsProvider(Config configuration = null)
-        {
-            if (configuration == null)
-                Configuration = new Config();
-            else
-                Configuration = configuration;
-
-            UserSettingsFilename = Configuration.UserSettingsFilename;
-            ConfigurationOverrideEnvVar = Configuration.ConfigurationOverrideEnvVar;
-
-            if (!string.IsNullOrWhiteSpace(ConfigurationOverrideEnvVar))
-                ConfigurationOverride = Environment.GetEnvironmentVariable(ConfigurationOverrideEnvVar);
-
-            if (Configuration.ApplicationSettingsFolder == null)
-                Configuration.ApplicationSettingsFolder = FileUtils.ApplicationPath();
-
-            ApplicationSettingsFilename = Path.Combine(Configuration.ApplicationSettingsFolder,
-                Configuration.ApplicationSettingsFilename);
-            ApplicationSettingsSection = Configuration.ApplicationSettingsSection;
-        }
 
         /// <summary>
         ///     The application settings filename.
@@ -142,30 +141,81 @@ namespace Moonrise.Utils.Standard.Config
         public ISettingsEncryptor SettingsEncryptor { get; set; }
 
         /// <summary>
-        ///     Backing store for the user settings filename.
-        /// </summary>
-        private string __userSettingsFilename;
-
-        /// <summary>
         ///     The user settings filename.
         /// </summary>
         public string UserSettingsFilename
         {
-            get
-            {
-                return __userSettingsFilename;
-            }
-            set
-            {
-                __userSettingsFilename = $"{FileUtils.RoamingUserApplicationPath()}/{value}";
-            }
+            get => __userSettingsFilename;
+            set => __userSettingsFilename = $"{FileUtils.RoamingUserApplicationPath()}/{value}";
         }
 
         /// <summary>
-        ///     Only used by the <see cref="T:Moonrise.Utils.Standard.Config.Settings" /> class, but indicates if this provider has
-        ///     read its cache yet.
+        ///     Initializes a new instance of the <see cref="JsonConfigSettingsProvider" /> class.
         /// </summary>
-        public bool CacheRead { get; set; }
+        /// <param name="applicationSettingsFilename">The application settings filename.</param>
+        /// <param name="applicationSettingsFolder">
+        ///     The application settings folder. If null (default) then the
+        ///     <see cref="FileUtils.ApplicationPath" /> is used.
+        /// </param>
+        /// <param name="applicationSettingsSection">The application settings section name.</param>
+        /// <param name="userSettingsFilename">The user settings filename.</param>
+        /// <param name="configurationOverrideEnvVar">
+        ///     The configuration override environment variable - Indicates the name of the
+        ///     env var that holds the deployed environment allowing for configuration overrides.
+        /// </param>
+        [Obsolete("Please use the constructor that takes the Config class. This one WILL get removed")]
+        public JsonConfigSettingsProvider(
+            string applicationSettingsFilename,
+            string applicationSettingsFolder,
+            string applicationSettingsSection = "",
+            string userSettingsFilename = "UserSettings.json",
+            string configurationOverrideEnvVar = "ASPNETCORE_ENVIRONMENT")
+            : this(new Config
+            {
+                ApplicationSettingsFilename =
+                    applicationSettingsFilename,
+                ApplicationSettingsFolder =
+                    applicationSettingsFolder,
+                ApplicationSettingsSection =
+                    applicationSettingsSection,
+                ConfigurationOverrideEnvVar =
+                    configurationOverrideEnvVar,
+                UserSettingsFilename = userSettingsFilename,
+            }) { }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="JsonConfigSettingsProvider" /> class.
+        /// </summary>
+        /// <param name="configuration">The configuration to use</param>
+        public JsonConfigSettingsProvider(Config configuration = null)
+        {
+            if (configuration == null)
+            {
+                Configuration = new Config();
+            }
+            else
+            {
+                Configuration = configuration;
+            }
+
+            UserSettingsFilename = Configuration.UserSettingsFilename;
+            ConfigurationOverrideEnvVar = Configuration.ConfigurationOverrideEnvVar;
+
+            if (!string.IsNullOrWhiteSpace(ConfigurationOverrideEnvVar))
+            {
+                ConfigurationOverride = Environment.GetEnvironmentVariable(ConfigurationOverrideEnvVar);
+            }
+
+            if (Configuration.ApplicationSettingsFolder == null)
+            {
+                Configuration.ApplicationSettingsFolder = FileUtils.ApplicationPath();
+            }
+
+            ApplicationSettingsFilename = Path.Combine(Configuration.ApplicationSettingsFolder,
+                Configuration.ApplicationSettingsFilename);
+
+            ApplicationSettingsSection = Configuration.ApplicationSettingsSection;
+        }
 
         /// <summary>
         ///     Clones this instance.
@@ -180,15 +230,40 @@ namespace Moonrise.Utils.Standard.Config
         }
 
         /// <summary>
+        ///     Only used by the <see cref="T:Moonrise.Utils.Standard.Config.Settings" /> class, but indicates if this provider has
+        ///     read its cache yet.
+        /// </summary>
+        public bool CacheRead { get; set; }
+
+        /// <summary>
         ///     Write out the current settings
         /// </summary>
         /// <param name="type">The type of setting.</param>
         public void Flush(SettingType type)
         {
             if (type == SettingType.Application)
+            {
                 WriteApplicationSettingFile();
+            }
             else
+            {
                 WriteUserSettingFile();
+            }
+        }
+
+        /// <summary>
+        ///     Reads the complete settings file as a single string
+        /// </summary>
+        /// <param name="type">The type of setting.</param>
+        /// <returns>Wot I said</returns>
+        public string ReadCompleteFile(SettingType settingType)
+        {
+            if (settingType == SettingType.Application)
+            {
+                return FileUtils.ReadFile(ApplicationSettingsFilename);
+            }
+
+            return FileUtils.ReadFile(UserSettingsFilename);
         }
 
         /// <summary>
@@ -201,9 +276,15 @@ namespace Moonrise.Utils.Standard.Config
         /// </returns>
         public string ReadSetting(string key, SettingType type = SettingType.Application)
         {
-            if (type == SettingType.Application) return ReadApplicationSetting(key);
+            if (type == SettingType.Application)
+            {
+                return ReadApplicationSetting(key);
+            }
 
-            if (type == SettingType.User) return ReadUserSetting(key);
+            if (type == SettingType.User)
+            {
+                return ReadUserSetting(key);
+            }
 
             return null;
         }
@@ -214,44 +295,13 @@ namespace Moonrise.Utils.Standard.Config
         public void RefreshAnyCaches(SettingType type)
         {
             if (type == SettingType.Application)
+            {
                 ReadApplicationSettingsFile();
+            }
             else
+            {
                 ReadUserSettingsFile();
-        }
-
-        /// <summary>
-        ///     Writes the application setting.
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <param name="value">The value as a string - Use the most appropriate.</param>
-        /// <param name="objval">The value as an object - Use the most appropriate.</param>
-        /// <param name="type">The type of setting.</param>
-        public void WriteSetting(string key,
-            string value,
-            object objval,
-            SettingType type = SettingType.Application)
-        {
-            if (type == SettingType.Application)
-                WriteApplicationSetting(key, objval);
-            else
-                WriteUserSetting(key, objval);
-
-            // Now handle the stupid dots in keys! - There may still be an issue with encrypted sections containing . but then we'd probably never see them as they're encrypted?
-            string fullFile = ReadCompleteFile(type);
-            fullFile = fullFile.Replace(DotMarker, ".");
-            WriteCompleteFile(fullFile, type);
-        }
-
-        /// <summary>
-        ///     Reads the complete settings file as a single string
-        /// </summary>
-        /// <param name="type">The type of setting.</param>
-        /// <returns>Wot I said</returns>
-        public string ReadCompleteFile(SettingType settingType)
-        {
-            if (settingType == SettingType.Application)
-                return FileUtils.ReadFile(ApplicationSettingsFilename);
-            return FileUtils.ReadFile(UserSettingsFilename);
+            }
         }
 
         /// <summary>
@@ -262,9 +312,41 @@ namespace Moonrise.Utils.Standard.Config
         public void WriteCompleteFile(string settings, SettingType settingType)
         {
             if (settingType == SettingType.Application)
+            {
                 File.WriteAllText(ApplicationSettingsFilename, settings);
+            }
             else
+            {
                 File.WriteAllText(UserSettingsFilename, settings);
+            }
+        }
+
+        /// <summary>
+        ///     Writes the application setting.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value as a string - Use the most appropriate.</param>
+        /// <param name="objval">The value as an object - Use the most appropriate.</param>
+        /// <param name="type">The type of setting.</param>
+        public void WriteSetting(
+            string key,
+            string value,
+            object objval,
+            SettingType type = SettingType.Application)
+        {
+            if (type == SettingType.Application)
+            {
+                WriteApplicationSetting(key, objval);
+            }
+            else
+            {
+                WriteUserSetting(key, objval);
+            }
+
+            // Now handle the stupid dots in keys! - There may still be an issue with encrypted sections containing . but then we'd probably never see them as they're encrypted?
+            string fullFile = ReadCompleteFile(type);
+            fullFile = fullFile.Replace(DotMarker, ".");
+            WriteCompleteFile(fullFile, type);
         }
 
         /// <summary>
@@ -279,9 +361,12 @@ namespace Moonrise.Utils.Standard.Config
 
             if (key.Contains('.'))
                 // JToken uses . as a separator whereas we (and many others) use : so we need to treat them differently!
+            {
                 key = key.Replace(".", DotMarker);
+            }
 
             if (key.Contains(":"))
+            {
                 try
                 {
                     // We've got a composite key
@@ -291,6 +376,7 @@ namespace Moonrise.Utils.Standard.Config
                     int level = 0;
 
                     foreach (string subkey in keys)
+                    {
                         if (level++ == 0)
                         {
                             setting = ((IDictionary<string, object>)setting)[subkey];
@@ -301,8 +387,10 @@ namespace Moonrise.Utils.Standard.Config
                             {
                                 int start = 0;
                                 string indexStr = subkey.Extract(ref start, "[", "]");
+
                                 string subKey = subkey.Substring(0,
                                     subkey.IndexOf("[", StringComparison.CurrentCulture));
+
                                 int index = int.Parse(indexStr);
                                 setting = ((JObject)setting)[subKey];
                                 setting = ((JArray)setting)[index];
@@ -312,11 +400,16 @@ namespace Moonrise.Utils.Standard.Config
                                 setting = ((JObject)setting)[subkey];
                             }
                         }
+                    }
 
                     if (setting is JValue && ((JValue)setting).Value is bool)
+                    {
                         retVal = ((JValue)setting).Value.ToString().ToLower();
+                    }
                     else
+                    {
                         retVal = setting.ToString();
+                    }
                 }
                 catch (KeyNotFoundException)
                 {
@@ -326,6 +419,7 @@ namespace Moonrise.Utils.Standard.Config
                 {
                     return retVal;
                 }
+            }
             else if (_applicationSettings.TryGetValue(key, out setting))
             {
                 retVal = setting.ToString();
@@ -348,6 +442,7 @@ namespace Moonrise.Utils.Standard.Config
             {
                 string overrideSettingsFilename =
                     $"{Path.GetDirectoryName(ApplicationSettingsFilename)}\\{Path.GetFileNameWithoutExtension(ApplicationSettingsFilename)}.{ConfigurationOverride}{Path.GetExtension(ApplicationSettingsFilename)}";
+
                 Dictionary<string, object> overrideDictionary = GetDictionary(overrideSettingsFilename);
                 overrideDictionary = ReplaceDotsWithTicks(overrideDictionary);
 
@@ -430,13 +525,20 @@ namespace Moonrise.Utils.Standard.Config
                                 {
                                     JProperty childProp = child as JProperty;
 
-                                    if (childProp.Name.Contains('.')) props.Add(childProp);
+                                    if (childProp.Name.Contains('.'))
+                                    {
+                                        props.Add(childProp);
+                                    }
                                 }
 
                                 if (child.Type == JTokenType.Object ||
                                     child.Type == JTokenType.Property)
+                                {
                                     using (Recursion.Guard())
+                                    {
                                         ReplaceDots(child);
+                                    }
+                                }
                             }
 
                             foreach (JProperty prop in props)
@@ -480,7 +582,10 @@ namespace Moonrise.Utils.Standard.Config
                 {
                     if (!original.HasValues)
                     {
-                        if (replacement.HasValues) original.Add(replacement.Children());
+                        if (replacement.HasValues)
+                        {
+                            original.Add(replacement.Children());
+                        }
                     }
                     else
                     {
@@ -499,10 +604,16 @@ namespace Moonrise.Utils.Standard.Config
                                 JToken originalItem = originalChild.SelectToken(replacementPath);
 
                                 if (originalItem == null)
+                                {
                                     ((JContainer)originalChild).Add(replacingChild);
+                                }
                                 else
+                                {
                                     using (Recursion.Guard())
+                                    {
                                         ReplaceEachChild(originalItem.Parent, replacingChild);
+                                    }
+                                }
                             }
                         }
                         else if (replacementChild.Type == JTokenType.Array)
@@ -514,10 +625,16 @@ namespace Moonrise.Utils.Standard.Config
                                 JToken originalItem = originalChild.SelectToken(replacementPath);
 
                                 if (originalItem == null)
+                                {
                                     ((JContainer)originalChild).Add(replacingChild);
+                                }
                                 else
+                                {
                                     using (Recursion.Guard())
+                                    {
                                         ReplaceEachChild(originalItem.Parent, replacingChild);
+                                    }
+                                }
                             }
                         }
                         else if (replacementChild.Type == JTokenType.Property)
@@ -529,10 +646,16 @@ namespace Moonrise.Utils.Standard.Config
                                     JToken originalValue = ((JProperty)originalChild).Value;
 
                                     if (replacingValue.HasValues)
+                                    {
                                         using (Recursion.Guard())
+                                        {
                                             ReplaceEachChild(originalValue, replacingValue);
+                                        }
+                                    }
                                     else
+                                    {
                                         ((JProperty)originalChild).Value = replacingValue;
+                                    }
                                 }
                             }
                             else
@@ -558,7 +681,9 @@ namespace Moonrise.Utils.Standard.Config
 
             if (key.Contains('.'))
                 // JToken uses . as a separator whereas we (and many others) use : so we need to treat them differently!
+            {
                 key = key.Replace(".", DotMarker);
+            }
 
             if (key.Contains(":"))
             {
@@ -571,6 +696,7 @@ namespace Moonrise.Utils.Standard.Config
                     int level = 0;
 
                     foreach (string subkey in keys)
+                    {
                         if (level++ == 0)
                         {
                             setting = ((IDictionary<string, object>)setting)[subkey];
@@ -581,8 +707,10 @@ namespace Moonrise.Utils.Standard.Config
                             {
                                 int start = 0;
                                 string indexStr = subkey.Extract(ref start, "[", "]");
+
                                 string subKey = subkey.Substring(0,
                                     subkey.IndexOf("[", StringComparison.CurrentCulture));
+
                                 int index = int.Parse(indexStr);
                                 setting = ((JObject)setting)[subKey];
                                 setting = ((JArray)setting)[index];
@@ -592,6 +720,7 @@ namespace Moonrise.Utils.Standard.Config
                                 setting = ((JObject)setting)[subkey];
                             }
                         }
+                    }
 
                     retVal = setting.ToString();
                 }
@@ -625,7 +754,10 @@ namespace Moonrise.Utils.Standard.Config
 
                 if (!string.IsNullOrEmpty(jsonedDict))
                 {
-                    if (SettingsEncryptor != null) jsonedDict = SettingsEncryptor.Decrypt(jsonedDict);
+                    if (SettingsEncryptor != null)
+                    {
+                        jsonedDict = SettingsEncryptor.Decrypt(jsonedDict);
+                    }
 
                     _userSettings = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonedDict);
                 }
@@ -639,7 +771,10 @@ namespace Moonrise.Utils.Standard.Config
         /// <param name="value">The value as an object</param>
         private void WriteApplicationSetting(string key, object value)
         {
-            if (key.Contains('.')) key = key.Replace(".", DotMarker);
+            if (key.Contains('.'))
+            {
+                key = key.Replace(".", DotMarker);
+            }
 
             if (key.Contains(":"))
             {
@@ -650,13 +785,17 @@ namespace Moonrise.Utils.Standard.Config
                 int level = 0;
 
                 foreach (string subkey in keys)
+                {
                     try
                     {
                         if (level++ == 0)
                         {
                             if (level == keys.Length)
+                            {
                                 ((IDictionary<string, object>)setting)[subkey] = value;
+                            }
                             else
+                            {
                                 try
                                 {
                                     setting = ((IDictionary<string, object>)setting)[subkey];
@@ -666,6 +805,7 @@ namespace Moonrise.Utils.Standard.Config
                                     ((IDictionary<string, object>)setting)[subkey] = new JObject();
                                     setting = ((IDictionary<string, object>)setting)[subkey];
                                 }
+                            }
                         }
                         else
                         {
@@ -675,8 +815,10 @@ namespace Moonrise.Utils.Standard.Config
                                 {
                                     int start = 0;
                                     string indexStr = subkey.Extract(ref start, "[", "]");
+
                                     string subKey = subkey.Substring(0,
                                         subkey.IndexOf("[", StringComparison.CurrentCulture));
+
                                     int index = int.Parse(indexStr);
                                     setting = ((JObject)setting)[subKey];
                                     setting = ((JArray)setting)[index];
@@ -693,8 +835,10 @@ namespace Moonrise.Utils.Standard.Config
                                 {
                                     int start = 0;
                                     string indexStr = subkey.Extract(ref start, "[", "]");
+
                                     string subKey = subkey.Substring(0,
                                         subkey.IndexOf("[", StringComparison.CurrentCulture));
+
                                     int index = int.Parse(indexStr);
                                     setting = ((JObject)setting)[subKey];
                                     setting = ((JArray)setting)[index];
@@ -726,6 +870,7 @@ namespace Moonrise.Utils.Standard.Config
                     {
                         throw new SettingsException(excep, SettingsExceptionReason.InvalidKey, key);
                     }
+                }
             }
             else
             {
@@ -754,9 +899,13 @@ namespace Moonrise.Utils.Standard.Config
                     string existingJsonedData = FileUtils.ReadFile(ApplicationSettingsFilename);
 
                     if (!string.IsNullOrEmpty(existingJsonedData))
+                    {
                         existingAppSettings = JObject.Parse(existingJsonedData);
+                    }
                     else
+                    {
                         existingAppSettings = new JObject();
+                    }
 
                     if (SettingsEncryptor != null)
                     {
@@ -771,7 +920,7 @@ namespace Moonrise.Utils.Standard.Config
                     // If we're sitting inside a section of a bigger JSON file, then we have to treat the appsettings, encrypted or otherwise
                     // as part of that overall JSON so we'll use the JSON writer to write out.
                     using (StreamWriter settingsFile =
-                        File.CreateText(ApplicationSettingsFilename))
+                           File.CreateText(ApplicationSettingsFilename))
                     {
                         using (JsonTextWriter writer = new JsonTextWriter(settingsFile))
                         {
@@ -783,7 +932,10 @@ namespace Moonrise.Utils.Standard.Config
                 else
                 {
                     // If thereis no application section we can just write out the JSON - encrypted or otherwise, as a string to a file.
-                    if (SettingsEncryptor != null) applicationJson = SettingsEncryptor.Encrypt(applicationJson);
+                    if (SettingsEncryptor != null)
+                    {
+                        applicationJson = SettingsEncryptor.Encrypt(applicationJson);
+                    }
 
                     File.WriteAllText(ApplicationSettingsFilename, applicationJson);
                 }
@@ -807,12 +959,17 @@ namespace Moonrise.Utils.Standard.Config
                 int level = 0;
 
                 foreach (string subkey in keys)
+                {
                     if (level++ == 0)
                     {
                         if (level == keys.Length)
+                        {
                             ((IDictionary<string, object>)setting)[subkey] = value;
+                        }
                         else
+                        {
                             setting = ((IDictionary<string, object>)setting)[subkey];
+                        }
                     }
                     else
                     {
@@ -822,8 +979,10 @@ namespace Moonrise.Utils.Standard.Config
                             {
                                 int start = 0;
                                 string indexStr = subkey.Extract(ref start, "[", "]");
+
                                 string subKey = subkey.Substring(0,
                                     subkey.IndexOf("[", StringComparison.CurrentCulture));
+
                                 int index = int.Parse(indexStr);
                                 setting = ((JObject)setting)[subKey];
                                 setting = ((JArray)setting)[index];
@@ -839,8 +998,10 @@ namespace Moonrise.Utils.Standard.Config
                             {
                                 int start = 0;
                                 string indexStr = subkey.Extract(ref start, "[", "]");
+
                                 string subKey = subkey.Substring(0,
                                     subkey.IndexOf("[", StringComparison.CurrentCulture));
+
                                 int index = int.Parse(indexStr);
                                 setting = ((JObject)setting)[subKey];
                                 setting = ((JArray)setting)[index];
@@ -851,6 +1012,7 @@ namespace Moonrise.Utils.Standard.Config
                             }
                         }
                     }
+                }
             }
             else
             {
@@ -869,66 +1031,15 @@ namespace Moonrise.Utils.Standard.Config
             {
                 string jsonedDict = JsonConvert.SerializeObject(_userSettings);
 
-                if (SettingsEncryptor != null) jsonedDict = SettingsEncryptor.Encrypt(jsonedDict);
+                if (SettingsEncryptor != null)
+                {
+                    jsonedDict = SettingsEncryptor.Encrypt(jsonedDict);
+                }
 
                 FileUtils.WriteFile(FileUtils.RoamingUserApplicationPath(),
                     UserSettingsFilename,
                     jsonedDict);
             }
-        }
-
-        /// <summary>
-        ///     The configuration required
-        /// </summary>
-        public class Config
-        {
-            /// <summary>
-            ///     The name of the settings filename, defaults to the DotNotCore default settings filename
-            /// </summary>
-            public string ApplicationSettingsFilename { get; set; } = "appSettings.json";
-
-            /// <summary>
-            ///     The folder the settings file is in, use null (the default) for the same folder as the application
-            /// </summary>
-            public string ApplicationSettingsFolder { get; set; }
-
-            /// <summary>
-            ///     Specifies a section in the config file where the application settings will be taken from, defaults to that as used
-            ///     by DotNetCore but you don't have to have one if you're not sharing the settings with DotNetCore infrastructure
-            ///     settings
-            /// </summary>
-            public string ApplicationSettingsSection { get; set; } = "";
-
-            /// <summary>
-            ///     The environment variable, if used, that contains the name of the settings override post-fix, defaults to that used
-            ///     by DotNetCore
-            /// </summary>
-            public string ConfigurationOverrideEnvVar { get; set; } = "ASPNETCORE_ENVIRONMENT";
-
-            /// <summary>
-            ///     The name of the user settings file - this will be stored in the roaming or normal user profile location.
-            /// </summary>
-            public string UserSettingsFilename { get; set; } = "UserSettings.json";
-        }
-
-        /// <summary>
-        ///     Defines encryption/decryption that will be applied to sections before writing and after reading.
-        /// </summary>
-        public interface ISettingsEncryptor
-        {
-            /// <summary>
-            ///     Decrypts the specified jsoned data.
-            /// </summary>
-            /// <param name="jsonedData">The jsoned data.</param>
-            /// <returns>The decrypted data</returns>
-            string Decrypt(string jsonedData);
-
-            /// <summary>
-            ///     Encrypts the specified string.
-            /// </summary>
-            /// <param name="jsonedData">The jsoned dictionary.</param>
-            /// <returns>The encrypted string</returns>
-            string Encrypt(string jsonedData);
         }
     }
 
@@ -948,7 +1059,10 @@ namespace Moonrise.Utils.Standard.Config
             string retVal;
             StringBuilder builder = new StringBuilder();
 
-            foreach (char character in jsonedData) builder.Append((char)(Convert.ToUInt16(character) - 1));
+            foreach (char character in jsonedData)
+            {
+                builder.Append((char)(Convert.ToUInt16(character) - 1));
+            }
 
             retVal = builder.ToString();
             return retVal;
@@ -964,7 +1078,10 @@ namespace Moonrise.Utils.Standard.Config
             string retVal;
             StringBuilder builder = new StringBuilder();
 
-            foreach (char character in jsonedData) builder.Append((char)(Convert.ToUInt16(character) + 1));
+            foreach (char character in jsonedData)
+            {
+                builder.Append((char)(Convert.ToUInt16(character) + 1));
+            }
 
             retVal = builder.ToString();
             return retVal;

@@ -47,20 +47,20 @@ namespace Moonrise.Utils.Standard.CSV
         private readonly Dictionary<string, ColumnDefinition> _columns = new Dictionary<string, ColumnDefinition>();
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="CsvParser{TTarget, TOverlay}" /> class.
-        /// </summary>
-        public CsvParser()
-        {
-            BuildColumnDefinitions();
-        }
-
-        /// <summary>
         ///     Determines if exceptions should be collated and thrown out as one with all errors for all rows, or just the first
         ///     error encountered.
         /// </summary>
         public bool CollateExceptions { get; set; }
 
         private CsvParseException CollatedExceptions { get; set; }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="CsvParser{TTarget, TOverlay}" /> class.
+        /// </summary>
+        public CsvParser()
+        {
+            BuildColumnDefinitions();
+        }
 
         /// <summary>
         ///     Parses the specified filepath as a CSV and returns a list of imported instantied classes.
@@ -73,11 +73,18 @@ namespace Moonrise.Utils.Standard.CSV
         /// </param>
         /// <param name="trimData">Should the qualifiers be trimmed?</param>
         /// <returns>An enumerable of imported rows of the Type</returns>
-        public IEnumerable<TTarget> Parse(string filepath, string delimiter = ",", string qualifier = "\"", bool trimData = true)
+        public IEnumerable<TTarget> Parse(
+            string filepath,
+            string delimiter = ",",
+            string qualifier = "\"",
+            bool trimData = true)
         {
             string[] lines = File.ReadAllLines(filepath);
 
-            return Parse(lines, delimiter, qualifier, trimData);
+            return Parse(lines,
+                delimiter,
+                qualifier,
+                trimData);
         }
 
         /// <summary>
@@ -91,7 +98,11 @@ namespace Moonrise.Utils.Standard.CSV
         /// </param>
         /// <param name="trimData">Should the qualifiers be trimmed?</param>
         /// <returns>An enumerable of imported rows of the Type</returns>
-        public IEnumerable<TTarget> Parse(IList<string> lines, string delimiter = ",", string qualifier = "\"", bool trimData = true)
+        public IEnumerable<TTarget> Parse(
+            IList<string> lines,
+            string delimiter = ",",
+            string qualifier = "\"",
+            bool trimData = true)
         {
             TTarget[] targets = new TTarget[lines.Count - 1];
 
@@ -109,7 +120,17 @@ namespace Moonrise.Utils.Standard.CSV
                 }
             }
 
-            Parallel.For(1, lines.Count, i => { ProcessRow(lines[i], targets, i - 1, delimiter, qualifier, trimData); });
+            Parallel.For(1,
+                lines.Count,
+                i =>
+                {
+                    ProcessRow(lines[i],
+                        targets,
+                        i - 1,
+                        delimiter,
+                        qualifier,
+                        trimData);
+                });
 
             if (CollatedExceptions != null)
             {
@@ -120,7 +141,7 @@ namespace Moonrise.Utils.Standard.CSV
         }
 
         /// <summary>
-        /// Parses a collection of string object dictionaries.
+        ///     Parses a collection of string object dictionaries.
         /// </summary>
         /// <param name="dictionaries">The dictionaries.</param>
         /// <returns>A collection of parsed target instances</returns>
@@ -178,16 +199,17 @@ namespace Moonrise.Utils.Standard.CSV
                         }
                     }
 
-                    if ((targetProperty != null) && (targetProperty.PropertyType == overlayProperty.PropertyType))
+                    if (targetProperty != null && targetProperty.PropertyType == overlayProperty.PropertyType)
                     {
                         // And its consequent TypeConverter
                         ColumnDefinition colDef = new ColumnDefinition
-                                                  {
-                                                      PropertyInfo = targetProperty,
-                                                      TypeConverter = TypeDescriptor.GetConverter(targetProperty.PropertyType),
-                                                      ConvertWith = converter,
-                                                      Name = csvAttribute.ColumnName
-                                                  };
+                        {
+                            PropertyInfo = targetProperty,
+                            TypeConverter = TypeDescriptor.GetConverter(targetProperty.PropertyType),
+                            ConvertWith = converter,
+                            Name = csvAttribute.ColumnName,
+                        };
+
                         _columns.Add(csvAttribute.ColumnName, colDef);
                     }
                 }
@@ -206,7 +228,13 @@ namespace Moonrise.Utils.Standard.CSV
         ///     delimiter, within the one value.
         /// </param>
         /// <param name="trimData">Should the qualifiers be trimmed?</param>
-        private void ProcessRow(string row, TTarget[] targets, int i, string delimiter, string qualifier, bool trimData)
+        private void ProcessRow(
+            string row,
+            TTarget[] targets,
+            int i,
+            string delimiter,
+            string qualifier,
+            bool trimData)
         {
             TTarget target = new TTarget();
             targets[i] = target;
@@ -243,11 +271,17 @@ namespace Moonrise.Utils.Standard.CSV
                             CollatedExceptions = new CsvParseException();
                         }
 
-                        CollatedExceptions.Add(new CsvParseException(i, row, defn.Name, e));
+                        CollatedExceptions.Add(new CsvParseException(i,
+                            row,
+                            defn.Name,
+                            e));
                     }
                     else
                     {
-                        throw new CsvParseException(i, row, defn.Name, e);
+                        throw new CsvParseException(i,
+                            row,
+                            defn.Name,
+                            e);
                     }
                 }
             }

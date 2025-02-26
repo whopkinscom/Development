@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
@@ -37,7 +38,8 @@ namespace Moonrise.Utils.Standard.Validation
         ///     Initializes a new instance of the <see cref="NonDefaultAttribute" /> class.
         /// </summary>
         /// <param name="errorMessage">The error message.</param>
-        public NonDefaultAttribute(string errorMessage) : base(errorMessage) { }
+        public NonDefaultAttribute(string errorMessage)
+            : base(errorMessage) { }
 
         /// <summary>
         ///     Determines if a given object is equal to its default value

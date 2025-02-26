@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 namespace Moonrise.Logging
 {
     /// <summary>
@@ -29,28 +30,38 @@ namespace Moonrise.Logging
         IAuditProvider NextAuditor { get; set; }
 
         /// <summary>
-        /// Audits the message.
+        ///     Audits the message.
         /// </summary>
         /// <param name="msg">The message.</param>
         /// <param name="context">The context - if <see cref="Logger.UseContext" /> is false, this will be empty.</param>
-        /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId"/> is false, this will be empty.</param>
+        /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId" /> is false, this will be empty.</param>
         /// <param name="logTag">The log tag.</param>
-        void AuditThis(string msg, string context, string threadId, LogTag logTag);
+        void AuditThis(
+            string msg,
+            string context,
+            string threadId,
+            LogTag logTag);
 
         /// <summary>
-        /// Audits an object. Can be used IF a specific object is to be audited by an implementation rather than simply a
-        /// string.
+        ///     Audits an object. Can be used IF a specific object is to be audited by an implementation rather than simply a
+        ///     string.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="auditObject">The audit object.</param>
         /// <param name="auditLevel">The audit level.</param>
         /// <param name="context">The context - if <see cref="Logger.UseContext" /> is false, this will be empty.</param>
-        /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId"/> is false, this will be empty.</param>
+        /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId" /> is false, this will be empty.</param>
         /// <param name="logTag">The log tag.</param>
-        void AuditThisObject(string message, object auditObject, LoggingLevel auditLevel, string context, string threadId, LogTag logTag);
+        void AuditThisObject(
+            string message,
+            object auditObject,
+            LoggingLevel auditLevel,
+            string context,
+            string threadId,
+            LogTag logTag);
 
         /// <summary>
-        /// Flush any buffers currently in use.
+        ///     Flush any buffers currently in use.
         /// </summary>
         void FlushBuffers();
     }

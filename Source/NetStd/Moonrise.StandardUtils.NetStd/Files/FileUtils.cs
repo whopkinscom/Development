@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -29,16 +30,6 @@ namespace Moonrise.Utils.Standard.Files
     public class FileUtils
     {
         /// <summary>
-        ///     Gets the application path.
-        /// </summary>
-        /// <returns>As above!</returns>
-        public static string ApplicationPath()
-        {
-            string retVal = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            return retVal;
-        }
-
-        /// <summary>
         ///     Gets the application name - without the .exe.
         /// </summary>
         /// <returns>As above!</returns>
@@ -49,7 +40,18 @@ namespace Moonrise.Utils.Standard.Files
         }
 
         /// <summary>
-        /// Gets the parent directory of a specified filepath. To get the parent of a FOLDER path, the path needs to end with a separator!
+        ///     Gets the application path.
+        /// </summary>
+        /// <returns>As above!</returns>
+        public static string ApplicationPath()
+        {
+            string retVal = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            return retVal;
+        }
+
+        /// <summary>
+        ///     Gets the parent directory of a specified filepath. To get the parent of a FOLDER path, the path needs to end with a
+        ///     separator!
         /// </summary>
         /// <param name="filepath">The filepath.</param>
         /// <returns>The parent folder, or null if already at the root of a drive!</returns>

@@ -32,6 +32,112 @@ namespace Moonrise.Logging.LoggingProviders
     public class BasicFileLogProvider : ILoggingProvider, IAuditProvider
     {
         /// <summary>
+        ///     Configuration required by this class
+        /// </summary>
+        public class Config
+        {
+            /// <summary>
+            ///     The max number of lines to be held in memory before writing
+            /// </summary>
+            /// <remarks>
+            ///     Defaults to 100
+            /// </remarks>
+            public int BufferCount { get; set; } = 100;
+
+            /// <summary>
+            ///     The max number of seconds to hold the buffer in memory before writing
+            /// </summary>
+            /// <remarks>
+            ///     Defaults to 30
+            /// </remarks>
+            public int BufferDelay { get; set; } = 30;
+
+            /// <summary>
+            ///     The max number of characters to be held in memory before writing
+            /// </summary>
+            /// <remarks>
+            ///     Defaults to 10,000
+            /// </remarks>
+            public int BufferSize { get; set; } = 10000;
+
+            /// <summary>
+            ///     The filename time format for a file when using the <see cref="LogCycling" /> value of <see cref="Cycle.ByCount" />.
+            /// </summary>
+            /// <remarks>
+            ///     Defaults to "yyyyMMddhhmmss"
+            /// </remarks>
+            public string ByCountFilenameDateTimeFormat { get; set; } = "yyyyMMddhhmmss";
+
+            /// <summary>
+            ///     Gives the timestamp prefix to use, e.g. "{0: HH:mm:ss.fffff}"
+            /// </summary>
+            /// <remarks>
+            ///     Defaults to "{0:HH:mm:ss} "
+            /// </remarks>
+            public string DateTimeFormatterPrefix { get; set; } = "{0:HH:mm:ss} ";
+
+            /// <summary>
+            ///     What level of messages will cause a flush of the file logging buffer?
+            /// </summary>
+            /// <remarks>
+            ///     Defaults to <see cref="LoggingLevel.Error" />
+            /// </remarks>
+            public LoggingLevel FlushOn { get; set; } = LoggingLevel.Error;
+
+            /// <summary>
+            ///     How should the log files be recycled
+            /// </summary>
+            /// <remarks>
+            ///     Defaults to <see cref="Cycle.Daily" />
+            /// </remarks>
+            public Cycle LogCycling { get; set; } = Cycle.Daily;
+
+            /// <summary>
+            ///     if set to true there is a different file per thread.
+            /// </summary>
+            public bool LogFilePerThread { get; set; }
+
+            /// <summary>
+            ///     The path of the filename to write to, please include an extension.
+            /// </summary>
+            /// <remarks>
+            ///     Defaults to "./Logging.log"
+            /// </remarks>
+            public string LoggingFile { get; set; } = "./Logging.log";
+
+            /// <summary>
+            ///     The maximum entries for a file when using the <see cref="LogCycling" /> value of <see cref="Cycle.ByCount" />.
+            /// </summary>
+            /// <remarks>
+            ///     Defaults to 0, which means no max entries
+            /// </remarks>
+            public int MaxEntries { get; set; } = 0;
+        }
+
+        /// <summary>
+        ///     Allows control over the current <see cref="DateTime" /> to use - should you need to use it. Typically used for
+        ///     testing.
+        /// </summary>
+        public interface IDateTimeProvider
+        {
+            /// <summary>
+            ///     The current <see cref="DateTime" /> to use
+            /// </summary>
+            DateTime Now { get; }
+        }
+
+        /// <summary>
+        ///     Provides an implementation of <see cref="BasicFileLogProvider.IDateTimeProvider" /> that uses current time.
+        /// </summary>
+        private class DateTimeProvider : IDateTimeProvider
+        {
+            /// <summary>
+            ///     The current <see cref="DateTime" /> to use
+            /// </summary>
+            public DateTime Now => DateTime.Now;
+        }
+
+        /// <summary>
         ///     Determines how filenames will get recycled. When a filename is recycled any previous file of the same name is
         ///     overwritten.
         /// </summary>
@@ -77,7 +183,7 @@ namespace Moonrise.Logging.LoggingProviders
             ///         <see cref="Config.ByCountFilenameDateTimeFormat" />.
             ///     </para>
             /// </summary>
-            ByCount
+            ByCount,
         }
 
         /// <summary>
@@ -85,10 +191,14 @@ namespace Moonrise.Logging.LoggingProviders
         /// </summary>
         private static readonly object lockObject = new object();
 
+        private readonly Stopwatch _bufferWatch = new Stopwatch();
+
         /// <summary>
         ///     Indicates if an instance is a cloned instance or the original
         /// </summary>
         private readonly bool _cloned;
+
+        private readonly StringBuilder _currentBuffer = new StringBuilder();
 
         /// <summary>
         ///     The date time provider, for generating timestamps and filenames.
@@ -100,14 +210,10 @@ namespace Moonrise.Logging.LoggingProviders
         /// </summary>
         private readonly Config config;
 
-        private readonly Stopwatch _bufferWatch = new Stopwatch();
-
         /// <summary>
         ///     The count of the number of messages logged in a given file.
         /// </summary>
         private int _count;
-
-        private readonly StringBuilder _currentBuffer = new StringBuilder();
 
         /// <summary>The current number of messages written into the buffer</summary>
         private int _currentBufferCount;
@@ -148,53 +254,6 @@ namespace Moonrise.Logging.LoggingProviders
         private string filename;
 
         /// <summary>
-        ///     A very basic text file logger that writes any logging to the specified text file. Does not give a timestamp prefix.
-        /// </summary>
-        /// <param name="_filename">The path of the filename to wrote to.</param>
-        /// <param name="dateTimeProvider">
-        ///     If you want to control the DateTime to use for the logfile name and for timestamps in
-        ///     the log file
-        /// </param>
-        public BasicFileLogProvider(string _filename = "", IDateTimeProvider dateTimeProvider = null)
-        {
-            config = new Config
-            {
-                DateTimeFormatterPrefix = string.Empty,
-                LogCycling = Cycle.Monthly,
-                LogFilePerThread = false,
-                LoggingFile = _filename
-            };
-            FilePerThread = config.LogFilePerThread;
-            _dateTimeProvider = dateTimeProvider ?? new DateTimeProvider();
-            _cloned = false;
-
-            if (string.IsNullOrWhiteSpace(_filename)) _filename = Process.GetCurrentProcess().ProcessName;
-
-            InitialiseLogFile(_filename, config.DateTimeFormatterPrefix, config.LogCycling);
-        }
-
-        /// <summary>
-        ///     A very basic text file logger that writes any logging to the specified text file.
-        /// </summary>
-        /// <param name="_config">The configuration.</param>
-        /// <param name="dateTimeProvider">The date time provider.</param>
-        /// <param name="cloned">Indicates if this construction is via an act of cloning. Please leave this false!</param>
-        public BasicFileLogProvider(Config _config = null,
-            IDateTimeProvider dateTimeProvider = null,
-            bool cloned = false)
-        {
-            if (_config == null)
-                // Be forgiving
-                _config = new Config();
-
-            config = _config;
-            FilePerThread = config.LogFilePerThread;
-            _dateTimeProvider = dateTimeProvider ?? new DateTimeProvider();
-            _cloned = cloned;
-            InitialiseLogFile(config.LoggingFile, config.DateTimeFormatterPrefix, config.LogCycling);
-        }
-
-        /// <summary>
         ///     Indicates if a separate file is used for each thread. This can maintain some consistency in logs at the expense of
         ///     more log files.
         /// </summary>
@@ -217,21 +276,57 @@ namespace Moonrise.Logging.LoggingProviders
         public string TimestampPrefix { get; private set; }
 
         /// <summary>
-        ///     The next auditor to pass the audit message on to. Allows additional auditors to be used. Don't create circular
-        ///     links though eh!
+        ///     A very basic text file logger that writes any logging to the specified text file. Does not give a timestamp prefix.
         /// </summary>
-        [SuppressMessage("StyleCop.CSharp.LayoutRules",
-            "SA1513:ClosingCurlyBracketMustBeFollowedByBlankLine",
-            Justification = "Except for getter/setters!")]
-        [SuppressMessage("StyleCop.CSharp.LayoutRules", "SA1516:ElementsMustBeSeparatedByBlankLine",
-            Justification = "Except for getter/setters!")]
-        public IAuditProvider NextAuditor
+        /// <param name="_filename">The path of the filename to wrote to.</param>
+        /// <param name="dateTimeProvider">
+        ///     If you want to control the DateTime to use for the logfile name and for timestamps in
+        ///     the log file
+        /// </param>
+        public BasicFileLogProvider(string _filename = "", IDateTimeProvider dateTimeProvider = null)
         {
-            get => _nextAuditor;
-            set
+            config = new Config
             {
-                if (value != this) _nextAuditor = value;
+                DateTimeFormatterPrefix = string.Empty,
+                LogCycling = Cycle.Monthly,
+                LogFilePerThread = false,
+                LoggingFile = _filename,
+            };
+
+            FilePerThread = config.LogFilePerThread;
+            _dateTimeProvider = dateTimeProvider ?? new DateTimeProvider();
+            _cloned = false;
+
+            if (string.IsNullOrWhiteSpace(_filename))
+            {
+                _filename = Process.GetCurrentProcess().ProcessName;
             }
+
+            InitialiseLogFile(_filename, config.DateTimeFormatterPrefix, config.LogCycling);
+        }
+
+        /// <summary>
+        ///     A very basic text file logger that writes any logging to the specified text file.
+        /// </summary>
+        /// <param name="_config">The configuration.</param>
+        /// <param name="dateTimeProvider">The date time provider.</param>
+        /// <param name="cloned">Indicates if this construction is via an act of cloning. Please leave this false!</param>
+        public BasicFileLogProvider(
+            Config _config = null,
+            IDateTimeProvider dateTimeProvider = null,
+            bool cloned = false)
+        {
+            if (_config == null)
+                // Be forgiving
+            {
+                _config = new Config();
+            }
+
+            config = _config;
+            FilePerThread = config.LogFilePerThread;
+            _dateTimeProvider = dateTimeProvider ?? new DateTimeProvider();
+            _cloned = cloned;
+            InitialiseLogFile(config.LoggingFile, config.DateTimeFormatterPrefix, config.LogCycling);
         }
 
         /// <summary>
@@ -241,7 +336,11 @@ namespace Moonrise.Logging.LoggingProviders
         /// <param name="context">The context - if <see cref="Logger.UseContext" /> is false, this will be empty.</param>
         /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId" /> is false, this will be empty.</param>
         /// <param name="logTag">The log tag.</param>
-        public void AuditThis(string msg, string context, string threadId, LogTag logTag)
+        public void AuditThis(
+            string msg,
+            string context,
+            string threadId,
+            LogTag logTag)
         {
             // We simply log this. The way we're LIKELY to get used is that there will be a different FileLogger for logging and auditing with different filenames for each.
             if (fileLoggingEnabled)
@@ -251,7 +350,14 @@ namespace Moonrise.Logging.LoggingProviders
 
                 // Get the current datetime to help determine the resultant filename
                 DateTime now = _dateTimeProvider.Now;
-                LogMsg(FormatLogMsg(now, LoggingLevel.Audit, context, threadId, logTag, msg), now);
+
+                LogMsg(FormatLogMsg(now,
+                        LoggingLevel.Audit,
+                        context,
+                        threadId,
+                        logTag,
+                        msg),
+                    now);
             }
         }
 
@@ -265,30 +371,44 @@ namespace Moonrise.Logging.LoggingProviders
         /// <param name="context">The context - if <see cref="Logger.UseContext" /> is false, this will be empty.</param>
         /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId" /> is false, this will be empty.</param>
         /// <param name="logTag">The log tag.</param>
-        public void AuditThisObject(string message, object auditObject, LoggingLevel auditLevel, string context,
-            string threadId, LogTag logTag)
+        public void AuditThisObject(
+            string message,
+            object auditObject,
+            LoggingLevel auditLevel,
+            string context,
+            string threadId,
+            LogTag logTag)
         {
             // The basic implementation simply audits the Json version
             string auditMsg = auditLevel == LoggingLevel.Audit
                 ? string.Empty
                 : auditLevel + $" {message}\r\n{Logger.JsonIt(auditObject)}";
-            AuditThis(auditMsg, context, threadId, logTag);
+
+            AuditThis(auditMsg,
+                context,
+                threadId,
+                logTag);
         }
 
         /// <summary>
-        ///     The _next <see cref="ILoggingProvider" /> to pass logging messages on to.
+        ///     The next auditor to pass the audit message on to. Allows additional auditors to be used. Don't create circular
+        ///     links though eh!
         /// </summary>
         [SuppressMessage("StyleCop.CSharp.LayoutRules",
             "SA1513:ClosingCurlyBracketMustBeFollowedByBlankLine",
             Justification = "Except for getter/setters!")]
-        [SuppressMessage("StyleCop.CSharp.LayoutRules", "SA1516:ElementsMustBeSeparatedByBlankLine",
+        [SuppressMessage("StyleCop.CSharp.LayoutRules",
+            "SA1516:ElementsMustBeSeparatedByBlankLine",
             Justification = "Except for getter/setters!")]
-        public ILoggingProvider NextLogger
+        public IAuditProvider NextAuditor
         {
-            get => _nextLogger;
+            get => _nextAuditor;
             set
             {
-                if (value != this) _nextLogger = value;
+                if (value != this)
+                {
+                    _nextAuditor = value;
+                }
             }
         }
 
@@ -299,31 +419,8 @@ namespace Moonrise.Logging.LoggingProviders
             BasicFileLogProvider cloned = new BasicFileLogProvider(config,
                 _dateTimeProvider,
                 true);
+
             return cloned;
-        }
-
-        /// <summary>
-        ///     Logs the appropriate level of message.
-        /// </summary>
-        /// <param name="level">The level.</param>
-        /// <param name="context">The context - if <see cref="Logger.UseContext" /> is false, this will be empty.</param>
-        /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId" /> is false, this will be empty.</param>
-        /// <param name="logTag">The log tag.</param>
-        /// <param name="msg">The message.</param>
-        public void LogThis(LoggingLevel level, string context, string threadId, LogTag logTag, string msg)
-        {
-            if (fileLoggingEnabled)
-            {
-                if (level >= config.FlushOn)
-                {
-                    // Force the messages out on Audit, and anything more serious than Info
-                    _currentBufferCount = config.BufferCount;
-                }
-
-                // Get the current datetime to help determine the resultant filename
-                DateTime now = _dateTimeProvider.Now;
-                LogMsg(FormatLogMsg(now, level, context, threadId, logTag, msg), now);
-            }
         }
 
         /// <summary>Flushes the message buffer.</summary>
@@ -335,44 +432,60 @@ namespace Moonrise.Logging.LoggingProviders
             Flush(currentLoggingFilename, now);
         }
 
-        private void Flush(string currentLoggingFilename, DateTime now)
+        /// <summary>
+        ///     Logs the appropriate level of message.
+        /// </summary>
+        /// <param name="level">The level.</param>
+        /// <param name="context">The context - if <see cref="Logger.UseContext" /> is false, this will be empty.</param>
+        /// <param name="threadId">The thread identifier - if <see cref="Logger.UseThreadId" /> is false, this will be empty.</param>
+        /// <param name="logTag">The log tag.</param>
+        /// <param name="msg">The message.</param>
+        public void LogThis(
+            LoggingLevel level,
+            string context,
+            string threadId,
+            LogTag logTag,
+            string msg)
         {
-            try
-
+            if (fileLoggingEnabled)
             {
-                lock (lockObject)
+                if (level >= config.FlushOn)
                 {
-                    // Check if the file exists but is for a previous period, if so delete it.
-                    FileInfo logFileInfo = new FileInfo(currentLoggingFilename);
-
-                    if (logFileInfo.Exists && logFileInfo.LastWriteTime.DayOfYear != now.DayOfYear)
-                        logFileInfo.Delete();
-
-                    File.AppendAllText(currentLoggingFilename,
-                        _currentBuffer.ToString());
-                    //msg + Environment.NewLine);
+                    // Force the messages out on Audit, and anything more serious than Info
+                    _currentBufferCount = config.BufferCount;
                 }
 
-                failCount = 0;
-                _currentBufferCount = 0;    
-                _bufferWatch.Restart();
-                _currentBuffer.Clear();
-            }
-            catch (Exception excep)
-            {
-                // We can't log this exception, obviously, so at least stick it in the trace output
-                Console.WriteLine(excep.Message);
+                // Get the current datetime to help determine the resultant filename
+                DateTime now = _dateTimeProvider.Now;
 
-                if (++failCount > 5) fileLoggingEnabled = false;
+                LogMsg(FormatLogMsg(now,
+                        level,
+                        context,
+                        threadId,
+                        logTag,
+                        msg),
+                    now);
             }
         }
 
-        /// <summary>Finalizes this instance, flushing the file.</summary>
-        ~BasicFileLogProvider()
+        /// <summary>
+        ///     The _next <see cref="ILoggingProvider" /> to pass logging messages on to.
+        /// </summary>
+        [SuppressMessage("StyleCop.CSharp.LayoutRules",
+            "SA1513:ClosingCurlyBracketMustBeFollowedByBlankLine",
+            Justification = "Except for getter/setters!")]
+        [SuppressMessage("StyleCop.CSharp.LayoutRules",
+            "SA1516:ElementsMustBeSeparatedByBlankLine",
+            Justification = "Except for getter/setters!")]
+        public ILoggingProvider NextLogger
         {
-            if (_currentBuffer.Length > 0)
+            get => _nextLogger;
+            set
             {
-                FlushBuffers();
+                if (value != this)
+                {
+                    _nextLogger = value;
+                }
             }
         }
 
@@ -395,29 +508,53 @@ namespace Moonrise.Logging.LoggingProviders
         /// <param name="logTag">The log tag used. NOTE: LogTag filtering HAS ALREADY BEEN APPLIED.</param>
         /// <param name="msg">The message passed to the logging function.</param>
         /// <returns>A formatted string to be written out.</returns>
-        protected virtual string FormatLogMsg(DateTime dateTime, LoggingLevel level, string context, string threadId,
-            LogTag logTag, string msg)
+        protected virtual string FormatLogMsg(
+            DateTime dateTime,
+            LoggingLevel level,
+            string context,
+            string threadId,
+            LogTag logTag,
+            string msg)
         {
             string retVal;
 
-            if (!string.IsNullOrWhiteSpace(context)) msg = $"{context}: {msg}";
+            if (!string.IsNullOrWhiteSpace(context))
+            {
+                msg = $"{context}: {msg}";
+            }
 
-            if (!string.IsNullOrWhiteSpace(threadId)) msg = $"<{threadId}> {msg}";
+            if (!string.IsNullOrWhiteSpace(threadId))
+            {
+                msg = $"<{threadId}> {msg}";
+            }
 
             if (level == LoggingLevel.Fatal)
+            {
                 retVal = "*********************\r\n" +
-                         "***** FATAL Error: " + msg +
+                         "***** FATAL Error: " +
+                         msg +
                          "\r\n*********************";
+            }
             else if (level == LoggingLevel.Critical)
+            {
                 retVal = "CRITICAL: " + msg;
+            }
             else if (level == LoggingLevel.Error)
+            {
                 retVal = "Error: " + msg;
+            }
             else if (level == LoggingLevel.Warning)
+            {
                 retVal = "Warning: " + msg;
+            }
             else if (level == LoggingLevel.Audit)
+            {
                 retVal = "Audit: " + msg;
+            }
             else
+            {
                 retVal = msg;
+            }
 
             return string.Format(TimestampPrefix, DateTimeOffset.Now) + retVal;
         }
@@ -436,38 +573,65 @@ namespace Moonrise.Logging.LoggingProviders
             string threadId = string.Empty;
             _filenameChanged = false;
 
-            if (FilePerThread && _cloned) threadId = "-" + Thread.CurrentThread.ManagedThreadId;
+            if (FilePerThread && _cloned)
+            {
+                threadId = "-" + Thread.CurrentThread.ManagedThreadId;
+            }
 
             switch (Recycle)
             {
                 case Cycle.Daily:
                 case Cycle.Always:
                 {
-                    retVal = string.Format("{0}{1}{2}", filename, threadId, extension);
+                    retVal = string.Format("{0}{1}{2}",
+                        filename,
+                        threadId,
+                        extension);
+
                     break;
                 }
 
                 case Cycle.Weekly:
                 {
-                    retVal = string.Format("{0}_{1:ddd}{2}{3}", filename, now, threadId, extension);
+                    retVal = string.Format("{0}_{1:ddd}{2}{3}",
+                        filename,
+                        now,
+                        threadId,
+                        extension);
+
                     break;
                 }
 
                 case Cycle.Monthly:
                 {
-                    retVal = string.Format("{0}_{1:dd}{2}{3}", filename, now, threadId, extension);
+                    retVal = string.Format("{0}_{1:dd}{2}{3}",
+                        filename,
+                        now,
+                        threadId,
+                        extension);
+
                     break;
                 }
 
                 case Cycle.Yearly:
                 {
-                    retVal = string.Format("{0}_{1:MMdd}{2}{3}", filename, now, threadId, extension);
+                    retVal = string.Format("{0}_{1:MMdd}{2}{3}",
+                        filename,
+                        now,
+                        threadId,
+                        extension);
+
                     break;
                 }
 
                 case Cycle.Never:
                 {
-                    retVal = string.Format("{0}_{1:yyyyMMdd}{2}{3}", filename, now, threadId, extension);
+                    retVal = string.Format("{0}_{1:yyyyMMdd}{2}{3}",
+                        filename,
+                        now,
+                        threadId,
+                        extension);
+
                     break;
                 }
 
@@ -476,8 +640,12 @@ namespace Moonrise.Logging.LoggingProviders
                     if (++_count > config.MaxEntries)
                     {
                         _count = 0;
-                        retVal = string.Format("{0}_{1}{2}{3}", filename,
-                            now.ToString(config.ByCountFilenameDateTimeFormat), threadId, extension);
+
+                        retVal = string.Format("{0}_{1}{2}{3}",
+                            filename,
+                            now.ToString(config.ByCountFilenameDateTimeFormat),
+                            threadId,
+                            extension);
                     }
 
                     break;
@@ -493,6 +661,43 @@ namespace Moonrise.Logging.LoggingProviders
             return retVal;
         }
 
+        private void Flush(string currentLoggingFilename, DateTime now)
+        {
+            try
+
+            {
+                lock (lockObject)
+                {
+                    // Check if the file exists but is for a previous period, if so delete it.
+                    FileInfo logFileInfo = new FileInfo(currentLoggingFilename);
+
+                    if (logFileInfo.Exists && logFileInfo.LastWriteTime.DayOfYear != now.DayOfYear)
+                    {
+                        logFileInfo.Delete();
+                    }
+
+                    File.AppendAllText(currentLoggingFilename,
+                        _currentBuffer.ToString());
+                    //msg + Environment.NewLine);
+                }
+
+                failCount = 0;
+                _currentBufferCount = 0;
+                _bufferWatch.Restart();
+                _currentBuffer.Clear();
+            }
+            catch (Exception excep)
+            {
+                // We can't log this exception, obviously, so at least stick it in the trace output
+                Console.WriteLine(excep.Message);
+
+                if (++failCount > 5)
+                {
+                    fileLoggingEnabled = false;
+                }
+            }
+        }
+
         /// <summary>
         ///     Initialises the log file.
         /// </summary>
@@ -506,7 +711,10 @@ namespace Moonrise.Logging.LoggingProviders
                 string path = Path.GetDirectoryName(_filename);
 
                 // If the directory doesn't exist, try to create it
-                if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
 
                 filename = path + "/" + Path.GetFileNameWithoutExtension(_filename);
                 extension = Path.GetExtension(_filename);
@@ -518,6 +726,7 @@ namespace Moonrise.Logging.LoggingProviders
                 _bufferWatch.Start();
 
                 if (Recycle == Cycle.Always)
+                {
                     try
                     {
                         string currentLoggingFilename = ConstructFilename(filename, _dateTimeProvider.Now, extension);
@@ -531,6 +740,7 @@ namespace Moonrise.Logging.LoggingProviders
                         // Then turn off file logging
                         fileLoggingEnabled = false;
                     }
+                }
             }
         }
 
@@ -555,114 +765,20 @@ namespace Moonrise.Logging.LoggingProviders
                 // Trying to reduce the number of times the filename gets constructed
                 string currentLoggingFilename = ConstructFilename(filename, now, extension);
 
-                if (_filenameChanged) Flush(currentLoggingFilename, now);
+                if (_filenameChanged)
+                {
+                    Flush(currentLoggingFilename, now);
+                }
             }
         }
 
-        /// <summary>
-        ///     Configuration required by this class
-        /// </summary>
-        public class Config
+        /// <summary>Finalizes this instance, flushing the file.</summary>
+        ~BasicFileLogProvider()
         {
-            /// <summary>
-            ///     The max number of lines to be held in memory before writing
-            /// </summary>
-            /// <remarks>
-            ///     Defaults to 100
-            /// </remarks>
-            public int BufferCount { get; set; } = 100;
-
-            /// <summary>
-            ///     The max number of characters to be held in memory before writing
-            /// </summary>
-            /// <remarks>
-            ///     Defaults to 10,000
-            /// </remarks>
-            public int BufferSize { get; set; } = 10000;
-
-            /// <summary>
-            ///     The max number of seconds to hold the buffer in memory before writing
-            /// </summary>
-            /// <remarks>
-            ///     Defaults to 30
-            /// </remarks>
-            public int BufferDelay { get; set; } = 30;
-
-            /// <summary>
-            ///     Gives the timestamp prefix to use, e.g. "{0: HH:mm:ss.fffff}"
-            /// </summary>
-            /// <remarks>
-            ///     Defaults to "{0:HH:mm:ss} "
-            /// </remarks>
-            public string DateTimeFormatterPrefix { get; set; } = "{0:HH:mm:ss} ";
-
-            /// <summary>
-            ///     What level of messages will cause a flush of the file logging buffer?
-            /// </summary>
-            /// <remarks>
-            ///     Defaults to <see cref="LoggingLevel.Error"/>
-            /// </remarks>
-            public LoggingLevel FlushOn { get; set; } = LoggingLevel.Error;
-
-            /// <summary>
-            ///     How should the log files be recycled
-            /// </summary>
-            /// <remarks>
-            ///     Defaults to <see cref="Cycle.Daily" />
-            /// </remarks>
-            public Cycle LogCycling { get; set; } = Cycle.Daily;
-
-            /// <summary>
-            ///     if set to true there is a different file per thread.
-            /// </summary>
-            public bool LogFilePerThread { get; set; }
-
-            /// <summary>
-            ///     The path of the filename to write to, please include an extension.
-            /// </summary>
-            /// <remarks>
-            ///     Defaults to "./Logging.log"
-            /// </remarks>
-            public string LoggingFile { get; set; } = "./Logging.log";
-
-            /// <summary>
-            ///     The maximum entries for a file when using the <see cref="LogCycling" /> value of <see cref="Cycle.ByCount" />.
-            /// </summary>
-            /// <remarks>
-            ///     Defaults to 0, which means no max entries
-            /// </remarks>
-            public int MaxEntries { get; set; } = 0;
-
-            /// <summary>
-            ///     The filename time format for a file when using the <see cref="LogCycling" /> value of <see cref="Cycle.ByCount" />.
-            /// </summary>
-            /// <remarks>
-            ///     Defaults to "yyyyMMddhhmmss"
-            /// </remarks>
-            public string ByCountFilenameDateTimeFormat { get; set; } = "yyyyMMddhhmmss";
-        }
-
-        /// <summary>
-        ///     Allows control over the current <see cref="DateTime" /> to use - should you need to use it. Typically used for
-        ///     testing.
-        /// </summary>
-        public interface IDateTimeProvider
-        {
-            /// <summary>
-            ///     The current <see cref="DateTime" /> to use
-            /// </summary>
-            DateTime Now { get; }
-        }
-
-        /// <summary>
-        ///     Provides an implementation of <see cref="BasicFileLogProvider.IDateTimeProvider" /> that uses current time.
-        /// </summary>
-        private class DateTimeProvider : IDateTimeProvider
-        {
-            /// <summary>
-            ///     The current <see cref="DateTime" /> to use
-            /// </summary>
-            public DateTime Now => DateTime.Now;
+            if (_currentBuffer.Length > 0)
+            {
+                FlushBuffers();
+            }
         }
     }
 }

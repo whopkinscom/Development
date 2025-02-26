@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
-  <metadata>
-	  <id>Moonrise.LoggingUtils.NetStd</id>
-	  <version>4.2024.228.9433</version>
-	  <copyright>Moonrise Media Ltd.</copyright>
-	  <authors>Will Hopkins</authors>
-	  <requireLicenseAcceptance>false</requireLicenseAcceptance>
-	  <license type="file">License.txt</license>
-    <description>Yes, another logger! Fast, efficient and pluggable. Can log to separate logging and auditing providers. Supplied console, and file providers. 
-	    Thread-global Singleton based, so all the advantages of Singletons without the threading problems. Easy to write additional providers can supply structured logging. Has nested context scopes and "LogTags" - metadata for filtering that doesn't appear in the message.
-		Similar to other loggers such as Serilog, but less sophisticated and simpler to use? I think so, it's why I wrote it!</description>
-    <summary>A logger with darned useful functions</summary>
-    <releaseNotes>Removed any sub-dependencies on .Net Std 1.6.1</releaseNotes>
-    <language>en-GB</language>
-	  <icon>images\Logo.png</icon>
-	  <dependencies>
-		  <group targetFramework=".NETStandard2.1">
-			  <dependency id="Newtonsoft.Json" version ="11.0.2"/>
-			  <dependency id="System.Console" version ="4.3.0"/>
-			  <dependency id="System.Diagnostics.StackTrace" version ="4.3.0"/>
-			  <dependency id="System.Threading.Thread" version ="4.3.0"/>
-		  </group>
-	  </dependencies>
-	  <repository type="git" url="https://github.com/whopkinscom/Development/tree/master/Source/NetStd/Moonrise.LoggingUtils.NetStd" />
-  </metadata>
-  <files>
-    <file src=".\bin\Release\netstandard2.1\Moonrise.LoggingUtils.NetStd.dll" target="lib\netstandard2.1\Moonrise.LoggingUtils.NetStd.dll" />
-    <file src=".\bin\Release\netstandard2.1\Moonrise.LoggingUtils.NetStd.xml" target="lib\netstandard2.1\Moonrise.LoggingUtils.NetStd.xml" />
-    <file src=".\bin\Release\netstandard2.1\Moonrise.LoggingUtils.NetStd.pdb" target="lib\netstandard2.1\Moonrise.LoggingUtils.NetStd.pdb" />
-    <file src="License.txt"/>
-    <file src="Properties\Mm Button.png" target="images\Logo.png"/>
-  </files>
+	<metadata>
+		<id>Moonrise.LoggingUtils.NetStd</id>
+		<version>4.2024.228.9433</version>
+		<copyright>Moonrise Media Ltd.</copyright>
+		<authors>Will Hopkins</authors>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<license type="file">License.txt</license>
+		<description>
+			Yes, another logger! Fast, efficient and pluggable. Can log to separate logging and auditing providers. Supplied console, and file providers.
+			Thread-global Singleton based, so all the advantages of Singletons without the threading problems. Easy to write additional providers can supply structured logging. Has nested context scopes and "LogTags" - metadata for filtering that doesn't appear in the message.
+			Similar to other loggers such as Serilog, but less sophisticated and simpler to use? I think so, it's why I wrote it!
+		</description>
+		<summary>A logger with darned useful functions</summary>
+		<releaseNotes>Removed any sub-dependencies on .Net Std 1.6.1</releaseNotes>
+		<language>en-GB</language>
+		<icon>images\Logo.png</icon>
+		<dependencies>
+			<group targetFramework=".NETStandard2.1">
+				<dependency id="Newtonsoft.Json" version="11.0.2" />
+				<dependency id="System.Console" version="4.3.0" />
+				<dependency id="System.Diagnostics.StackTrace" version="4.3.0" />
+				<dependency id="System.Threading.Thread" version="4.3.0" />
+			</group>
+		</dependencies>
+		<repository type="git"
+		            url="https://github.com/whopkinscom/Development/tree/master/Source/NetStd/Moonrise.LoggingUtils.NetStd" />
+	</metadata>
+	<files>
+		<file src=".\bin\Release\netstandard2.1\Moonrise.LoggingUtils.NetStd.dll"
+		      target="lib\netstandard2.1\Moonrise.LoggingUtils.NetStd.dll" />
+		<file src=".\bin\Release\netstandard2.1\Moonrise.LoggingUtils.NetStd.xml"
+		      target="lib\netstandard2.1\Moonrise.LoggingUtils.NetStd.xml" />
+		<file src=".\bin\Release\netstandard2.1\Moonrise.LoggingUtils.NetStd.pdb"
+		      target="lib\netstandard2.1\Moonrise.LoggingUtils.NetStd.pdb" />
+		<file src="License.txt" />
+		<file src="Properties\Mm Button.png" target="images\Logo.png" />
+	</files>
 </package>

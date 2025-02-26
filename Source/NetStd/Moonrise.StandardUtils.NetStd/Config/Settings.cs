@@ -61,8 +61,13 @@ namespace Moonrise.Utils.Standard.Config
             /// <summary>
             ///     The modified description, i.e. the Description that has been modified at run-time, say for translations.
             /// </summary>
-            ModifiedDescription
+            ModifiedDescription,
         }
+
+        /// <summary>
+        ///     The marker used to indicate when a settings file has been re-encrypted
+        /// </summary>
+        public static readonly string ReEncryptedMarker = "EncryptedBy:ReEncrypted";
 
         /// <summary>
         ///     The settings instance type
@@ -77,41 +82,17 @@ namespace Moonrise.Utils.Standard.Config
         private ISettingsProvider _originalProvider;
 
         /// <summary>
-        ///     The settings provider is stored as a per-thread singleton
-        /// </summary>
-        private ThreadLocal<ISettingsProvider> _settingsProvider;
-
-        /// <summary>
-        /// Determines if a settings file has been re-encrypted or not
+        ///     Determines if a settings file has been re-encrypted or not
         /// </summary>
         /// <remarks>
-        /// If it has, any encrypted write MUST pass the additional entropy
+        ///     If it has, any encrypted write MUST pass the additional entropy
         /// </remarks>
         private bool _reEncrypted;
 
         /// <summary>
-        /// The marker used to indicate when a settings file has been re-encrypted
+        ///     The settings provider is stored as a per-thread singleton
         /// </summary>
-        public static readonly string ReEncryptedMarker = "EncryptedBy:ReEncrypted";
-
-        /// <summary>
-        ///     Prevents a default instance of the <see cref="Settings" /> class from being created. You must instead use either
-        ///     <see cref="Application" /> or <see cref="User" />
-        /// </summary>
-        /// <param name="type">The type.</param>
-        private Settings(SettingType type)
-        {
-            _type = type;
-        }
-
-        /// <summary>
-        ///     Initialises a <see cref="Settings" /> with a given provider.
-        /// </summary>
-        /// <param name="provider">The <see cref="ISettingsProvider" /> implementation to use.</param>
-        private Settings(ISettingsProvider provider)
-        {
-            SettingsProvider = provider;
-        }
+        private ThreadLocal<ISettingsProvider> _settingsProvider;
 
         /// <summary>
         ///     Accesses application settings
@@ -133,11 +114,6 @@ namespace Moonrise.Utils.Standard.Config
         public static string EncryptionOpeningIdentifier { get; set; } = "[{ENC]{";
 
         /// <summary>
-        ///     Accesses user settings
-        /// </summary>
-        public static Settings User { get; } = new Settings(SettingType.User);
-
-        /// <summary>
         ///     Gets or sets the <see cref="System.String" /> value with the specified key from the instance's
         ///     <seealso cref="Application" /> or
         ///     <seealso cref="User" /> settings
@@ -156,145 +132,12 @@ namespace Moonrise.Utils.Standard.Config
         {
             get
             {
-                var value = string.Empty;
+                string value = string.Empty;
                 Read(key, ref value);
                 return value;
             }
 
             set => Write(key, value);
-        }
-
-        ///// <summary>
-        /////     The <see cref="ISettingsProvider" /> being used by the <see cref="Settings" />.
-        ///// </summary>
-        //public ISettingsProvider Provider
-        //{
-        //    get
-        //    {
-        //        if (settingsProvider != null) return settingsProvider;
-
-        //        return SettingsProvider;
-        //    }
-        //}
-
-        /// <summary>
-        /// Re-encrypts the settings file using a generated entropy that must then be passed to any read of a possibly encrypted setting.
-        /// </summary>
-        /// <remarks>
-        /// This prevents any code that has not explicitly been passed the entropy from being able to read encrypted settings.
-        /// </remarks>
-        /// <param name="additionalEntropy">Optional entropy that can be supplied. If null (default) then entropy will be created from a hashed stack trace.</param>
-        /// <returns>The generated entropy that has re-encrypted the encrypted settings</returns>
-        public string ReEncrypt(string additionalEntropy = null)
-        {
-            if (string.IsNullOrEmpty(additionalEntropy))
-            {
-                // First create the entropy from the call stack
-                string stackTrace = GetStackTrace();
-                additionalEntropy = HashUtils.GetMd5Hash(new MD5CryptoServiceProvider(), stackTrace);
-            }
-
-            // Next we check if the settings file has already been re-crypted.
-            DateTimeOffset previouslyRecryptedAt = DateTimeOffset.Now;
-
-            if (!Read(ReEncryptedMarker, ref previouslyRecryptedAt, false, additionalEntropy))
-            {
-                // We write this WITHOUT the additional entropy as it will get re-encrypted along with everything else.
-                Write(ReEncryptedMarker, previouslyRecryptedAt, true);
-
-                // Now we need to re-encrypt any encrypted settings in the settings file.
-                string settings = SettingsProvider.ReadCompleteFile(_type);
-
-                if (settings.Contains(EncryptionOpeningIdentifier))
-                {
-                    settings = ReEncrypt(settings);
-                    SettingsProvider.WriteCompleteFile(settings, _type);
-
-                    // We now need the provider to re-read their re-encrypted file
-                    RefreshAnyCaches();
-                }
-            }
-
-            _reEncrypted = true;
-
-            // Now return the entropy that was used to re-encrypt
-            return additionalEntropy;
-            
-            string GetStackTrace()
-            {
-                StackTrace stackTrace = new StackTrace(); // get call stack
-                StackFrame[] stackFrames = stackTrace.GetFrames(); // get method calls (frames)
-
-                // write call stack method names
-                string stackList = String.Empty;
-
-                foreach (StackFrame stackFrame in stackFrames)
-                    stackList += stackFrame.GetMethod().DeclaringType + "." + stackFrame.GetMethod().Name + "-->";
-
-                stackList += $"{FileUtils.ApplicationName()}";
-
-                return stackList;
-            }
-
-            string ReEncrypt(string settings)
-            {
-                string retVal;
-
-                if (SettingsEncryptor == null) throw new SettingsException(SettingsExceptionReason.NoEncryptionProvider);
-
-                // We now need to find each occurrence of the Encryption Identifier and replace it's following string with the unencrypted version
-                var moreEncryptedStrings = true;
-                var start = 0;
-                var stringBuilder = new StringBuilder();
-
-                while (moreEncryptedStrings)
-                {
-                    try
-                    {
-                        var preEncrypted = settings.Extract(ref start, EncryptionOpeningIdentifier, false);
-
-                        string base64Str;
-
-                        try
-                        {
-                            base64Str = settings.Extract(ref start, EncryptionClosingIdentifier, false);
-                        }
-                        catch (DataMisalignedException)
-                        {
-                            moreEncryptedStrings = false;
-                            base64Str = settings.Substring(start);
-                        }
-
-                        var encryptedData = Convert.FromBase64String(base64Str);
-                        string decryptedStr = SettingsEncryptor.Decrypt(encryptedData);
-                        string reEncryptedString = Encrypt(decryptedStr, additionalEntropy);
-                        stringBuilder.Append(preEncrypted);
-                        stringBuilder.Append(reEncryptedString);
-                    }
-                    catch (DataMisalignedException)
-                    {
-                        moreEncryptedStrings = false;
-                        var lastSegment = settings.Substring(start);
-                        stringBuilder.Append(lastSegment);
-                    }
-                    catch (Exception excep)
-                    {
-                        throw new SettingsException(excep, SettingsExceptionReason.UnknownException, nameof(Decrypt),
-                            excep.Message);
-                    }
-                }
-
-                retVal = stringBuilder.ToString();
-
-                // If the decrypted string starts and ends with a " we need to actually strip them because
-                // the original encryption encrypts the JSON (and for a string this INCLUDES quotes) but the read
-                // IGNORES the quotes, but the encryption CONTAINS the quotes and these must be stripped off.
-                // This doesn't happen with other types!
-
-                //if (retVal.StartsWith("\"") && retVal.EndsWith("\"")) retVal = retVal.Substring(1, retVal.Length - 2);
-
-                return retVal;
-            }
         }
 
         /// <summary>
@@ -331,7 +174,7 @@ namespace Moonrise.Utils.Standard.Config
                 else if (_settingsProvider.Value == null)
                 {
                     // There is no provider set up for THIS thread, so get the original one to clone itself!
-                    _settingsProvider.Value = (ISettingsProvider) _originalProvider.Clone();
+                    _settingsProvider.Value = (ISettingsProvider)_originalProvider.Clone();
                 }
 
                 return _settingsProvider.Value;
@@ -352,13 +195,31 @@ namespace Moonrise.Utils.Standard.Config
                     _originalProvider = value;
                     _settingsProvider.Value = value;
                 }
-                else if (_settingsProvider != null && (_settingsProvider.Value == null) & (value != null))
+                else if (_settingsProvider != null && _settingsProvider.Value == null & value != null)
                 {
                     // A specific provider is being set for this thread. This one WON'T be cloned, but the setter WILL be respected
                     _settingsProvider.Value = value;
                 }
             }
         }
+
+        /// <summary>
+        ///     Accesses user settings
+        /// </summary>
+        public static Settings User { get; } = new Settings(SettingType.User);
+
+        /// <summary>
+        ///     Prevents a default instance of the <see cref="Settings" /> class from being created. You must instead use either
+        ///     <see cref="Application" /> or <see cref="User" />
+        /// </summary>
+        /// <param name="type">The type.</param>
+        private Settings(SettingType type) => _type = type;
+
+        /// <summary>
+        ///     Initialises a <see cref="Settings" /> with a given provider.
+        /// </summary>
+        /// <param name="provider">The <see cref="ISettingsProvider" /> implementation to use.</param>
+        private Settings(ISettingsProvider provider) => SettingsProvider = provider;
 
         /// <summary>
         ///     Decodes and then decrypts the supplied string
@@ -371,17 +232,21 @@ namespace Moonrise.Utils.Standard.Config
         {
             string retVal;
 
-            if (settingsEncryptor == null) throw new SettingsException(SettingsExceptionReason.NoEncryptionProvider);
+            if (settingsEncryptor == null)
+            {
+                throw new SettingsException(SettingsExceptionReason.NoEncryptionProvider);
+            }
 
             // We now need to find each occurrence of the Encryption Identifier and replace it's following string with the unencrypted version
-            var moreEncryptedStrings = true;
-            var start = 0;
-            var stringBuilder = new StringBuilder();
+            bool moreEncryptedStrings = true;
+            int start = 0;
+            StringBuilder stringBuilder = new StringBuilder();
 
             while (moreEncryptedStrings)
+            {
                 try
                 {
-                    var preEncrypted = readVal.Extract(ref start, EncryptionOpeningIdentifier, false);
+                    string preEncrypted = readVal.Extract(ref start, EncryptionOpeningIdentifier, false);
 
                     string base64Str;
 
@@ -395,26 +260,31 @@ namespace Moonrise.Utils.Standard.Config
                         base64Str = readVal.Substring(start);
                     }
 
-                    var encryptedData = Convert.FromBase64String(base64Str);
-                    var decryptedStr = settingsEncryptor.Decrypt(encryptedData, additionalEntropy);
+                    byte[] encryptedData = Convert.FromBase64String(base64Str);
+                    string decryptedStr = settingsEncryptor.Decrypt(encryptedData, additionalEntropy);
                     stringBuilder.Append(preEncrypted);
                     stringBuilder.Append(decryptedStr);
                 }
                 catch (DataMisalignedException)
                 {
                     moreEncryptedStrings = false;
-                    var lastSegment = readVal.Substring(start);
+                    string lastSegment = readVal.Substring(start);
                     stringBuilder.Append(lastSegment);
                 }
                 catch (Exception excep)
                 {
                     // The Invalid Data exception is an internal exception so we can't catch that, only look for the message containing "Invalid Data"
                     if (excep.Message.Contains("ata") && excep.Message.Contains("nvalid"))
+                    {
                         throw new SettingsException(excep, SettingsExceptionReason.InvalidAdditionalEntropy);
+                    }
 
-                    throw new SettingsException(excep, SettingsExceptionReason.UnknownException, nameof(Decrypt),
+                    throw new SettingsException(excep,
+                        SettingsExceptionReason.UnknownException,
+                        nameof(Decrypt),
                         excep.Message);
                 }
+            }
 
             retVal = stringBuilder.ToString();
 
@@ -422,7 +292,10 @@ namespace Moonrise.Utils.Standard.Config
             // the original encryption encrypts the JSON (and for a string this INCLUDES quotes) but the read
             // IGNORES the quotes, but the encryption CONTAINS the quotes and these must be stripped off.
             // This doesn't happen with other types!
-            if (retVal.StartsWith("\"") && retVal.EndsWith("\"")) retVal = retVal.Substring(1, retVal.Length - 2);
+            if (retVal.StartsWith("\"") && retVal.EndsWith("\""))
+            {
+                retVal = retVal.Substring(1, retVal.Length - 2);
+            }
 
             return retVal;
         }
@@ -447,7 +320,8 @@ namespace Moonrise.Utils.Standard.Config
         /// <returns>
         ///     The connection string, or null if it doesn't exist
         /// </returns>
-        public string GetConnectionString(string connectionStringKey,
+        public string GetConnectionString(
+            string connectionStringKey,
             string connectionStringContainer = "ConnectionStrings",
             string additionalEntropy = null)
         {
@@ -455,13 +329,16 @@ namespace Moonrise.Utils.Standard.Config
 
             try
             {
-                var connectionStrings = new Dictionary<string, string>();
-                Read(connectionStringContainer, ref connectionStrings, false, additionalEntropy);
+                Dictionary<string, string> connectionStrings = new Dictionary<string, string>();
+
+                Read(connectionStringContainer,
+                    ref connectionStrings,
+                    false,
+                    additionalEntropy);
+
                 connectionStrings.TryGetValue(connectionStringKey, out retVal);
             }
-            catch (Exception)
-            {
-            }
+            catch (Exception) { }
 
             return retVal;
         }
@@ -500,17 +377,28 @@ namespace Moonrise.Utils.Standard.Config
         /// <param name="addIfNotExists">Determines if the setting should be added if it doesn't exist.</param>
         /// <param name="additionalEntropy">Additional entropy required to decrypt. Defaults to null</param>
         /// <returns>True if the value to be read was found</returns>
-        public bool Read<T, U>(string key, T instance, Expression<Func<U>> property, bool addIfNotExists = false, string additionalEntropy = null)
+        public bool Read<T, U>(
+            string key,
+            T instance,
+            Expression<Func<U>> property,
+            bool addIfNotExists = false,
+            string additionalEntropy = null)
         {
-            var referableValue = property.Compile()();
+            U referableValue = property.Compile()();
 
             if (referableValue == null)
+            {
                 throw new ArgumentException("The property is null, please assign it before passing by reference!",
                     nameof(property));
+            }
 
-            var retVal = Read(key, ref referableValue, addIfNotExists, additionalEntropy);
-            var expr = (MemberExpression) property.Body;
-            var prop = (PropertyInfo) expr.Member;
+            bool retVal = Read(key,
+                ref referableValue,
+                addIfNotExists,
+                additionalEntropy);
+
+            MemberExpression expr = (MemberExpression)property.Body;
+            PropertyInfo prop = (PropertyInfo)expr.Member;
             prop.SetValue(instance, referableValue, null);
 
             return retVal;
@@ -537,12 +425,17 @@ namespace Moonrise.Utils.Standard.Config
         ///     or
         ///     Invalid [Guid] value for + key
         /// </exception>
-        [SuppressMessage("StyleCop.CSharp.LayoutRules", "SA1503:CurlyBracketsMustNotBeOmitted",
+        [SuppressMessage("StyleCop.CSharp.LayoutRules",
+            "SA1503:CurlyBracketsMustNotBeOmitted",
             Justification = "I excuse throws!")]
         public bool Read<T>(string key, out T value, string additionalEntropy = null)
         {
-            value = default;
-            return Read(key, ref value, false, additionalEntropy);
+            value = default(T);
+
+            return Read(key,
+                ref value,
+                false,
+                additionalEntropy);
         }
 
         /// <summary>
@@ -587,32 +480,41 @@ namespace Moonrise.Utils.Standard.Config
         ///     or
         ///     Invalid [Guid] value for + key
         /// </exception>
-        [SuppressMessage("StyleCop.CSharp.LayoutRules", "SA1503:CurlyBracketsMustNotBeOmitted",
+        [SuppressMessage("StyleCop.CSharp.LayoutRules",
+            "SA1503:CurlyBracketsMustNotBeOmitted",
             Justification = "I excuse throws!")]
-        public bool Read<T>(string key, ref T value, bool addIfNotExists = false, string additionalEntropy = null)
+        public bool Read<T>(
+            string key,
+            ref T value,
+            bool addIfNotExists = false,
+            string additionalEntropy = null)
         {
-            var retVal = false;
+            bool retVal = false;
             PerformAnyInitialRead();
-            var setting = ReadCommon(key, _type, additionalEntropy);
+            string setting = ReadCommon(key, _type, additionalEntropy);
 
-            var valueType = typeof(T);
+            Type valueType = typeof(T);
 
-            var jsonIt = valueType != typeof(string) &&
-                         valueType != typeof(int) &&
-                         valueType != typeof(double) &&
-                         valueType != typeof(bool) &&
-                         valueType != typeof(DateTime) &&
-                         valueType != typeof(DateTimeOffset) &&
-                         valueType != typeof(Guid);
+            bool jsonIt = valueType != typeof(string) &&
+                          valueType != typeof(int) &&
+                          valueType != typeof(double) &&
+                          valueType != typeof(bool) &&
+                          valueType != typeof(DateTime) &&
+                          valueType != typeof(DateTimeOffset) &&
+                          valueType != typeof(Guid);
 
             if (setting == null)
             {
                 if (addIfNotExists)
                 {
-                    var writeThis = "Couldn't create the string representation!";
+                    string writeThis = "Couldn't create the string representation!";
 
                     writeThis = jsonIt ? JsonConvert.SerializeObject(value) : value.ToString();
-                    SettingsProvider.WriteSetting(key, writeThis, value, _type);
+
+                    SettingsProvider.WriteSetting(key,
+                        writeThis,
+                        value,
+                        _type);
                 }
             }
             else
@@ -621,25 +523,29 @@ namespace Moonrise.Utils.Standard.Config
 
                 if (typeof(T) == typeof(string))
                 {
-                    value = (T) (object) setting;
+                    value = (T)(object)setting;
                 }
                 else if (typeof(T) == typeof(int))
                 {
-                    if (!int.TryParse(setting, out var intVal))
+                    if (!int.TryParse(setting, out int intVal))
+                    {
                         throw new InvalidDataException($"Invalid {typeof(T).Name} value, [{setting}] for {key}");
+                    }
 
-                    value = (T) (object) intVal;
+                    value = (T)(object)intVal;
                 }
                 else if (typeof(T) == typeof(double))
                 {
-                    if (!double.TryParse(setting, out var doubleVal))
+                    if (!double.TryParse(setting, out double doubleVal))
+                    {
                         throw new InvalidDataException($"Invalid {typeof(T).Name} value, [{setting}] for {key}");
+                    }
 
-                    value = (T) (object) doubleVal;
+                    value = (T)(object)doubleVal;
                 }
                 else if (typeof(T) == typeof(bool))
                 {
-                    var trimmedSetting = (setting ?? string.Empty).Trim();
+                    string trimmedSetting = (setting ?? string.Empty).Trim();
                     setting = trimmedSetting.ToLower();
 
                     // For booleans we can handle true/false, t/f, yes/no, y/n, 1/0
@@ -650,14 +556,14 @@ namespace Moonrise.Utils.Standard.Config
                         case "yes":
                         case "y":
                         case "1":
-                            value = (T) (object) true;
+                            value = (T)(object)true;
                             break;
                         case "false":
                         case "f":
                         case "no":
                         case "n":
                         case "0":
-                            value = (T) (object) false;
+                            value = (T)(object)false;
                             break;
                         default:
                             throw new InvalidDataException($"Invalid {typeof(T).Name} value, [{setting}] for {key}");
@@ -665,24 +571,30 @@ namespace Moonrise.Utils.Standard.Config
                 }
                 else if (typeof(T) == typeof(DateTime))
                 {
-                    if (!DateTime.TryParse(setting, out var dateVal))
+                    if (!DateTime.TryParse(setting, out DateTime dateVal))
+                    {
                         throw new InvalidDataException($"Invalid {typeof(T).Name} value, [{setting}] for {key}");
+                    }
 
-                    value = (T) (object) dateVal;
+                    value = (T)(object)dateVal;
                 }
                 else if (typeof(T) == typeof(DateTimeOffset))
                 {
-                    if (!DateTimeOffset.TryParse(setting, out var dateVal))
+                    if (!DateTimeOffset.TryParse(setting, out DateTimeOffset dateVal))
+                    {
                         throw new InvalidDataException($"Invalid {typeof(T).Name} value, [{setting}] for {key}");
+                    }
 
-                    value = (T) (object) dateVal;
+                    value = (T)(object)dateVal;
                 }
                 else if (typeof(T) == typeof(Guid))
                 {
-                    if (!Guid.TryParse(setting, out var guidVal))
+                    if (!Guid.TryParse(setting, out Guid guidVal))
+                    {
                         throw new InvalidDataException($"Invalid {typeof(T).Name} value, [{setting}] for {key}");
+                    }
 
-                    value = (T) (object) guidVal;
+                    value = (T)(object)guidVal;
                 }
                 else
                 {
@@ -710,7 +622,8 @@ namespace Moonrise.Utils.Standard.Config
         /// </param>
         /// <param name="additionalEntropy">Additional entropy required to decrypt. Defaults to null</param>
         /// <returns>True if the value to be read was found</returns>
-        public bool ReadEnum<T, U>(string key,
+        public bool ReadEnum<T, U>(
+            string key,
             T instance,
             Expression<Func<U>> property,
             bool addIfNotExists = false,
@@ -718,16 +631,22 @@ namespace Moonrise.Utils.Standard.Config
             string additionalEntropy = null)
             where U : IConvertible
         {
-            var referableValue = property.Compile()();
+            U referableValue = property.Compile()();
 
             if (referableValue == null)
-                throw new ArgumentException(
-                    $"The {property.Name} property is null, please assign it before passing by reference!",
+            {
+                throw new ArgumentException($"The {property.Name} property is null, please assign it before passing by reference!",
                     nameof(property));
+            }
 
-            var retVal = ReadEnum(key, ref referableValue, addIfNotExists, what, additionalEntropy);
-            var expr = (MemberExpression) property.Body;
-            var prop = (PropertyInfo) expr.Member;
+            bool retVal = ReadEnum(key,
+                ref referableValue,
+                addIfNotExists,
+                what,
+                additionalEntropy);
+
+            MemberExpression expr = (MemberExpression)property.Body;
+            PropertyInfo prop = (PropertyInfo)expr.Member;
             prop.SetValue(instance, referableValue, null);
 
             return retVal;
@@ -751,52 +670,62 @@ namespace Moonrise.Utils.Standard.Config
         /// <param name="additionalEntropy">Additional entropy required to decrypt. Defaults to null</param>
         /// <returns>True if the value to be read was found</returns>
         /// <exception cref="System.ArgumentException">If <typeparamref name="T" /> is not an Enum</exception>
-        [SuppressMessage("StyleCop.CSharp.LayoutRules", "SA1503:CurlyBracketsMustNotBeOmitted",
+        [SuppressMessage("StyleCop.CSharp.LayoutRules",
+            "SA1503:CurlyBracketsMustNotBeOmitted",
             Justification = "I excuse throws!")]
-        public bool ReadEnum<T>(string key,
+        public bool ReadEnum<T>(
+            string key,
             ref T value,
             bool addIfnotExists = false,
             WhatAttributeOfEnum what = WhatAttributeOfEnum.EnumValue,
             string additionalEntropy = null)
             where T : IConvertible
         {
-            var retVal = false;
+            bool retVal = false;
 
-            if (!typeof(T).GetTypeInfo().IsEnum) throw new ArgumentException(typeof(T).Name + " is not an enum!");
+            if (!typeof(T).GetTypeInfo().IsEnum)
+            {
+                throw new ArgumentException(typeof(T).Name + " is not an enum!");
+            }
 
             PerformAnyInitialRead();
-            var setting = ReadCommon(key, _type, additionalEntropy);
+            string setting = ReadCommon(key, _type, additionalEntropy);
 
             if (setting == null)
             {
                 if (addIfnotExists)
+                {
                     try
                     {
-                        var enumAttributeString = string.Empty;
+                        string enumAttributeString = string.Empty;
 
                         switch (what)
                         {
                             case WhatAttributeOfEnum.NumericValue:
-                                enumAttributeString = ((Enum) (object) value).ToInt().ToString();
+                                enumAttributeString = ((Enum)(object)value).ToInt().ToString();
                                 break;
                             case WhatAttributeOfEnum.EnumValue:
-                                enumAttributeString = ((Enum) (object) value).ToString();
+                                enumAttributeString = ((Enum)(object)value).ToString();
                                 break;
                             case WhatAttributeOfEnum.Description:
-                                enumAttributeString = ((Enum) (object) value).OriginalDescription();
+                                enumAttributeString = ((Enum)(object)value).OriginalDescription();
                                 break;
                             case WhatAttributeOfEnum.ModifiedDescription:
-                                enumAttributeString = ((Enum) (object) value).Description();
+                                enumAttributeString = ((Enum)(object)value).Description();
                                 break;
                         }
 
-                        SettingsProvider.WriteSetting(key, enumAttributeString, value, _type);
+                        SettingsProvider.WriteSetting(key,
+                            enumAttributeString,
+                            value,
+                            _type);
                     }
                     catch (Exception)
                     {
                         // We'll log and swallow exceptions on updating the config
                         // Logger.Error(excep, "Error whilst trying to update the config file. ");
                     }
+                }
             }
             else
             {
@@ -813,6 +742,153 @@ namespace Moonrise.Utils.Standard.Config
             }
 
             return retVal;
+        }
+
+        ///// <summary>
+        /////     The <see cref="ISettingsProvider" /> being used by the <see cref="Settings" />.
+        ///// </summary>
+        //public ISettingsProvider Provider
+        //{
+        //    get
+        //    {
+        //        if (settingsProvider != null) return settingsProvider;
+
+        //        return SettingsProvider;
+        //    }
+        //}
+
+        /// <summary>
+        ///     Re-encrypts the settings file using a generated entropy that must then be passed to any read of a possibly
+        ///     encrypted setting.
+        /// </summary>
+        /// <remarks>
+        ///     This prevents any code that has not explicitly been passed the entropy from being able to read encrypted settings.
+        /// </remarks>
+        /// <param name="additionalEntropy">
+        ///     Optional entropy that can be supplied. If null (default) then entropy will be created
+        ///     from a hashed stack trace.
+        /// </param>
+        /// <returns>The generated entropy that has re-encrypted the encrypted settings</returns>
+        public string ReEncrypt(string additionalEntropy = null)
+        {
+            if (string.IsNullOrEmpty(additionalEntropy))
+            {
+                // First create the entropy from the call stack
+                string stackTrace = GetStackTrace();
+                additionalEntropy = HashUtils.GetMd5Hash(new MD5CryptoServiceProvider(), stackTrace);
+            }
+
+            // Next we check if the settings file has already been re-crypted.
+            DateTimeOffset previouslyRecryptedAt = DateTimeOffset.Now;
+
+            if (!Read(ReEncryptedMarker,
+                    ref previouslyRecryptedAt,
+                    false,
+                    additionalEntropy))
+            {
+                // We write this WITHOUT the additional entropy as it will get re-encrypted along with everything else.
+                Write(ReEncryptedMarker, previouslyRecryptedAt, true);
+
+                // Now we need to re-encrypt any encrypted settings in the settings file.
+                string settings = SettingsProvider.ReadCompleteFile(_type);
+
+                if (settings.Contains(EncryptionOpeningIdentifier))
+                {
+                    settings = ReEncrypt(settings);
+                    SettingsProvider.WriteCompleteFile(settings, _type);
+
+                    // We now need the provider to re-read their re-encrypted file
+                    RefreshAnyCaches();
+                }
+            }
+
+            _reEncrypted = true;
+
+            // Now return the entropy that was used to re-encrypt
+            return additionalEntropy;
+
+            string GetStackTrace()
+            {
+                StackTrace stackTrace = new StackTrace(); // get call stack
+                StackFrame[] stackFrames = stackTrace.GetFrames(); // get method calls (frames)
+
+                // write call stack method names
+                string stackList = string.Empty;
+
+                foreach (StackFrame stackFrame in stackFrames)
+                {
+                    stackList += stackFrame.GetMethod().DeclaringType + "." + stackFrame.GetMethod().Name + "-->";
+                }
+
+                stackList += $"{FileUtils.ApplicationName()}";
+
+                return stackList;
+            }
+
+            string ReEncrypt(string settings)
+            {
+                string retVal;
+
+                if (SettingsEncryptor == null)
+                {
+                    throw new SettingsException(SettingsExceptionReason.NoEncryptionProvider);
+                }
+
+                // We now need to find each occurrence of the Encryption Identifier and replace it's following string with the unencrypted version
+                bool moreEncryptedStrings = true;
+                int start = 0;
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while (moreEncryptedStrings)
+                {
+                    try
+                    {
+                        string preEncrypted = settings.Extract(ref start, EncryptionOpeningIdentifier, false);
+
+                        string base64Str;
+
+                        try
+                        {
+                            base64Str = settings.Extract(ref start, EncryptionClosingIdentifier, false);
+                        }
+                        catch (DataMisalignedException)
+                        {
+                            moreEncryptedStrings = false;
+                            base64Str = settings.Substring(start);
+                        }
+
+                        byte[] encryptedData = Convert.FromBase64String(base64Str);
+                        string decryptedStr = SettingsEncryptor.Decrypt(encryptedData);
+                        string reEncryptedString = Encrypt(decryptedStr, additionalEntropy);
+                        stringBuilder.Append(preEncrypted);
+                        stringBuilder.Append(reEncryptedString);
+                    }
+                    catch (DataMisalignedException)
+                    {
+                        moreEncryptedStrings = false;
+                        string lastSegment = settings.Substring(start);
+                        stringBuilder.Append(lastSegment);
+                    }
+                    catch (Exception excep)
+                    {
+                        throw new SettingsException(excep,
+                            SettingsExceptionReason.UnknownException,
+                            nameof(Decrypt),
+                            excep.Message);
+                    }
+                }
+
+                retVal = stringBuilder.ToString();
+
+                // If the decrypted string starts and ends with a " we need to actually strip them because
+                // the original encryption encrypts the JSON (and for a string this INCLUDES quotes) but the read
+                // IGNORES the quotes, but the encryption CONTAINS the quotes and these must be stripped off.
+                // This doesn't happen with other types!
+
+                //if (retVal.StartsWith("\"") && retVal.EndsWith("\"")) retVal = retVal.Substring(1, retVal.Length - 2);
+
+                return retVal;
+            }
         }
 
         /// <summary>
@@ -846,25 +922,38 @@ namespace Moonrise.Utils.Standard.Config
         /// <param name="value">The value.</param>
         /// <param name="encrypt">If true, the value should be written encrypted</param>
         /// <param name="additionalEntropy">Additional entropy required to decrypt. Defaults to null</param>
-        public void Write<T>(string key, T value, bool encrypt = false, string additionalEntropy = null)
+        public void Write<T>(
+            string key,
+            T value,
+            bool encrypt = false,
+            string additionalEntropy = null)
         {
             if (_reEncrypted && additionalEntropy == null)
+            {
                 throw new SettingsException(SettingsExceptionReason.AddtionalEntropyRequired, key);
+            }
 
-            var jsonIt = !typeof(T).GetTypeInfo().IsValueType && !(value is string);
+            bool jsonIt = !typeof(T).GetTypeInfo().IsValueType && !(value is string);
 
             try
             {
-                var writeThis = jsonIt ? JsonConvert.SerializeObject(value, Formatting.Indented) : value.ToString();
+                string writeThis = jsonIt ? JsonConvert.SerializeObject(value, Formatting.Indented) : value.ToString();
 
                 if (encrypt)
                 {
                     writeThis = Encrypt(writeThis, additionalEntropy);
-                    SettingsProvider.WriteSetting(key, writeThis, writeThis, _type);
+
+                    SettingsProvider.WriteSetting(key,
+                        writeThis,
+                        writeThis,
+                        _type);
                 }
                 else
                 {
-                    SettingsProvider.WriteSetting(key, writeThis, value, _type);
+                    SettingsProvider.WriteSetting(key,
+                        writeThis,
+                        value,
+                        _type);
                 }
             }
             catch (SettingsException)
@@ -887,10 +976,13 @@ namespace Moonrise.Utils.Standard.Config
         {
             string retVal;
 
-            if (SettingsEncryptor == null) throw new SettingsException(SettingsExceptionReason.NoEncryptionProvider);
+            if (SettingsEncryptor == null)
+            {
+                throw new SettingsException(SettingsExceptionReason.NoEncryptionProvider);
+            }
 
-            var encryptedData = SettingsEncryptor.Encrypt(writeThis, additionalEntropy);
-            var base64Str = Convert.ToBase64String(encryptedData);
+            byte[] encryptedData = SettingsEncryptor.Encrypt(writeThis, additionalEntropy);
+            string base64Str = Convert.ToBase64String(encryptedData);
 
             retVal = $"{EncryptionOpeningIdentifier}{base64Str}{EncryptionClosingIdentifier}";
             return retVal;
@@ -923,11 +1015,14 @@ namespace Moonrise.Utils.Standard.Config
             catch (SettingsException excep)
             {
                 if (excep.ReasonCode != SettingsExceptionReason.InvalidKey)
+                {
                     throw;
+                }
             }
 
             // We need to check if the string is an encrypted string
             if (readVal != null && readVal.Contains(EncryptionOpeningIdentifier))
+            {
                 try
                 {
                     readVal = Decrypt(readVal, SettingsEncryptor, additionalEntropy);
@@ -936,6 +1031,7 @@ namespace Moonrise.Utils.Standard.Config
                 {
                     throw new SettingsException(excep, SettingsExceptionReason.InvalidData, key);
                 }
+            }
 
             return readVal;
         }

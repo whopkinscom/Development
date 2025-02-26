@@ -8,4 +8,3 @@ using System.Reflection;
 // The version is Major.Year.MonthDay.HourMinute(Tens of)Seconds
 [assembly: AssemblyVersion("5.2024.228.9473")]
 [assembly: AssemblyFileVersion("5.2024.228.9473")]
-

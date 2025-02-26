@@ -15,8 +15,6 @@
 //    limitations under the License.
 
 #endregion
-using System.IO;
-using System.Reflection;
 
 namespace Moonrise.Utils.Standard.Debugger
 {

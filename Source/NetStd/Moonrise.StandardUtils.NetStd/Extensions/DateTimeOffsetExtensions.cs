@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 using System;
 using System.Diagnostics.CodeAnalysis;
 
@@ -37,7 +38,7 @@ namespace Moonrise.Utils.Standard.Extensions
             Minutes,
             Hours,
             Days,
-            Months
+            Months,
         }
 #pragma warning restore 1591
 
@@ -52,17 +53,53 @@ namespace Moonrise.Utils.Standard.Extensions
             switch (trim)
             {
                 case TrimOff.Milliseconds:
-                    return new DateTime(dto.Year, dto.Month, dto.Day, dto.Hour, dto.Minute, dto.Second, 0);
+                    return new DateTime(dto.Year,
+                        dto.Month,
+                        dto.Day,
+                        dto.Hour,
+                        dto.Minute,
+                        dto.Second,
+                        0);
                 case TrimOff.Seconds:
-                    return new DateTime(dto.Year, dto.Month, dto.Day, dto.Hour, dto.Minute, 0, 0);
+                    return new DateTime(dto.Year,
+                        dto.Month,
+                        dto.Day,
+                        dto.Hour,
+                        dto.Minute,
+                        0,
+                        0);
                 case TrimOff.Minutes:
-                    return new DateTime(dto.Year, dto.Month, dto.Day, dto.Hour, 0, 0, 0);
+                    return new DateTime(dto.Year,
+                        dto.Month,
+                        dto.Day,
+                        dto.Hour,
+                        0,
+                        0,
+                        0);
                 case TrimOff.Hours:
-                    return new DateTime(dto.Year, dto.Month, dto.Day, 0, 0, 0, 0);
+                    return new DateTime(dto.Year,
+                        dto.Month,
+                        dto.Day,
+                        0,
+                        0,
+                        0,
+                        0);
                 case TrimOff.Days:
-                    return new DateTime(dto.Year, dto.Month, 0, 0, 0, 0, 0);
+                    return new DateTime(dto.Year,
+                        dto.Month,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0);
                 case TrimOff.Months:
-                    return new DateTime(dto.Year, 0, 0, 0, 0, 0, 0);
+                    return new DateTime(dto.Year,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0);
                 default:
                     return dto;
             }
@@ -109,7 +146,7 @@ namespace Moonrise.Utils.Standard.Extensions
                     break;
             }
 
-            retVal = (dateTime >= noLessThan) && (dateTime <= current);
+            retVal = dateTime >= noLessThan && dateTime <= current;
 
             return retVal;
         }

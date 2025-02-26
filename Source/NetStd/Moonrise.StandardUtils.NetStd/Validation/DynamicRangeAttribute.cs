@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
@@ -45,62 +46,62 @@ namespace Moonrise.Utils.Standard.Validation
         public abstract class DynamicValidationValues : IDynamicValidationValues
         {
             /// <summary>
-            /// The maximum byte value
+            ///     The maximum byte value
             /// </summary>
             public byte MaxByte { get; set; }
 
             /// <summary>
-            /// The maximum DateTime value
+            ///     The maximum DateTime value
             /// </summary>
             public DateTime MaxDateTime { get; set; }
 
             /// <summary>
-            /// The maximum DateTimeOffset value
+            ///     The maximum DateTimeOffset value
             /// </summary>
             public DateTimeOffset MaxDateTimeOffset { get; set; }
 
             /// <summary>
-            /// The maximum double value
+            ///     The maximum double value
             /// </summary>
             public double MaxDouble { get; set; }
 
             /// <summary>
-            /// The maximum int value
+            ///     The maximum int value
             /// </summary>
             public int MaxInt { get; set; }
 
             /// <summary>
-            /// The maximum string value
+            ///     The maximum string value
             /// </summary>
             public string MaxString { get; set; }
 
             /// <summary>
-            /// The minimum byte value
+            ///     The minimum byte value
             /// </summary>
             public byte MinByte { get; set; }
 
             /// <summary>
-            /// The minimum DateTime value
+            ///     The minimum DateTime value
             /// </summary>
             public DateTime MinDateTime { get; set; }
 
             /// <summary>
-            /// The minimum DateTimeOffset value
+            ///     The minimum DateTimeOffset value
             /// </summary>
             public DateTimeOffset MinDateTimeOffset { get; set; }
 
             /// <summary>
-            /// The minimum double value
+            ///     The minimum double value
             /// </summary>
             public double MinDouble { get; set; }
 
             /// <summary>
-            /// The minimum int value
+            ///     The minimum int value
             /// </summary>
             public int MinInt { get; set; }
 
             /// <summary>
-            /// The minimum string value
+            ///     The minimum string value
             /// </summary>
             public string MinString { get; set; }
         }
@@ -111,75 +112,64 @@ namespace Moonrise.Utils.Standard.Validation
         public interface IDynamicValidationValues
         {
             /// <summary>
-            /// The maximum byte value
+            ///     The maximum byte value
             /// </summary>
             byte MaxByte { get; set; }
 
             /// <summary>
-            /// The maximum DateTime value
+            ///     The maximum DateTime value
             /// </summary>
             DateTime MaxDateTime { get; set; }
 
             /// <summary>
-            /// The maximum DateTimeOffset value
+            ///     The maximum DateTimeOffset value
             /// </summary>
             DateTimeOffset MaxDateTimeOffset { get; set; }
 
             /// <summary>
-            /// The maximum double value
+            ///     The maximum double value
             /// </summary>
             double MaxDouble { get; set; }
 
             /// <summary>
-            /// The maximum int value
+            ///     The maximum int value
             /// </summary>
             int MaxInt { get; set; }
 
             /// <summary>
-            /// The maximum string value
+            ///     The maximum string value
             /// </summary>
             string MaxString { get; set; }
 
             /// <summary>
-            /// The minimum byte value
+            ///     The minimum byte value
             /// </summary>
             byte MinByte { get; set; }
 
             /// <summary>
-            /// The minimum DateTime value
+            ///     The minimum DateTime value
             /// </summary>
             DateTime MinDateTime { get; set; }
 
             /// <summary>
-            /// The minimum DateTimeOffset value
+            ///     The minimum DateTimeOffset value
             /// </summary>
             DateTimeOffset MinDateTimeOffset { get; set; }
 
             /// <summary>
-            /// The minimum double value
+            ///     The minimum double value
             /// </summary>
             double MinDouble { get; set; }
 
             /// <summary>
-            /// The minimum int value
+            ///     The minimum int value
             /// </summary>
             int MinInt { get; set; }
 
             /// <summary>
-            /// The minimum string value
+            ///     The minimum string value
             /// </summary>
             string MinString { get; set; }
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="DynamicRangeAttribute" /> class.
-        /// </summary>
-        /// <param name="validationValuesImplementation">The validation values implementation.</param>
-        public DynamicRangeAttribute(Type validationValuesImplementation)
-        {
-            InstanceName = "Instance";
-            ErrorMessage = "Value must be between {0} and {1}";
-            DynamicValidationValuesImplementation = validationValuesImplementation;
         }
 
         //public object ContextSource { get; set; }
@@ -213,6 +203,17 @@ namespace Moonrise.Utils.Standard.Validation
         private Type DynamicValidationValuesImplementation { get; }
 
         /// <summary>
+        ///     Initializes a new instance of the <see cref="DynamicRangeAttribute" /> class.
+        /// </summary>
+        /// <param name="validationValuesImplementation">The validation values implementation.</param>
+        public DynamicRangeAttribute(Type validationValuesImplementation)
+        {
+            InstanceName = "Instance";
+            ErrorMessage = "Value must be between {0} and {1}";
+            DynamicValidationValuesImplementation = validationValuesImplementation;
+        }
+
+        /// <summary>
         ///     Validates the specified value with respect to the current validation attribute.
         /// </summary>
         /// <returns>An instance of the <see cref="T:System.ComponentModel.DataAnnotations.ValidationResult" /> class. </returns>
@@ -231,7 +232,7 @@ namespace Moonrise.Utils.Standard.Validation
                 byte min = supplier.MinByte;
                 byte max = supplier.MaxByte;
 
-                if ((byteValue > max) || (byteValue < min))
+                if (byteValue > max || byteValue < min)
                 {
                     retVal = new ValidationResult(string.Format(ErrorMessage, min, max));
                 }
@@ -244,7 +245,7 @@ namespace Moonrise.Utils.Standard.Validation
                 int min = supplier.MinInt;
                 int max = supplier.MaxInt;
 
-                if ((intValue > max) || (intValue < min))
+                if (intValue > max || intValue < min)
                 {
                     retVal = new ValidationResult(string.Format(ErrorMessage, min, max));
                 }
@@ -257,7 +258,7 @@ namespace Moonrise.Utils.Standard.Validation
                 double min = supplier.MinDouble;
                 double max = supplier.MaxDouble;
 
-                if ((doubleValue > max) || (doubleValue < min))
+                if (doubleValue > max || doubleValue < min)
                 {
                     retVal = new ValidationResult(string.Format(ErrorMessage, min, max));
                 }
@@ -270,7 +271,7 @@ namespace Moonrise.Utils.Standard.Validation
                 string min = supplier.MinString;
                 string max = supplier.MaxString;
 
-                if ((stringValue.CompareTo(max) > 0) || (stringValue.CompareTo(min) < 0))
+                if (stringValue.CompareTo(max) > 0 || stringValue.CompareTo(min) < 0)
                 {
                     retVal = new ValidationResult(string.Format(ErrorMessage, min, max));
                 }
@@ -283,7 +284,7 @@ namespace Moonrise.Utils.Standard.Validation
                 DateTime min = supplier.MinDateTime;
                 DateTime max = supplier.MaxDateTime;
 
-                if ((dateTimeValue > max) || (dateTimeValue < min))
+                if (dateTimeValue > max || dateTimeValue < min)
                 {
                     retVal = new ValidationResult(string.Format(ErrorMessage, min, max));
                 }
@@ -291,8 +292,8 @@ namespace Moonrise.Utils.Standard.Validation
             else
             {
                 throw new ValidationException(string.Format("{0} does not currently support range validation for {1}",
-                                                            GetType().Name,
-                                                            value.GetType().Name));
+                    GetType().Name,
+                    value.GetType().Name));
             }
 
             return retVal;
@@ -310,9 +311,9 @@ namespace Moonrise.Utils.Standard.Validation
             if (!typeof(IDynamicValidationValues).IsAssignableFrom(propInfo.PropertyType))
             {
                 throw new ValidationException(string.Format("{0}.{1} needs to return an instance that implements {2}",
-                                                            DynamicValidationValuesImplementation.Name,
-                                                            InstanceName,
-                                                            typeof(IDynamicValidationValues).Name));
+                    DynamicValidationValuesImplementation.Name,
+                    InstanceName,
+                    typeof(IDynamicValidationValues).Name));
             }
 
             IDynamicValidationValues retVal = propInfo.GetMethod.Invoke(null, null) as IDynamicValidationValues;

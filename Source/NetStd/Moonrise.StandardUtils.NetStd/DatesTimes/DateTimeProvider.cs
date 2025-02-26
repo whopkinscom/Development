@@ -15,6 +15,7 @@
 //    limitations under the License.
 
 #endregion
+
 using System;
 using System.Threading;
 
@@ -45,13 +46,7 @@ namespace Moonrise.Utils.Standard.DatesTimes
         /// <summary>
         ///     Gets the current DateTime
         /// </summary>
-        public static DateTime Now
-        {
-            get
-            {
-                return Provider.Now;
-            }
-        }
+        public static DateTime Now => Provider.Now;
 
         /// <summary>
         ///     The provider of DateTimes
@@ -68,21 +63,12 @@ namespace Moonrise.Utils.Standard.DatesTimes
                 return Providers.Value;
             }
 
-            set
-            {
-                Providers.Value = value;
-            }
+            set => Providers.Value = value;
         }
 
         /// <summary>
         ///     Gets the normal now.
         /// </summary>
-        DateTime IDateTimeProvider.Now
-        {
-            get
-            {
-                return DateTime.Now;
-            }
-        }
+        DateTime IDateTimeProvider.Now => DateTime.Now;
     }
 }
